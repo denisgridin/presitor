@@ -1,0 +1,30 @@
+:root {
+  --vs-primary: 108, 99, 255;
+}
+
+@font-face {
+  font-family: 'Open Sans Bold';
+  src: url('~assets/fonts/OpenSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('~assets/fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans Light';
+  src: url('~assets/fonts/OpenSans-Light.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $grey-1;
+  font-family: "Open Sans", sans-serif;
+  color: $black-3
+}
+
+.vs-button {
+  font-family: "Open Sans", sans-serif;
+}
