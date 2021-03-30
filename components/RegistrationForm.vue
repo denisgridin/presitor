@@ -1,5 +1,8 @@
 <template>
   <div class="form">
+    <div class="form-logo">
+      <Logo width="150px" height="150px"></Logo>
+    </div>
     <div class="form-header">
       {{ title }}
       <span class="text-big presitor-name"> Presitor</span>
@@ -62,6 +65,11 @@ export default Vue.extend({
 
   @media screen and (max-width: 559px) {
     width: 230px;
+  }
+
+  &-logo {
+    display: flex;
+    justify-content: center;
   }
 
   &-header {
