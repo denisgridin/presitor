@@ -35,6 +35,7 @@ export default Vue.extend({
   mounted () {
     (this as any).$vs.setColor('primary', 'rgb(108,99,255)')
   }
+
 })
 
 </script>
