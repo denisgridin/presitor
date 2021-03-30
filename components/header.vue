@@ -3,12 +3,16 @@
     <div class="header">
       <Logo class="header-logo" width="60px" height="60px" />
       <div class="header-buttons">
-        <vs-button border>
-          Вход
-        </vs-button>
-        <vs-button>
-          Регистрация
-        </vs-button>
+        <nuxt-link to="/login">
+          <vs-button border>
+            Вход
+          </vs-button>
+        </nuxt-link>
+        <nuxt-link to="/registration">
+          <vs-button>
+            Регистрация
+          </vs-button>
+        </nuxt-link>
       </div>
     </div>
   </div>

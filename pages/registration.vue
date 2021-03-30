@@ -1,7 +1,7 @@
 <template>
   <div class="registration">
     <RegistrationForm
-      auth-type="login">
+      auth-type="registration">
     </RegistrationForm>
   </div>
 </template>
