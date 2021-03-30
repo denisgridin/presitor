@@ -34,6 +34,7 @@ export default Vue.extend({
 .footer-link {
   display: flex;
   justify-content: center;
+  text-align: center;
 
   align-items: center;
 }
