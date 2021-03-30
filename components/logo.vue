@@ -15,11 +15,6 @@ const logo = require('@/assets/images/logo.png')
 const pkg = require('@/package.json')
 
 export default Vue.extend({
-  data () {
-    return {
-      logo, pkg
-    }
-  },
   props: {
     width: {
       type: String,
@@ -31,6 +26,14 @@ export default Vue.extend({
       required: false,
       default: '100%'
     }
+  },
+  data () {
+    return {
+      logo, pkg
+    }
+  },
+  mounted () {
+    (this as any).$vs.setColor('primary', 'rgb(108,99,255)')
   }
 })
 
