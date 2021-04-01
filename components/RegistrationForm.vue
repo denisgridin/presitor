@@ -55,9 +55,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UserModule } from '@/store/user'
 import { AUTH_TYPE } from '~/utils/enums'
 import { errorCodes } from '~/utils/errorCodes'
+import { UserModule } from '@/store/user'
 
 export default Vue.extend({
   props: {

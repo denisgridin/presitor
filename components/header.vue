@@ -2,25 +2,13 @@
   <div class="wrapper-header">
     <div class="header">
       <Logo class="header-logo" width="60px" height="60px" />
-      <div class="header-buttons">
-        <nuxt-link to="/login">
-          <vs-button border>
-            Вход
-          </vs-button>
-        </nuxt-link>
-        <nuxt-link to="/registration">
-          <vs-button>
-            Регистрация
-          </vs-button>
-        </nuxt-link>
-      </div>
+      <HeaderButtons />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-
 export default Vue.extend({
 })
 
@@ -38,11 +26,6 @@ export default Vue.extend({
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    &-buttons {
-      display: flex;
-      flex-direction: row;
-      height: fit-content;
-    }
   }
 }
 

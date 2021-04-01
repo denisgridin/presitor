@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { IUserState } from './user'
+import { IUserState, UserModule } from './user'
 
 Vue.use(Vuex)
 
 export interface IRootState {
   user: IUserState
 }
-
 const createStore = () => {
   return new Vuex.Store<IRootState>({})
 }

@@ -4,7 +4,7 @@ import { FIELD, PATH } from '~/utils/constants'
 import { Api } from '~/api'
 const jwt = require('jsonwebtoken')
 
-interface IUser {
+export interface IUser {
   email: string,
   userId: string,
   user_id: string,
@@ -12,7 +12,8 @@ interface IUser {
 }
 
 export interface IUserState {
-  user: IUser
+  user: IUser,
+  isAuthenticated: boolean
 }
 
 export interface IUserTokens {
@@ -20,18 +21,38 @@ export interface IUserTokens {
   refreshToken: string
 }
 
-@Module({ name: 'user', dynamic: true, store: store() })
-class User extends VuexModule implements IUserState {
+@Module({ name: 'user', dynamic: true, store: store(), stateFactory: true })
+export class User extends VuexModule implements IUserState {
   public user = {} as IUser
+  public isAuthenticated: boolean = false
 
   get getUser (): IUser {
     return this.user
   }
 
+  get getAuthenticationState (): boolean {
+    return this.isAuthenticated
+  }
+
   @Mutation
   public SET_USER (user: IUser) {
-    console.log('set user: ' + user)
     this.user = user
+  }
+
+  @Mutation
+  public SET_AUTHENTICATED (flag: boolean) {
+    this.isAuthenticated = flag
+  }
+
+  @Mutation
+  public SET_USER_FROM_LOCAL_STORAGE (): void {
+    const userString: string = localStorage.getItem(FIELD.USER) || ''
+    if (userString) {
+      const user: IUser = JSON.parse(userString)
+      if (user.email) {
+        this.SET_USER({ email: user.email, userId: user.user_id } as IUser)
+      }
+    }
   }
 
   @Action
@@ -64,6 +85,23 @@ class User extends VuexModule implements IUserState {
         refreshToken: tokens.refreshToken
       })
       this.parseUser(tokens.accessToken)
+      this.SET_AUTHENTICATED(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Action
+  public async logoutUser () {
+    try {
+      const api = new Api()
+      await api.delete(PATH.user.token)
+
+      localStorage.removeItem(FIELD.USER)
+      localStorage.removeItem(FIELD.ACCESS_TOKEN)
+      localStorage.removeItem(FIELD.REFRESH_TOKEN)
+
+      this.SET_AUTHENTICATED(false)
     } catch (error) {
       console.log(error)
     }
