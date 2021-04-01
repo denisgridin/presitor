@@ -102,8 +102,8 @@ export class User extends VuexModule implements IUserState {
       localStorage.removeItem(FIELD.ACCESS_TOKEN)
       localStorage.removeItem(FIELD.REFRESH_TOKEN)
 
+      this.SET_USER({} as IUser)
       this.SET_AUTHENTICATED(false)
-      this.SET_USER({ email: null, userId: null })
     } catch (error) {
       console.log(error)
     }
