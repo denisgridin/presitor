@@ -8,19 +8,44 @@
       <span class="text-big presitor-name"> Presitor</span>
     </div>
     <div class="form-body">
-      <vs-input v-model="user.email" color="#6C63FF" placeholder="Email" class="form-input">
+      <vs-input
+        v-model="user.email"
+        @input="resetFieldError('email')"
+        :state="states.email"
+        color="#6C63FF"
+        placeholder="Email"
+        class="form-input">
         <template #icon>
           <i class='bx bx-user'></i>
         </template>
+        <template v-if="errors.email" #message-danger>
+          <span>Некорректный email или формат email</span>
+        </template>
       </vs-input>
-      <vs-input v-model="user.password" color="#6C63FF" type="password" placeholder="Пароль" class="form-input">
+      <vs-input
+        v-model="user.password"
+        :state="states.password"
+        @input="resetFieldError('password')"
+        color="#6C63FF"
+        type="password"
+        placeholder="Пароль"
+        class="form-input"
+      >
         <template #icon>
           <i class='bx bx-lock-open-alt'></i>
+        </template>
+        <template v-if="errors.password" #message-danger>
+          <span>Пароль должен иметь 6 и более символов</span>
         </template>
       </vs-input>
     </div>
     <div class="form-footer">
-      <vs-button block>
+      <vs-button
+        block
+        :disabled="isButtonDisabled"
+        :loading="isLoading"
+        @click="submit"
+      >
         {{ buttonTitle }}
       </vs-button>
       <RegistrationFormFooterLink class="footer-link"></RegistrationFormFooterLink>
@@ -30,7 +55,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { UserModule } from '@/store/user'
 import { AUTH_TYPE } from '~/utils/enums'
+import { errorCodes } from '~/utils/errorCodes'
 
 export default Vue.extend({
   props: {
@@ -41,15 +68,81 @@ export default Vue.extend({
   },
   data () {
     return {
-      user: {} as { email: string, password: string }
+      user: {} as { email: string, password: string },
+      errors: {
+        email: false,
+        password: false
+      },
+      isLoading: false
     }
   },
   computed: {
+    states (): { email: string, password: string } {
+      return {
+        email: this.errors.email ? 'danger' : null,
+        password: this.errors.password ? 'danger' : null
+      }
+    },
+    isButtonDisabled () {
+      return !(this.user.email && this.user.password)
+    },
     title (): string {
       return (this.authType === AUTH_TYPE.registration ? 'Регистрация в системе ' : 'Авторизация в системе ')
     },
     buttonTitle (): string {
       return (this.authType === AUTH_TYPE.registration ? 'Зарегистрироваться' : 'Войти')
+    }
+  },
+  methods: {
+    async submit (): void {
+      this.isLoading = true
+      if (this.authType === AUTH_TYPE.registration) {
+        await this.registerUser()
+      } else {
+        await this.loginUser()
+      }
+      this.isLoading = false
+    },
+    async loginUser (): void {
+      this.isLoading = true
+      try {
+        await UserModule.loginUser(this.user)
+        await this.$router.push('/')
+      } catch (error) {
+        console.log(error.response)
+        this.handleError(error.response.data)
+      }
+      this.isLoading = false
+    },
+    async registerUser (): void {
+      try {
+        await UserModule.registerUser(this.user)
+        await this.loginUser()
+      } catch (error) {
+        this.handleError(error.response.data)
+      }
+    },
+    resetFieldError (field: string) {
+      this.errors[field] = false
+    },
+    handleError (data) {
+      const fail = Array.isArray(data.errors) ? data.errors : data.code
+
+      if (Array.isArray(fail)) {
+        this.errors.email = false
+        this.errors.password = false
+        fail.forEach((err: { property: string }) => {
+          this.errors[err.property] = true
+        })
+      } else {
+        this.$vs.notification({
+          progress: 'auto',
+          color: 'danger',
+          position: 'top-right',
+          title: 'Ошибка',
+          text: errorCodes[fail]
+        })
+      }
     }
   }
 })
@@ -58,7 +151,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 
 .form {
-  width: fit-content;
+  width: 470px;
   border-radius: var(--vs-radius);
   background: white;
   padding: 30px 30px 0 30px;
