@@ -11,22 +11,17 @@
           {{ user.email }}
         </template>
       </vs-tooltip>
-      <vs-tooltip bottom>
-        <vs-button
-          circle
-          icon
-          danger
-          flat
-          size="large"
-          :loading="isLoading"
-          @click="logout"
-        >
-          <i class="bx bxs-exit"></i>
-        </vs-button>
-        <template #tooltip>
-          Выйти
-        </template>
-      </vs-tooltip>
+      <vs-button
+        circle
+        icon
+        danger
+        flat
+        size="large"
+        :loading="isLoading"
+        @click="logout"
+      >
+        <i class="bx bxs-exit"></i>
+      </vs-button>
     </div>
     <div v-else class="header-buttons">
       <nuxt-link to="/login">
@@ -49,7 +44,8 @@ import { IUser, UserModule } from '@/store/user'
 export default {
   data () {
     return {
-      isLoading: false
+      isLoading: false,
+      isClicked: false
     }
   },
   computed: {
@@ -64,8 +60,8 @@ export default {
     async logout (): void {
       this.isLoading = true
       try {
-        await UserModule.logoutUser()
         await this.$router.push('/login')
+        await UserModule.logoutUser()
       } catch (error) {
         console.log(error)
       }

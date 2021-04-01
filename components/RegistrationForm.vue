@@ -57,7 +57,7 @@
 import Vue from 'vue'
 import { AUTH_TYPE } from '~/utils/enums'
 import { errorCodes } from '~/utils/errorCodes'
-import { UserModule } from '@/store/user'
+import { IUser, User, UserModule } from '@/store/user'
 
 export default Vue.extend({
   props: {
@@ -106,8 +106,9 @@ export default Vue.extend({
     async loginUser (): void {
       this.isLoading = true
       try {
-        await UserModule.loginUser(this.user)
-        await this.$router.push('/')
+        await UserModule.loginUser(this.user as IUser)
+        console.log(UserModule.getAuthenticationState)
+        await this.$router.push({ path: '/', params: { isAuthenticated: UserModule.getAuthenticationState } })
       } catch (error) {
         console.log(error.response)
         this.handleError(error.response.data)

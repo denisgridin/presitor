@@ -50,7 +50,8 @@ export class User extends VuexModule implements IUserState {
     if (userString) {
       const user: IUser = JSON.parse(userString)
       if (user.email) {
-        this.SET_USER({ email: user.email, userId: user.user_id } as IUser)
+        this.user = { email: user.email, userId: user.user_id } as IUser
+        this.isAuthenticated = true
       }
     }
   }
@@ -95,13 +96,14 @@ export class User extends VuexModule implements IUserState {
   public async logoutUser () {
     try {
       const api = new Api()
-      await api.delete(PATH.user.token)
+      await api.delete(`${PATH.user.token}?token=${localStorage.getItem(FIELD.REFRESH_TOKEN)}`)
 
       localStorage.removeItem(FIELD.USER)
       localStorage.removeItem(FIELD.ACCESS_TOKEN)
       localStorage.removeItem(FIELD.REFRESH_TOKEN)
 
       this.SET_AUTHENTICATED(false)
+      this.SET_USER({ email: null, userId: null })
     } catch (error) {
       console.log(error)
     }
