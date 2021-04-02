@@ -46,7 +46,7 @@ export class User extends VuexModule implements IUserState {
 
   @Mutation
   public SET_USER_FROM_LOCAL_STORAGE (): void {
-    const userString: string = localStorage.getItem(FIELD.USER) || ''
+    const userString: string = localStorage?.getItem(FIELD.USER) || ''
     if (userString) {
       const user: IUser = JSON.parse(userString)
       if (user.email) {
@@ -57,10 +57,11 @@ export class User extends VuexModule implements IUserState {
   }
 
   @Action
-  public parseUser (token: string): void {
-    const user = jwt.decode(token) as IUser
+  public async parseUser (token: string): Promise<IUser> {
+    const user = await jwt.decode(token) as IUser
     this.SET_USER(user)
     localStorage.setItem(FIELD.USER, JSON.stringify(user))
+    return user
   }
 
   @Action
@@ -85,8 +86,13 @@ export class User extends VuexModule implements IUserState {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken
       })
-      this.parseUser(tokens.accessToken)
+      const userData = await this.parseUser(tokens.accessToken)
       this.SET_AUTHENTICATED(true)
+      return {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        user: userData
+      }
     } catch (error) {
       console.log(error)
     }

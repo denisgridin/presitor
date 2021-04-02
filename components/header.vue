@@ -9,12 +9,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UserModule } from '~/store/user'
 export default Vue.extend({
-  mounted () {
-    console.log('created')
-    UserModule.SET_USER_FROM_LOCAL_STORAGE()
-  }
 })
 
 </script>

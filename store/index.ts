@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { IUser, IUserState } from './user'
+import { FIELD } from '~/utils/constants'
 
 Vue.use(Vuex)
 
@@ -9,8 +10,8 @@ export interface IRootState {
 }
 
 const actions = {
-  nuxtServerInit ({ getters }: any) {
-    console.log(getters)
+  nuxtServerInit ({ getters }: any, { $cookies }: any) {
+    console.log($cookies.get(FIELD.ACCESS_TOKEN))
   }
 }
 

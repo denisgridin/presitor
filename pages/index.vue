@@ -21,18 +21,44 @@
         <PresentationTagInput />
       </div>
     </div>
+    <div class="container animate__animated animate__fadeInUp">
+      <LastPresentationsList :presentations="[]" />
+    </div>
   </div>
 </template>
 
 <script>
-import { MESSAGE } from '~/utils/constants'
+import { PresentationApi } from '@/api/presentation'
+import { UserModule } from '@/store/user'
+import { FIELD, MESSAGE } from '~/utils/constants'
+import { getCookieUser } from '@/utils/helpers'
 const presentationImage = require('@/assets/images/presentation.svg')
 
 export default {
+  async asyncData ({ $cookies }) {
+    const isAuth = !!$cookies.get(FIELD.IS_AUTHENTICATED)
+    console.log('Authenticated: ' + isAuth)
+    if (isAuth) {
+      const token = $cookies.get(FIELD.ACCESS_TOKEN)
+      const api = new PresentationApi(token)
+      const user = getCookieUser($cookies)
+      console.log(user)
+      console.log('token: ' + token)
+      console.log('get last presentations')
+      if (user) {
+        const presentations = await api.getLastPresentations(user.user_id)
+        console.log(presentations)
+        return {
+          presentations
+        }
+      }
+    }
+  },
   data () {
     return {
       presentationImage,
-      greeting: MESSAGE.greeting
+      greeting: MESSAGE.greeting,
+      presentations: []
     }
   }
 }

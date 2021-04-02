@@ -9,14 +9,15 @@ export class Api {
   private host: string = 'http://localhost:5000/'
 
   get getToken (): string {
-    return localStorage.getItem(FIELD.ACCESS_TOKEN) as string
+    return localStorage?.getItem(FIELD.ACCESS_TOKEN) as string
   }
 
-  constructor () {
+  constructor (token: string | null = null) {
+    const accessToken = token || this.getToken
     this.instance = axios.create({
       baseURL: this.host,
       headers: {
-        authorization: `Bearer ${this.getToken}`
+        authorization: `Bearer ${accessToken}`
       }
     })
   }

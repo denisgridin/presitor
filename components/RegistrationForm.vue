@@ -58,6 +58,7 @@ import Vue from 'vue'
 import { AUTH_TYPE } from '~/utils/enums'
 import { errorCodes } from '~/utils/errorCodes'
 import { IUser, User, UserModule } from '@/store/user'
+import { FIELD } from '~/utils/constants'
 
 export default Vue.extend({
   props: {
@@ -106,7 +107,24 @@ export default Vue.extend({
     async loginUser (): void {
       this.isLoading = true
       try {
-        await UserModule.loginUser(this.user as IUser)
+        const { accessToken, refreshToken, user } = await UserModule.loginUser(this.user as IUser)
+        console.log({ accessToken, refreshToken, user })
+        this.$cookies.set(FIELD.ACCESS_TOKEN, accessToken, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7
+        })
+        this.$cookies.set(FIELD.REFRESH_TOKEN, refreshToken, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7
+        })
+        this.$cookies.set(FIELD.USER, encodeURIComponent(JSON.stringify(user)), {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7
+        })
+        this.$cookies.set(FIELD.IS_AUTHENTICATED, true, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7
+        })
         console.log(UserModule.getAuthenticationState)
         await this.$router.push({ path: '/', params: { isAuthenticated: UserModule.getAuthenticationState } })
       } catch (error) {

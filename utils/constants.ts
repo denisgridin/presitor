@@ -5,7 +5,8 @@ export const MESSAGE = {
 export const FIELD = {
   ACCESS_TOKEN: 'ACCESS_TOKEN',
   REFRESH_TOKEN: 'REFRESH_TOKEN',
-  USER: 'USER'
+  USER: 'USER',
+  IS_AUTHENTICATED: 'IS_AUTHENTICATED'
 }
 
 export const PATH = {
@@ -13,5 +14,8 @@ export const PATH = {
     registration: 'api/registration',
     login: 'api/login',
     token: 'api/token'
+  },
+  presentations: {
+    last: '/api/presentations/last'
   }
 }

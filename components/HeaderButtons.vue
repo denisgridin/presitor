@@ -40,6 +40,7 @@
 
 <script lang="ts">
 import { IUser, UserModule } from '@/store/user'
+import { FIELD } from '~/utils/constants'
 
 export default {
   data () {
@@ -50,7 +51,7 @@ export default {
   },
   computed: {
     isAuthenticated (): boolean {
-      return UserModule.getAuthenticationState
+      return this.$cookies.get(FIELD.IS_AUTHENTICATED)
     },
     user (): IUser {
       return UserModule.getUser
@@ -62,6 +63,10 @@ export default {
       try {
         await this.$router.push('/login')
         await UserModule.logoutUser()
+        this.$cookies.remove(FIELD.ACCESS_TOKEN)
+        this.$cookies.remove(FIELD.REFRESH_TOKEN)
+        this.$cookies.remove(FIELD.USER)
+        this.$cookies.remove(FIELD.IS_AUTHENTICATED)
       } catch (error) {
         console.log(error)
       }
