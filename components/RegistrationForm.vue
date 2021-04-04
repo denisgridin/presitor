@@ -55,9 +55,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { IUser, UserModule } from '@/store/user'
 import { AUTH_TYPE } from '~/utils/enums'
 import { errorCodes } from '~/utils/errorCodes'
-import { IUser, User, UserModule } from '@/store/user'
 import { FIELD } from '~/utils/constants'
 
 export default Vue.extend({
@@ -78,14 +78,14 @@ export default Vue.extend({
     }
   },
   computed: {
-    states (): { email: string, password: string } {
+    states (): { email: string | null, password: string | null } {
       return {
         email: this.errors.email ? 'danger' : null,
         password: this.errors.password ? 'danger' : null
       }
     },
     isButtonDisabled () {
-      return !(this.user.email && this.user.password)
+      return !((this as any).user.email && (this as any).user.password)
     },
     title (): string {
       return (this.authType === AUTH_TYPE.registration ? 'Регистрация в системе ' : 'Авторизация в системе ')
@@ -95,7 +95,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    async submit (): void {
+    async submit (): Promise<void> {
       this.isLoading = true
       if (this.authType === AUTH_TYPE.registration) {
         await this.registerUser()
@@ -104,62 +104,62 @@ export default Vue.extend({
       }
       this.isLoading = false
     },
-    async loginUser (): void {
+    async loginUser (): Promise<void> {
       this.isLoading = true
       try {
-        const { accessToken, refreshToken, user } = await UserModule.loginUser(this.user as IUser)
-        console.log({ accessToken, refreshToken, user })
-        this.$cookies.set(FIELD.ACCESS_TOKEN, accessToken, {
+        const data = await UserModule.loginUser(this.user as IUser) as { accessToken: string, refreshToken: string, user: IUser }
+        const self = (this as any)
+        self.$cookies.set(FIELD.ACCESS_TOKEN, data.accessToken, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7
         })
-        this.$cookies.set(FIELD.REFRESH_TOKEN, refreshToken, {
+        self.$cookies.set(FIELD.REFRESH_TOKEN, data.refreshToken, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7
         })
-        this.$cookies.set(FIELD.USER, encodeURIComponent(JSON.stringify(user)), {
+        self.$cookies.set(FIELD.USER, encodeURIComponent(JSON.stringify(data.user)), {
           path: '/',
           maxAge: 60 * 60 * 24 * 7
         })
-        this.$cookies.set(FIELD.IS_AUTHENTICATED, true, {
+        self.$cookies.set(FIELD.IS_AUTHENTICATED, true, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7
         })
         console.log(UserModule.getAuthenticationState)
-        await this.$router.push({ path: '/', params: { isAuthenticated: UserModule.getAuthenticationState } })
+        await this.$router.push({ path: '/' })
       } catch (error) {
-        console.log(error.response)
-        this.handleError(error.response.data)
+        console.log(error)
+        this.handleError(error.response?.data || error.response)
       }
       this.isLoading = false
     },
-    async registerUser (): void {
+    async registerUser (): Promise<void> {
       try {
-        await UserModule.registerUser(this.user)
+        await UserModule.registerUser(this.user as IUser)
         await this.loginUser()
       } catch (error) {
-        this.handleError(error.response.data)
+        this.handleError(error.response?.data || error.response)
       }
     },
     resetFieldError (field: string) {
-      this.errors[field] = false
+      (this as any).errors[field] = false
     },
-    handleError (data) {
-      const fail = Array.isArray(data.errors) ? data.errors : data.code
+    handleError (data: any) {
+      const fail = Array.isArray(data?.errors) ? data.errors : data.code
 
       if (Array.isArray(fail)) {
         this.errors.email = false
         this.errors.password = false
         fail.forEach((err: { property: string }) => {
-          this.errors[err.property] = true
+          (this as any).errors[err.property] = true
         })
       } else {
-        this.$vs.notification({
+        (this as any).$vs.notification({
           progress: 'auto',
           color: 'danger',
           position: 'top-right',
           title: 'Ошибка',
-          text: errorCodes[fail]
+          text: (errorCodes as any)[fail]
         })
       }
     }

@@ -2,12 +2,14 @@ import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-dec
 import store from '@/store'
 import { FIELD, PATH } from '~/utils/constants'
 import { Api } from '~/api'
+import { ITokenData } from '~/interfaces/token'
+import { getCookieUser } from '~/utils/helpers'
+import { CookieValue, NuxtCookies } from 'cookie-universal-nuxt'
 const jwt = require('jsonwebtoken')
 
 export interface IUser {
   email: string,
   userId: string,
-  user_id: string,
   password?: string
 }
 
@@ -21,10 +23,12 @@ export interface IUserTokens {
   refreshToken: string
 }
 
-@Module({ name: 'user', dynamic: true, store: store(), stateFactory: true })
+@Module({ store: store(), stateFactory: true, name: 'user', dynamic: true, namespaced: true })
 export class User extends VuexModule implements IUserState {
   public user = {} as IUser
   public isAuthenticated: boolean = false
+  public accessToken: string = ''
+  public refreshToken: string = ''
 
   get getUser (): IUser {
     return this.user
@@ -32,6 +36,13 @@ export class User extends VuexModule implements IUserState {
 
   get getAuthenticationState (): boolean {
     return this.isAuthenticated
+  }
+
+  get getTokens (): { accessToken: string, refreshToken: string } {
+    return {
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken
+    }
   }
 
   @Mutation
@@ -45,68 +56,95 @@ export class User extends VuexModule implements IUserState {
   }
 
   @Mutation
-  public SET_USER_FROM_LOCAL_STORAGE (): void {
-    const userString: string = localStorage?.getItem(FIELD.USER) || ''
-    if (userString) {
-      const user: IUser = JSON.parse(userString)
-      if (user.email) {
-        this.user = { email: user.email, userId: user.user_id } as IUser
-        this.isAuthenticated = true
-      }
-    }
+  public SET_TOKENS ({ accessToken, refreshToken }: { accessToken: string, refreshToken: string }): void {
+    this.accessToken = accessToken
+    this.refreshToken = refreshToken
   }
 
-  @Action
+  @Action({ rawError: true })
   public async parseUser (token: string): Promise<IUser> {
     const user = await jwt.decode(token) as IUser
     this.SET_USER(user)
-    localStorage.setItem(FIELD.USER, JSON.stringify(user))
     return user
   }
 
-  @Action
-  private setTokens (tokens: IUserTokens): void {
-    localStorage.setItem(FIELD.ACCESS_TOKEN, tokens.accessToken)
-    localStorage.setItem(FIELD.REFRESH_TOKEN, tokens.refreshToken)
+  @Action({ rawError: true })
+  public setTokens (tokens: IUserTokens): void {
+    this.SET_TOKENS({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken
+    })
   }
 
   @Action({ rawError: true })
   public registerUser (user: IUser) {
-    const api = new Api()
-    return api.post(PATH.user.registration, user)
-  }
-
-  @Action
-  public async loginUser (user: IUser) {
-    try {
-      const api = new Api()
-      const response = await api.post(PATH.user.login, user)
-      const tokens = response.data as IUserTokens
-      this.setTokens({
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken
-      })
-      const userData = await this.parseUser(tokens.accessToken)
-      this.SET_AUTHENTICATED(true)
-      return {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        user: userData
+    return new Promise((resolve, reject) => {
+      try {
+        const api = new Api()
+        const response = api.post(PATH.user.registration, user)
+        resolve(response)
+      } catch (error) {
+        reject(error)
       }
-    } catch (error) {
-      console.log(error)
-    }
+    })
   }
 
-  @Action
+  @Action({ rawError: true })
+  public loginUser (user: IUser) {
+    return new Promise(async (resolve, reject) => {
+      console.log(this)
+      try {
+        const api = new Api()
+        const response = await api.post(PATH.user.login, user)
+        console.log(response)
+        const tokens = response.data as IUserTokens
+        this.setTokens({
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken
+        })
+        const userData = await this.parseUser(tokens.accessToken)
+        this.SET_AUTHENTICATED(true)
+        resolve({
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          user: userData
+        } as ITokenData)
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
+  }
+
+  @Action({ rawError: true })
+  public getCookieUser (cookies: NuxtCookies) {
+    return new Promise((resolve, reject) => {
+      try {
+        const isAuth = !!cookies.get(FIELD.IS_AUTHENTICATED)
+        if (isAuth) {
+          const accessToken = cookies.get(FIELD.ACCESS_TOKEN)
+          const refreshToken = cookies.get(FIELD.REFRESH_TOKEN)
+          this.setTokens({ accessToken, refreshToken })
+          const user = getCookieUser(cookies)
+          if (user) {
+            this.SET_USER(user)
+          }
+          resolve(user)
+        } else {
+          console.log('Unauthorized')
+          reject(new Error('Unauthorized'))
+        }
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  @Action({ rawError: true })
   public async logoutUser () {
     try {
       const api = new Api()
-      await api.delete(`${PATH.user.token}?token=${localStorage.getItem(FIELD.REFRESH_TOKEN)}`)
-
-      localStorage.removeItem(FIELD.USER)
-      localStorage.removeItem(FIELD.ACCESS_TOKEN)
-      localStorage.removeItem(FIELD.REFRESH_TOKEN)
+      await api.delete(`${PATH.user.token}?token=${this.getTokens.refreshToken}`)
 
       this.SET_USER({} as IUser)
       this.SET_AUTHENTICATED(false)

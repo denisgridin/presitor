@@ -30,28 +30,18 @@
 <script>
 import { PresentationApi } from '@/api/presentation'
 import { UserModule } from '@/store/user'
-import { FIELD, MESSAGE } from '~/utils/constants'
-import { getCookieUser } from '@/utils/helpers'
+import { MESSAGE } from '~/utils/constants'
 const presentationImage = require('@/assets/images/presentation.svg')
 
 export default {
   async asyncData ({ $cookies }) {
-    const isAuth = !!$cookies.get(FIELD.IS_AUTHENTICATED)
-    console.log('Authenticated: ' + isAuth)
-    if (isAuth) {
-      const token = $cookies.get(FIELD.ACCESS_TOKEN)
-      const api = new PresentationApi(token)
-      const user = getCookieUser($cookies)
-      console.log(user)
-      console.log('token: ' + token)
-      console.log('get last presentations')
-      if (user) {
-        const presentations = await api.getLastPresentations(user.user_id)
-        console.log(presentations)
-        return {
-          presentations
-        }
-      }
+    await UserModule.getCookieUser($cookies)
+
+    const api = new PresentationApi(UserModule.getTokens.accessToken)
+    console.log(UserModule.getUser)
+    const presentations = await api.getLastPresentations(UserModule.getUser.userId)
+    return {
+      presentations
     }
   },
   data () {

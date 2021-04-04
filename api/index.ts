@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios'
+import { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
 import { FIELD } from '~/utils/constants'
 
 const axios = require('axios')
@@ -12,6 +12,10 @@ export class Api {
     return localStorage?.getItem(FIELD.ACCESS_TOKEN) as string
   }
 
+  private errorHandler (error: AxiosError): void {
+    console.log(error)
+  }
+
   constructor (token: string | null = null) {
     const accessToken = token || this.getToken
     this.instance = axios.create({
@@ -20,6 +24,15 @@ export class Api {
         authorization: `Bearer ${accessToken}`
       }
     })
+
+    // this.instance.interceptors.response.use(
+    //   (response: AxiosResponse) => {
+    //     return response
+    //   },
+    //   (error: AxiosError) => {
+    //     console.log(error.response)
+    //     return error
+    //   })
   }
 
   public get (url: string) {
