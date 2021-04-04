@@ -19,3 +19,5 @@ export const PATH = {
     last: '/api/presentations/last'
   }
 }
+
+export const DATE_FORMAT = 'D MMM YYYY HH:mm:ss'

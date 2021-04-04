@@ -4,7 +4,7 @@
       <vs-tooltip bottom>
         <vs-avatar circle>
           <template #text>
-            {{ user.email[0].toUpperCase() }}
+            {{ userLetter }}
           </template>
         </vs-avatar>
         <template #tooltip>
@@ -50,6 +50,13 @@ export default {
     }
   },
   computed: {
+    userLetter () {
+      if (this.user?.email) {
+        return this.user.email[0].toUpperCase()
+      } else {
+        return ''
+      }
+    },
     isAuthenticated (): boolean {
       return this.$cookies.get(FIELD.IS_AUTHENTICATED)
     },
@@ -61,12 +68,8 @@ export default {
     async logout (): void {
       this.isLoading = true
       try {
+        await this.$auth('logout', this.$cookies, () => {})
         await this.$router.push('/login')
-        await UserModule.logoutUser()
-        this.$cookies.remove(FIELD.ACCESS_TOKEN)
-        this.$cookies.remove(FIELD.REFRESH_TOKEN)
-        this.$cookies.remove(FIELD.USER)
-        this.$cookies.remove(FIELD.IS_AUTHENTICATED)
       } catch (error) {
         console.log(error)
       }

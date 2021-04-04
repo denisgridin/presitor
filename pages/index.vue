@@ -22,33 +22,26 @@
       </div>
     </div>
     <div class="container animate__animated animate__fadeInUp">
-      <LastPresentationsList :presentations="[]" />
+      <LastPresentationsList />
     </div>
   </div>
 </template>
 
 <script>
-import { PresentationApi } from '@/api/presentation'
 import { UserModule } from '@/store/user'
 import { MESSAGE } from '~/utils/constants'
 const presentationImage = require('@/assets/images/presentation.svg')
 
 export default {
-  async asyncData ({ $cookies }) {
-    await UserModule.getCookieUser($cookies)
-
-    const api = new PresentationApi(UserModule.getTokens.accessToken)
-    console.log(UserModule.getUser)
-    const presentations = await api.getLastPresentations(UserModule.getUser.userId)
-    return {
-      presentations
-    }
-  },
   data () {
     return {
       presentationImage,
-      greeting: MESSAGE.greeting,
-      presentations: []
+      greeting: MESSAGE.greeting
+    }
+  },
+  computed: {
+    isAuth () {
+      return UserModule.getAuthenticationState
     }
   }
 }

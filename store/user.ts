@@ -1,10 +1,11 @@
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
+import { NuxtCookies } from 'cookie-universal-nuxt'
 import { FIELD, PATH } from '~/utils/constants'
 import { Api } from '~/api'
 import { ITokenData } from '~/interfaces/token'
 import { getCookieUser } from '~/utils/helpers'
-import { CookieValue, NuxtCookies } from 'cookie-universal-nuxt'
+import { errorCodes } from '~/utils/errorCodes'
 const jwt = require('jsonwebtoken')
 
 export interface IUser {
@@ -70,6 +71,7 @@ export class User extends VuexModule implements IUserState {
 
   @Action({ rawError: true })
   public setTokens (tokens: IUserTokens): void {
+    console.table(tokens)
     this.SET_TOKENS({
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken
@@ -80,7 +82,7 @@ export class User extends VuexModule implements IUserState {
   public registerUser (user: IUser) {
     return new Promise((resolve, reject) => {
       try {
-        const api = new Api()
+        const api: Api = new Api()
         const response = api.post(PATH.user.registration, user)
         resolve(response)
       } catch (error) {
@@ -92,23 +94,26 @@ export class User extends VuexModule implements IUserState {
   @Action({ rawError: true })
   public loginUser (user: IUser) {
     return new Promise(async (resolve, reject) => {
-      console.log(this)
       try {
-        const api = new Api()
+        const api: Api = new Api()
         const response = await api.post(PATH.user.login, user)
         console.log(response)
         const tokens = response.data as IUserTokens
-        this.setTokens({
-          accessToken: tokens.accessToken,
-          refreshToken: tokens.refreshToken
-        })
-        const userData = await this.parseUser(tokens.accessToken)
-        this.SET_AUTHENTICATED(true)
-        resolve({
-          accessToken: tokens.accessToken,
-          refreshToken: tokens.refreshToken,
-          user: userData
-        } as ITokenData)
+        if (tokens) {
+          this.setTokens({
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken
+          })
+          const userData = await this.parseUser(tokens.accessToken)
+          this.SET_AUTHENTICATED(true)
+          resolve({
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken,
+            user: userData
+          } as ITokenData)
+        } else {
+          reject(new Error(errorCodes['100']))
+        }
       } catch (error) {
         console.log(error)
         reject(error)
@@ -143,7 +148,7 @@ export class User extends VuexModule implements IUserState {
   @Action({ rawError: true })
   public async logoutUser () {
     try {
-      const api = new Api()
+      const api: Api = new Api()
       await api.delete(`${PATH.user.token}?token=${this.getTokens.refreshToken}`)
 
       this.SET_USER({} as IUser)
@@ -151,6 +156,22 @@ export class User extends VuexModule implements IUserState {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  @Action({ rawError: true })
+  public updateToken (token: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api: Api = new Api()
+        const { data } = await api.post(PATH.user.token, { token })
+        this.setTokens(data)
+        const user = await this.parseUser(data.accessToken)
+        resolve({ ...data, user })
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
   }
 }
 

@@ -107,26 +107,7 @@ export default Vue.extend({
     async loginUser (): Promise<void> {
       this.isLoading = true
       try {
-        const data = await UserModule.loginUser(this.user as IUser) as { accessToken: string, refreshToken: string, user: IUser }
-        const self = (this as any)
-        self.$cookies.set(FIELD.ACCESS_TOKEN, data.accessToken, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
-        self.$cookies.set(FIELD.REFRESH_TOKEN, data.refreshToken, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
-        self.$cookies.set(FIELD.USER, encodeURIComponent(JSON.stringify(data.user)), {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
-        self.$cookies.set(FIELD.IS_AUTHENTICATED, true, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7
-        })
-        console.log(UserModule.getAuthenticationState)
-        await this.$router.push({ path: '/' })
+        await this.$auth('login', this.$cookies, () => { this.$router.push('/') }, this.user)
       } catch (error) {
         console.log(error)
         this.handleError(error.response?.data || error.response)

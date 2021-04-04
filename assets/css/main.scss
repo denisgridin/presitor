@@ -37,3 +37,15 @@ a, a:visited, a:active {
 .text-big {
   font-family: "Open Sans Bold", sans-serif;
 }
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  display: block;
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #132A3A;
+  border-radius: 3px;
+}
