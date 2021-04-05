@@ -1,6 +1,6 @@
 <template>
-  <div class="presentations-list">
-    <h2 v-if="presentations.length">Последние презентации</h2>
+  <div v-if="presentations.length" class="presentations-list">
+    <h2>Последние презентации</h2>
     <vs-card-group>
       <vs-card v-for="presentation in presentations" :key="presentation.presentationId" type="3">
         <template #title>
@@ -37,9 +37,9 @@
 
 <script lang="ts">
 
-import { Component, Vue, Prop } from 'nuxt-property-decorator'
+import { Component, Vue } from 'nuxt-property-decorator'
 import { IPresentation } from '~/interfaces/presentation'
-import { DATE_FORMAT } from '~/utils/constants'
+import { DATE_FORMAT, FIELD } from '~/utils/constants'
 import { PresentationApi } from '~/api/presentation'
 import { UserModule } from '~/store/user'
 const dayjs = require('dayjs')
@@ -56,13 +56,13 @@ export default class LastPresentationsList extends Vue {
   async fetch () {
     let presentations = []
     try {
-      const api = new PresentationApi(UserModule.getTokens.accessToken)
+      const api = new PresentationApi(this.$cookies.get(FIELD.ACCESS_TOKEN))
       console.log(UserModule.getUser)
       presentations = await api.getLastPresentations(UserModule.getUser.userId)
     } catch (error) {
       console.log(error)
     }
-    this.presentations = presentations
+    this.presentations = presentations || []
   }
 }
 </script>

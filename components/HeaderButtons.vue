@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isAuthenticated" class="header-buttons">
-      <nuxt-link to="/">
+      <nuxt-link to="/constructor">
         <vs-button relief>
           Новая презентация
         </vs-button>

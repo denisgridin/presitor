@@ -2,6 +2,8 @@
   <div class="wrapper-header">
     <div class="header">
       <Logo class="header-logo" width="60px" height="60px" />
+      <slot name="middle-data">
+      </slot>
       <HeaderButtons />
     </div>
   </div>

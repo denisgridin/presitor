@@ -1,7 +1,8 @@
 export enum LAYOUTS {
   EMPTY = 'empty',
   DEFAULT = 'default',
-  AUTH = 'auth'
+  AUTH = 'auth',
+  APP = 'app'
 }
 
 export enum AUTH_TYPE {

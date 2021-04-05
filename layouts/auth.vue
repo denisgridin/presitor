@@ -1,6 +1,5 @@
 <template>
   <div class="wrapper" :style="{ backgroundImage: `url(${background})` }">
-<!--    <img :src="background" alt="Авторизация">-->
     <nuxt />
   </div>
 </template>

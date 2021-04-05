@@ -107,7 +107,7 @@ export default Vue.extend({
     async loginUser (): Promise<void> {
       this.isLoading = true
       try {
-        await this.$auth('login', this.$cookies, () => { this.$router.push('/') }, this.user)
+        await (this as any).$auth('login', this.$cookies, () => { this.$router.push('/') }, this.user)
       } catch (error) {
         console.log(error)
         this.handleError(error.response?.data || error.response)

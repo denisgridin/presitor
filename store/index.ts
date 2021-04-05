@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { IUser, IUserState, UserModule } from './user'
 import { FIELD } from '~/utils/constants'
 import { ITokenData } from '~/interfaces/token'
+import { PresentationModule } from '~/store/presentation'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,6 @@ const actions = {
     try {
       console.log('server init')
       console.log('get cookie user')
-      await UserModule.getCookieUser($cookies)
       console.log('update token')
       await $auth('refresh', $cookies, () => { redirect('/login') })
     } catch (error) {
@@ -25,8 +25,5 @@ const actions = {
   }
 }
 
-const createStore = () => {
-  return new Vuex.Store<IRootState>({ actions })
-}
-
-export default createStore
+const instance = new Vuex.Store<IRootState>({ actions })
+export default () => { return instance }

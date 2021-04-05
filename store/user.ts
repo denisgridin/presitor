@@ -111,6 +111,7 @@ export class User extends VuexModule implements IUserState {
             refreshToken: tokens.refreshToken,
             user: userData
           } as ITokenData)
+          this.SET_USER(userData as IUser)
         } else {
           reject(new Error(errorCodes['100']))
         }
