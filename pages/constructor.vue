@@ -2,7 +2,7 @@
   <div class="constructor">
     <SlidesSidebar />
     <PresentationCanvas />
-    <PresentationFeedbacks />
+    <PresentationActions />
   </div>
 </template>
 
@@ -10,19 +10,16 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import SlidesSidebar from '@/components/constructor/SlidesSidebar'
 import PresentationCanvas from '@/components/constructor/PresentationCanvas'
-import PresentationFeedbacks from '@/components/constructor/PresentationFeedbacks'
+import PresentationActions from '@/components/constructor/PresentationActions'
 import { LAYOUTS } from '@/utils/enums'
 
 @Component({
   components: {
     SlidesSidebar,
     PresentationCanvas,
-    PresentationFeedbacks
+    PresentationActions
   },
-  layout: LAYOUTS.APP,
-  mounted () {
-    console.log(this)
-  }
+  layout: LAYOUTS.APP
 })
 export default class Constructor extends Vue {
 }
@@ -35,7 +32,7 @@ export default class Constructor extends Vue {
   height: calc(100vh - 75px);
 
   display: grid;
-  grid-template-columns: minmax(150px, 10%) 1fr minmax(150px, 10%);
+  grid-template-columns: minmax(150px, 10%) 1fr minmax(150px, 15%);
   grid-gap: 20px;
 }
 </style>

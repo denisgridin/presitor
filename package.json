@@ -11,6 +11,8 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
+    "@interactjs/dev-tools": "^1.10.11",
+    "@interactjs/interact": "^1.10.11",
     "@nuxtjs/pwa": "^3.3.5",
     "animate.css": "^4.1.1",
     "axios": "^0.21.1",
@@ -21,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "nuxt": "^2.15.3",
     "nuxt-property-decorator": "^2.9.1",
+    "vue-slider-component": "^3.2.11",
     "vuesax": "^4.0.1-alpha.25",
     "vuex-module-decorators": "^1.0.1"
   },

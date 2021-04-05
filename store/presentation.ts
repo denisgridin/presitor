@@ -13,9 +13,13 @@ export interface IPresentationState {
 
 @Module({ store: store(), stateFactory: true, name: 'presentation', dynamic: true, namespaced: true })
 export class PresentationStore extends VuexModule implements IPresentationState {
+  public zoom: number = 100
+
   public currentPresentation = {
     name: 'Презентация 2',
     activeSlide: 1,
+    fillColor: '#304abb',
+    fontFamily: 'Roboto',
     slides: [
       {
         presentationId: '1',
@@ -60,6 +64,14 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     return this.currentPresentation.activeSlide
   }
 
+  public get getCurrentSlideItem (): ISlide {
+    return this.currentPresentation.slides[this.currentPresentation.activeSlide - 1]
+  }
+
+  public get getConstructorZoom (): number {
+    return this.zoom
+  }
+
   @Mutation
   public SET_ACTIVE_SLIDE (index: number) {
     this.currentPresentation.activeSlide = index
@@ -69,6 +81,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public ADD_PRESENTATION_SLIDE (slide: ISlide) {
     console.log(slide)
     this.currentPresentation.slides.push(slide)
+  }
+
+  @Mutation
+  public SET_ZOOM (zoom: number) {
+    this.zoom = zoom
   }
 }
 

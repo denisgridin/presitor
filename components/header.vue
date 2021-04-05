@@ -21,7 +21,7 @@ export default Vue.extend({
 .wrapper-header {
   padding: 5px 2rem;
   background: white;
-  border-radius: 0 0 30px 30px;
+  //border-radius: 0 0 30px 30px;
   .header {
     margin: 0 auto;
     display: flex;
