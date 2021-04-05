@@ -1,6 +1,11 @@
 <template>
   <div>
     <div v-if="isAuthenticated" class="header-buttons">
+      <nuxt-link to="/">
+        <vs-button relief>
+          Новая презентация
+        </vs-button>
+      </nuxt-link>
       <vs-tooltip bottom>
         <vs-avatar circle>
           <template #text>
