@@ -67,6 +67,10 @@ export default class PresentationActions extends Vue {
         width: 150px;
         height: 45px;
       }
+
+      &-fontFamily {
+        margin-top: 5px;
+      }
     }
   }
 }

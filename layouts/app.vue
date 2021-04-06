@@ -1,20 +1,29 @@
 <template>
-  <div class="wrapper-constructor">
-    <Header>
-      <template #middle-data>
-        <div v-if="currentPresentation.name" class="middle-data">{{ currentPresentation.name }}</div>
-      </template>
-    </Header>
-    <v-app>
+  <v-app>
+    <div class="wrapper-constructor">
+      <Header>
+        <template #middle-data>
+          <div v-if="currentPresentation.name" class="middle-data">
+            {{ currentPresentation.name }}
+          </div>
+        </template>
+      </Header>
       <nuxt />
-    </v-app>
-  </div>
+    </div>
+  </v-app>
 </template>
 
 <script lang="ts">
 import { PresentationModule } from '@/store/presentation'
 
 export default {
+  head () {
+    return {
+      script: [
+        { src: 'https://apis.google.com/js/api.js' }
+      ]
+    }
+  },
   computed: {
     currentPresentation () {
       return PresentationModule.getCurrentPresentation

@@ -57,8 +57,8 @@ export default class PresentationCanvas extends Vue {
     }
   }
 
-  get currentSlide () {
-    return PresentationModule.getCurrentSlideItem
+  get activeSlide () {
+    return PresentationModule.getActiveSlide
   }
 
   setZoom (zoom: number) {

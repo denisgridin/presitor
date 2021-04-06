@@ -6,11 +6,13 @@
     </div>
     <div class="presentation-section">
       <h4>Контент</h4>
-      <div class="presentation-section__content">
-        <input v-model="actions.content" type="text" placeholder="Текст" class="vs-input">
-        <vs-button :disabled="!(!!actions.content)" relief>
-          Добавить
-        </vs-button>
+      <div>
+        <div class="presentation-section__content">
+          <input v-model="actions.content.text" type="text" placeholder="Текст" class="vs-input">
+          <vs-button :disabled="!(!!actions.content.text)" relief>
+            Добавить
+          </vs-button>
+        </div>
       </div>
     </div>
     <div class="presentation-section">
@@ -30,7 +32,14 @@ import FileInput from '@/components/FileInput.vue'
   data: () => {
     return {
       actions: {
-        content: '',
+        content: {
+          text: '',
+          fontFamily: 'Roboto',
+          fontSize: 14,
+          letterSpacing: 'normal',
+          lineHeight: 'normal',
+          fontCase: 'normal'
+        },
         shape: null
       }
     }

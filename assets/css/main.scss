@@ -61,7 +61,7 @@ a, a:visited, a:active {
   line-height: inherit;
 
   &--wrap {
-    min-height: inherit;
+    min-height: calc(100vh - 75px);
     max-width: inherit;
     position: inherit;
   }

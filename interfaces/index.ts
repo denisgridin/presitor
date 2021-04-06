@@ -1,4 +1,4 @@
-import { ELEMENT_TYPE } from '~/utils/enums'
+import { FIGURE } from '~/utils/enums'
 
 export interface ITabItem {
   id: string | number,
@@ -8,5 +8,5 @@ export interface ITabItem {
 export interface IConstructorElementShape {
   icon: string,
   name: string,
-  type: ELEMENT_TYPE
+  type: FIGURE
 }

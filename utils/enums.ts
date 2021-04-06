@@ -15,8 +15,14 @@ export enum ACTION_TAB {
   FEEDBACK = 'feedback'
 }
 
-export enum ELEMENT_TYPE {
+export enum FIGURE {
   square = 'square',
   circle = 'circle',
   rectangle = 'rectangle'
+}
+
+export enum ELEMENT_TYPE {
+  CONTENT = 'content',
+  SHAPE = 'shape',
+  IMAGE = 'image'
 }

@@ -1,0 +1,67 @@
+/*Roboto: true,*/
+/*'Roboto Condensed': true,*/
+/*'Dela Gothic One': true,*/
+/*'Open Sans': true,*/
+/*'Kiwi Maru': true,*/
+/*'Source Sans Pro': true,*/
+/*'Train One': true,*/
+/*           Montserrat: true*/
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/RobotoCondensed-Regular.ttf') format('truetype');
+}
+
+
+@font-face {
+  font-family: 'Dela Gothic One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/DelaGothicOne-Regular.ttf') format('truetype');
+}
+
+
+@font-face {
+  font-family: 'Kiwi Maru';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/KiwiMaru-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Monserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Sourse Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/SourceSansPro-Regular.ttf') format('truetype');
+}
+
+
+@font-face {
+  font-family: 'Train One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/TrainOne-Regular.ttf') format('truetype');
+}

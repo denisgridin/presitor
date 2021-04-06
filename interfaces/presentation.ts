@@ -24,10 +24,19 @@ export interface IElement {
   layout: ILayout
 }
 
+export interface IContent extends IElement{
+  text: string,
+  fontFamily: string,
+  fontSize: number,
+  letterSpacing: 'normal' | number,
+  lineHeight: 'normal' | number,
+  fontCase: 'normal' | 'uppercase' | 'lowercase'
+}
+
 export interface ISlide {
   presentationId: string,
   slideId: string,
   name: string,
   index: number,
-  elements: IElement[]
+  elements: (IContent)[]
 }

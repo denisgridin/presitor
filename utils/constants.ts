@@ -1,5 +1,5 @@
 import { IConstructorElementShape } from '~/interfaces'
-import { ELEMENT_TYPE } from '~/utils/enums'
+import { FIGURE } from '~/utils/enums'
 
 export const MESSAGE = {
   greeting: 'Создайте свою первую впечатляющую презентацию'
@@ -35,6 +35,11 @@ export const CONSTRUCTOR_TAB_ACTIONS = [
     id: 'elements',
     text: 'Элементы',
     icon: 'shapes'
+  },
+  {
+    id: 'editor',
+    text: 'Редактирование',
+    icon: 'edit'
   }
 ]
 
@@ -42,17 +47,17 @@ export const CONSTRUCTOR_ELEMENTS: IConstructorElementShape[] = [
   {
     name: 'Квадрат',
     icon: 'square',
-    type: ELEMENT_TYPE.square
+    type: FIGURE.square
   },
   {
     name: 'Прямо-\nугольник',
     icon: 'rectangle',
-    type: ELEMENT_TYPE.rectangle
+    type: FIGURE.rectangle
   },
   {
     name: 'Круг',
     icon: 'circle',
-    type: ELEMENT_TYPE.circle
+    type: FIGURE.circle
   }
 ]
 
@@ -69,4 +74,15 @@ export const MIME_TYPES_IMAGE = [
     extension: 'svg',
     value: 'image/svg'
   }
+]
+
+export const GOOGLE_FONTS = [
+  'Roboto',
+  'Roboto Condensed',
+  'Dela Gothic One',
+  'Open Sans',
+  'Kiwi Maru',
+  'Source Sans Pro',
+  'Train One',
+  'Montserrat'
 ]

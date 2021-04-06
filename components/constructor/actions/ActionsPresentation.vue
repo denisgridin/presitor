@@ -1,6 +1,6 @@
 <template>
   <div class="presentation-section">
-    <div>
+    <div class="presentation-section__item">
       <h4>Название презентации</h4>
       <input
         :value="currentPresentation.name"
@@ -10,7 +10,7 @@
         @input="setPresentationName"
       >
     </div>
-    <div>
+    <div class="presentation-section__item">
       <h4>Цвет фона</h4>
       <v-color-picker
         width="250px"
@@ -21,17 +21,31 @@
         @input="setPresentationColor"
       ></v-color-picker>
     </div>
+    <div>
+      <h4>Шрифт презентации</h4>
+      <FontSelector :value="currentPresentation.fontFamily" @input="setPresentationFontFamily" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
+import FontSelector from '@/components/FontSelector.vue'
 import { PresentationModule } from '@/store/presentation'
 
-@Component()
+@Component({
+  components: {
+    FontSelector
+  }
+})
 export default class ActionsPresentation extends Vue {
   get currentPresentation () {
     return PresentationModule.getCurrentPresentation
+  }
+
+  setPresentationFontFamily (font: string) {
+    console.log(font)
+    PresentationModule.UPDATE_PRESENTATION_FIELD({ key: 'fontFamily', value: font })
   }
 
   setPresentationColor (color: string) {
@@ -46,3 +60,11 @@ export default class ActionsPresentation extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.presentation-section__item {
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid $grey-2;
+}
+</style>

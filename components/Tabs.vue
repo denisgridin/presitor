@@ -5,13 +5,13 @@
         v-for="tab in items"
         :key="tab.id"
         class="tabs-header-item"
-        :class="{ 'tabs-header-item__active': active === tab.id }"
+        :class="{ 'tabs-header-item__active': active === tab.id, 'tabs-header-item__blured': active !== tab.id }"
         @click="emitClick(tab.id)"
       >
         <i :class="[ `bx bxs-${tab.icon}` ]"></i>
-        <span style="margin-left: 3px;">
-        {{ tab.text }}
-      </span>
+        <span v-show="active === tab.id" style="margin-left: 3px;">
+          {{ tab.text }}
+        </span>
       </div>
     </div>
     <div class="tabs-body">
@@ -45,8 +45,10 @@ export default class Tabs extends Vue {
   }
 
   &-header {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    //grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     &-item {
       font-size: 0.9rem;
       font-family: "Open Sans Bold", sans-serif;
@@ -58,8 +60,13 @@ export default class Tabs extends Vue {
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+      &__blured {
+        width: 50px;
+      }
       &__active {
         background: $color-primary-transparent-10;
+        width: 100%;
         color: $text-primary;
       }
       &:hover {

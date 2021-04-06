@@ -1,10 +1,14 @@
 import { getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
-import { IPresentation, ISlide } from '~/interfaces/presentation'
+import { IElement, IPresentation, ISlide } from '~/interfaces/presentation'
+import { ELEMENT_TYPE } from '~/utils/enums'
 
 export interface IConstructorPresentation extends IPresentation{
   slides: ISlide[],
-  activeSlide: number
+  activeSlideId: string,
+  activeSlide: ISlide,
+  activeElementId: string,
+  activeElementType: ELEMENT_TYPE
 }
 
 export interface IPresentationState {
@@ -17,7 +21,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   public currentPresentation = {
     name: 'Презентация 2',
-    activeSlide: 1,
+    activeSlideId: '1',
+    activeElementId: '1',
+    activeElementType: ELEMENT_TYPE.CONTENT,
     fillColor: '#304abb',
     fontFamily: 'Roboto',
     slides: [
@@ -26,7 +32,28 @@ export class PresentationStore extends VuexModule implements IPresentationState 
         slideId: '1',
         name: 'Slide 1',
         index: 1,
-        elements: []
+        elements: [
+          {
+            presentationId: '1',
+            slideId: '1',
+            elementId: '1',
+            name: 'Text element',
+            layout: {
+              x: 100,
+              y: 200,
+              width: 300,
+              height: 500,
+              rotation: 10
+            },
+
+            text: 'Текстовый элемент',
+            fontFamily: 'Roboto',
+            fontSize: 14,
+            letterSpacing: 'normal',
+            lineHeight: 'normal',
+            fontCase: 'normal'
+          }
+        ]
       },
       {
         presentationId: '1',
@@ -60,12 +87,26 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     return this.currentPresentation
   }
 
-  public get getActiveSlide (): number {
-    return this.currentPresentation.activeSlide
+  public get getActiveSlideId (): string {
+    return this.currentPresentation.activeSlideId
   }
 
-  public get getCurrentSlideItem (): ISlide {
-    return this.currentPresentation.slides[this.currentPresentation.activeSlide - 1]
+  public get getActiveSlide () {
+    const activeSlideId = this.getActiveSlideId
+    return this.currentPresentation.slides.find((slide : ISlide) => slide.slideId === activeSlideId)
+  }
+
+  public get getActiveElement () {
+    const activeElementType = this.currentPresentation.activeElementType
+    const activeElementId = this.currentPresentation.activeElementId
+
+    if (activeElementType) {
+      const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
+      if (activeElementType === ELEMENT_TYPE.CONTENT) {
+        return activeSlide.elements.find((el: IElement) => el.elementId === activeElementId) as IElement
+      }
+    }
+    return null
   }
 
   public get getConstructorZoom (): number {
@@ -73,8 +114,14 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Mutation
-  public SET_ACTIVE_SLIDE (index: number) {
-    this.currentPresentation.activeSlide = index
+  public SET_ACTIVE_SLIDE_ID (id: string) {
+    this.currentPresentation.activeSlideId = id
+  }
+
+  @Mutation
+  public SET_ACTIVE_ELEMENT_ID_AND_TYPE ({ id, type }: { id: string, type: ELEMENT_TYPE }) {
+    this.currentPresentation.activeElementId = id
+    this.currentPresentation.activeElementType = type
   }
 
   @Mutation

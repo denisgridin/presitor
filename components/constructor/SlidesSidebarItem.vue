@@ -22,7 +22,7 @@ export default class SlidesSidebarItem extends Vue {
 
   @Emit('select')
   selectSlide () {
-    return this.index
+    return this.slide.slideId
   }
 }
 </script>

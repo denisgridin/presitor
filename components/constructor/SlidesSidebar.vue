@@ -5,7 +5,7 @@
         v-for="(slide, index) in slides"
         :key="slide.slideId"
         :index="index + 1"
-        :active="isActive(index + 1)"
+        :active="isActive(slide.slideId)"
         :slide="slide"
         @select="setActiveSlide" />
     </div>
@@ -29,11 +29,11 @@ import { ISlide } from '~/interfaces/presentation'
     SlidesSidebarItem
   },
   mounted () {
-    this.activeSlide = PresentationModule.getActiveSlide
+    this.activeSlideId = PresentationModule.getActiveSlideId
   }
 })
 export default class SlidesSidebar extends Vue {
-  activeSlide: number = 1
+  activeSlideId: string = '1'
 
   get currentPresentation () {
     return PresentationModule.getCurrentPresentation
@@ -43,13 +43,13 @@ export default class SlidesSidebar extends Vue {
     return PresentationModule.getCurrentSlides
   }
 
-  isActive (index: number): boolean {
-    return this.activeSlide === index
+  isActive (id: string): boolean {
+    return this.activeSlideId === id
   }
 
-  setActiveSlide (index: number): void {
-    this.activeSlide = index
-    PresentationModule.SET_ACTIVE_SLIDE(index)
+  setActiveSlide (id: string): void {
+    this.activeSlideId = id
+    PresentationModule.SET_ACTIVE_SLIDE_ID(id)
   }
 
   addSlide () {
