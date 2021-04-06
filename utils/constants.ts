@@ -55,3 +55,18 @@ export const CONSTRUCTOR_ELEMENTS: IConstructorElementShape[] = [
     type: ELEMENT_TYPE.circle
   }
 ]
+
+export const MIME_TYPES_IMAGE = [
+  {
+    extension: 'png',
+    value: 'image/png'
+  },
+  {
+    extension: 'jpg',
+    value: 'image/jpeg'
+  },
+  {
+    extension: 'svg',
+    value: 'image/svg'
+  }
+]
