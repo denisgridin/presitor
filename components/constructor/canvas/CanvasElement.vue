@@ -1,0 +1,156 @@
+<template>
+  <div
+    v-if="item"
+    v-click-outside="(e) => setActive(false, e)"
+    class="canvas-element"
+    :class="[ { 'canvas-element__active': isActive } ]"
+    :style="getElementStyle"
+    @mousedown="setActive(true, null)"
+  >
+    <div class="wrapper">
+      <div v-show="isActive" class="handler handler-top-left" />
+      <div v-show="isActive" class="handler handler-top-right" />
+      <div v-show="isActive" class="handler handler-bottom-right" />
+      <div v-show="isActive" class="handler handler-bottom-left" />
+      <slot />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import interact from 'interactjs'
+import { Component, Prop, Vue } from 'nuxt-property-decorator'
+import type { Interactable } from '@interactjs/core/Interactable'
+import type { InteractEvent } from '@interactjs/core/InteractEvent'
+import { IContent } from '~/interfaces/presentation'
+import { PresentationModule } from '~/store/presentation'
+
+@Component
+export default class CanvasElement extends Vue {
+  component = {} as Interactable
+  isActive: boolean = false
+
+  @Prop() readonly item: IContent
+
+  get getCurrentLayout () {
+    return this.item?.layout || null
+  }
+
+  get getElementStyle () {
+    return {
+      transform: `translate(${this.getCurrentLayout.x}px, ${this.getCurrentLayout.y}px) rotate(${this.getCurrentLayout.rotation}deg)`,
+      width: `${this.getCurrentLayout.width}px`,
+      height: `${this.getCurrentLayout.height}px`
+    }
+  }
+
+  mounted () {
+    this.init()
+  }
+
+  beforeDestroy () {
+    this.unset()
+  }
+
+  setActive (flag: boolean, e: Event) {
+    this.isActive = flag
+  }
+
+  unset () {
+    this.component.unset()
+  }
+
+  init () {
+    this.component = interact('.canvas-element') as Interactable
+    this.component.draggable({
+      onmove: event => this.onDragMove(event)
+    })
+    this.component.resizable({
+      edges: { left: true, right: true, bottom: true, top: true },
+      onmove: event => this.onResizeMove(event),
+      modifiers: [
+        interact.modifiers.restrictEdges({
+          outer: 'parent'
+        }),
+        interact.modifiers.restrictSize({
+          min: { width: 100, height: 50 }
+        })
+      ]
+    })
+  }
+
+  onResizeMove (event: InteractEvent) {
+    const target = event.target
+    let x = (this.getCurrentLayout.x)
+    let y = (this.getCurrentLayout.y)
+
+    // update the element's style
+    target.style.width = event.rect.width + 'px'
+    target.style.height = event.rect.height + 'px'
+
+    // translate when resizing from top or left edges
+    x += event.deltaRect.left
+    y += event.deltaRect.top
+
+    target.style.webkitTransform = target.style.transform =
+      'translate(' + x + 'px,' + y + 'px)'
+
+    target.setAttribute('data-x', x)
+    target.setAttribute('data-y', y)
+
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.item.slideId, elementId: this.item.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.item.slideId, elementId: this.item.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'width', value: event.rect.width, slideId: this.item.slideId, elementId: this.item.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'height', value: event.rect.height, slideId: this.item.slideId, elementId: this.item.elementId })
+  }
+
+  onDragMove (event: InteractEvent) {
+    const x = this.getCurrentLayout.x + event.dx
+    const y = this.getCurrentLayout.y + event.dy
+
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.item.slideId, elementId: this.item.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.item.slideId, elementId: this.item.elementId })
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.canvas-element {
+  border: 1px solid transparent;
+
+  &__active {
+    border: 1px solid $canvas-element-border-color;
+  }
+
+  .wrapper {
+    width: 100%;
+    height: 100%;
+
+    .handler {
+      position: absolute;
+      background: white;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 1px 1px 5px $black-3;
+
+      &-top-right {
+        top: -5px;
+        right: -5px;
+      }
+      &-top-left {
+        top: -5px;
+        left: -5px;
+      }
+      &-bottom-left {
+        bottom: -5px;
+        left: -5px;
+      }
+      &-bottom-right {
+        bottom: -5px;
+        right: -5px;
+      }
+    }
+  }
+}
+</style>

@@ -2,30 +2,26 @@
   <div>
     <div class="canvas-wrapper">
       <div class="presentation-canvas" :style="canvasStyle">
+        <CanvasElement v-for="(item, index) in getSlideElements" :item="item" :key="index">
+          <div v-if="item.elementType === elementTypes.CONTENT">
+            {{ item.text }}
+          </div>
+        </CanvasElement>
       </div>
     </div>
-<!--    <client-only>-->
-<!--      <div class="scale-controller">-->
-<!--        <span>Масштаб</span>-->
-<!--        <div>-->
-<!--          <vue-slider-->
-<!--            :min="10"-->
-<!--            :max="200"-->
-<!--            :value="getConstructorZoom"-->
-<!--            @change="setZoom" />-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </client-only>-->
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
+import CanvasElement from '@/components/constructor/canvas/CanvasElement.vue'
 import { PresentationModule } from '@/store/presentation'
+import { ELEMENT_TYPE } from '~/utils/enums'
 
 @Component({
   components: {
-    VueSlider: () => import('vue-slider-component')
+    VueSlider: () => import('vue-slider-component'),
+    CanvasElement
   },
   data: () => {
     return {
@@ -34,6 +30,8 @@ import { PresentationModule } from '@/store/presentation'
   }
 })
 export default class PresentationCanvas extends Vue {
+  elementTypes = Object.values(ELEMENT_TYPE)
+
   get canvasStyle () {
     return {
       background: this.presentationOptions.fillColor,
@@ -57,8 +55,8 @@ export default class PresentationCanvas extends Vue {
     }
   }
 
-  get activeSlide () {
-    return PresentationModule.getActiveSlide
+  get getSlideElements () {
+    return PresentationModule.getActiveSlide?.elements || []
   }
 
   setZoom (zoom: number) {

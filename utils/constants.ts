@@ -77,12 +77,11 @@ export const MIME_TYPES_IMAGE = [
 ]
 
 export const GOOGLE_FONTS = [
-  'Roboto',
-  'Roboto Condensed',
-  'Dela Gothic One',
-  'Open Sans',
-  'Kiwi Maru',
-  'Source Sans Pro',
-  'Train One',
-  'Montserrat'
+  { name: 'Roboto', definition: 'Roboto' },
+  { name: 'Dela Gothic One', definition: 'Dela Gothic One, sans-serif' },
+  { name: 'Open Sans', definition: 'Open Sans, sans-serif' },
+  { name: 'Kiwi Maru', definition: 'Kiwi Maru, sans-serif' },
+  { name: 'Source Sans Pro', definition: 'Source Sans Pro, sans-serif' },
+  { name: 'Train One', definition: 'Train One, sans-serif' },
+  { name: 'Montserrat', definition: 'Montserrat, sans-serif' }
 ]

@@ -5,9 +5,9 @@
     :value="value"
     @input="emitInput"
   >
-    <vs-option v-for="(font, i) in fontsList" :key="i" :label="font" :value="font">
-      <span :style="{ fontFamily: `${font}, sans-serif` }">
-        {{ font }}
+    <vs-option v-for="(font, i) in fontsList" :key="i" :label="font.name" :value="font.definition">
+      <span :style="{ fontFamily: `${font.definition}` }">
+        {{ font.name }}
       </span>
     </vs-option>
   </vs-select>
@@ -22,7 +22,7 @@ import { GOOGLE_FONTS } from '@/utils/constants'
 export default class FontSelector extends Vue {
   @Prop() value: string | number
 
-  get fontsList () {
+  get fontsList (): { name: string, definition: string } {
     return GOOGLE_FONTS
   }
 

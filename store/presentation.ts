@@ -43,7 +43,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
               y: 200,
               width: 300,
               height: 500,
-              rotation: 10
+              rotation: 0
             },
 
             text: 'Текстовый элемент',
@@ -51,7 +51,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             fontSize: 14,
             letterSpacing: 'normal',
             lineHeight: 'normal',
-            fontCase: 'normal'
+            fontCase: 'normal',
+            color: '#304add'
           }
         ]
       },
@@ -138,6 +139,16 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   @Mutation
   public UPDATE_PRESENTATION_FIELD ({ key, value }: { key: string, value: string | number }) {
     this.currentPresentation = { ...this.currentPresentation, ...{ [key]: value } }
+  }
+
+  @Mutation
+  public UPDATE_ELEMENT_LAYOUT ({ key, value, elementId, slideId }: { key: string, value: any, elementId: string, slideId: string }) {
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
+    const element = slide?.elements.find(element => element.elementId === elementId)
+    if (element) {
+      console.log(`set ${key} = ${value}`)
+      element.layout[`${key}`] = value
+    }
   }
 }
 

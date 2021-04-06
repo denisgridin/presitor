@@ -11,6 +11,7 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
+    "@interactjs/core": "^1.10.11",
     "@interactjs/dev-tools": "^1.10.11",
     "@interactjs/interact": "^1.10.11",
     "@nuxtjs/pwa": "^3.3.5",
@@ -20,6 +21,7 @@
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.9.1",
     "dayjs": "^1.10.4",
+    "interactjs": "^1.10.11",
     "jsonwebtoken": "^8.5.1",
     "nuxt": "^2.15.3",
     "nuxt-property-decorator": "^2.9.1",
