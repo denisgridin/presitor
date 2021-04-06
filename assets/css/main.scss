@@ -22,7 +22,8 @@ body {
   padding: 0;
   background: $grey-1;
   font-family: "Open Sans", sans-serif;
-  color: $black-3
+  color: $black-3;
+  user-select: none;
 }
 
 .vs-button {
@@ -48,4 +49,20 @@ a, a:visited, a:active {
 ::-webkit-scrollbar-thumb {
   background: #132A3A;
   border-radius: 3px;
+}
+
+.theme--light.v-application {
+  color: inherit;
+  background: inherit;
+}
+
+.v-application {
+  font-family: inherit;
+  line-height: inherit;
+
+  &--wrap {
+    min-height: inherit;
+    max-width: inherit;
+    position: inherit;
+  }
 }

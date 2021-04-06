@@ -27,14 +27,14 @@ export const DATE_FORMAT = 'D MMM YYYY HH:mm:ss'
 
 export const CONSTRUCTOR_TAB_ACTIONS = [
   {
+    id: 'presentation',
+    text: 'Презентация',
+    icon: 'palette'
+  },
+  {
     id: 'elements',
     text: 'Элементы',
     icon: 'shapes'
-  },
-  {
-    id: 'feedback',
-    text: 'Отзывы',
-    icon: 'message-rounded-detail'
   }
 ]
 

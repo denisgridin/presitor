@@ -2,15 +2,17 @@
   <div class="wrapper-constructor">
     <Header>
       <template #middle-data>
-        <div class="middle-data">{{ currentPresentation.name }}</div>
+        <div v-if="currentPresentation.name" class="middle-data">{{ currentPresentation.name }}</div>
       </template>
     </Header>
-    <nuxt />
+    <v-app>
+      <nuxt />
+    </v-app>
   </div>
 </template>
 
 <script lang="ts">
-import { PresentationModule } from '~/store/presentation'
+import { PresentationModule } from '@/store/presentation'
 
 export default {
   computed: {
@@ -31,6 +33,10 @@ export default {
     font-family: "Open Sans Bold", sans-serif;
     background: $grey-1;
     padding: 5px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 </style>

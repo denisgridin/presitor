@@ -87,6 +87,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public SET_ZOOM (zoom: number) {
     this.zoom = zoom
   }
+
+  @Mutation
+  public UPDATE_PRESENTATION_FIELD ({ key, value }: { key: string, value: string | number }) {
+    this.currentPresentation = { ...this.currentPresentation, ...{ [key]: value } }
+  }
 }
 
 export const PresentationModule = getModule(PresentationStore)
