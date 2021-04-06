@@ -7,8 +7,8 @@ export interface IConstructorPresentation extends IPresentation{
   slides: ISlide[],
   activeSlideId: string,
   activeSlide: ISlide,
-  activeElementId: string,
-  activeElementType: ELEMENT_TYPE
+  activeElementId: string | null,
+  activeElementType: ELEMENT_TYPE | null
 }
 
 export interface IPresentationState {
@@ -22,8 +22,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public currentPresentation = {
     name: 'Презентация 2',
     activeSlideId: '1',
-    activeElementId: '1',
-    activeElementType: ELEMENT_TYPE.CONTENT,
+    activeElementId: null,
+    activeElementType: null,
     fillColor: '#304abb',
     fontFamily: 'Roboto',
     slides: [
@@ -37,6 +37,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             presentationId: '1',
             slideId: '1',
             elementId: '1',
+            elementType: ELEMENT_TYPE.CONTENT,
             name: 'Text element',
             layout: {
               x: 100,
@@ -120,7 +121,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Mutation
-  public SET_ACTIVE_ELEMENT_ID_AND_TYPE ({ id, type }: { id: string, type: ELEMENT_TYPE }) {
+  public SET_ACTIVE_ELEMENT_ID_AND_TYPE ({ id, type }: { id: string | null, type: ELEMENT_TYPE | null }) {
     this.currentPresentation.activeElementId = id
     this.currentPresentation.activeElementType = type
   }

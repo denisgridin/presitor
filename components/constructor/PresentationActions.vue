@@ -11,6 +11,9 @@
       <template #presentation>
         <ActionsPresentation />
       </template>
+      <template #editor>
+        <ActionsEditor />
+      </template>
     </Tabs>
   </div>
 </template>
@@ -21,6 +24,7 @@ import { ACTION_TAB } from '@/utils/enums'
 import Tabs from '@/components/Tabs'
 import ActionsElements from '@/components/constructor/actions/ActionsElements'
 import ActionsPresentation from '@/components/constructor/actions/ActionsPresentation'
+import ActionsEditor from '@/components/constructor/actions/ActionsEditor'
 import { CONSTRUCTOR_TAB_ACTIONS } from '~/utils/constants'
 
 import { PresentationModule } from '~/store/presentation'
@@ -35,7 +39,8 @@ import { PresentationModule } from '~/store/presentation'
   components: {
     Tabs,
     ActionsElements,
-    ActionsPresentation
+    ActionsPresentation,
+    ActionsEditor
   }
 })
 export default class PresentationActions extends Vue {

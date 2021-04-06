@@ -1,3 +1,5 @@
+import { ELEMENT_TYPE } from '~/utils/enums'
+
 export interface IPresentation {
   presentationId: string,
   editorIds: string[],
@@ -23,7 +25,8 @@ export interface IElement {
   elementId: string,
   name: string,
   layout: ILayout,
-  color: string
+  color: string,
+  elementType: ELEMENT_TYPE
 }
 
 export interface IContent extends IElement{

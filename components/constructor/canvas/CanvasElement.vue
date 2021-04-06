@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import interact from 'interactjs'
-import { Component, Prop, Vue } from 'nuxt-property-decorator'
+import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator'
 import type { Interactable } from '@interactjs/core/Interactable'
 import type { InteractEvent } from '@interactjs/core/InteractEvent'
 import { IContent } from '~/interfaces/presentation'
@@ -31,6 +31,13 @@ export default class CanvasElement extends Vue {
   isActive: boolean = false
 
   @Prop() readonly item: IContent
+
+  @Watch('isActive')
+  onActiveChanged (flag: boolean) {
+    if (flag) {
+      PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.item.elementId, type: this.item.elementType })
+    }
+  }
 
   get getCurrentLayout () {
     return this.item?.layout || null
@@ -51,6 +58,7 @@ export default class CanvasElement extends Vue {
   beforeDestroy () {
     this.unset()
   }
+
 
   setActive (flag: boolean, e: Event) {
     this.isActive = flag

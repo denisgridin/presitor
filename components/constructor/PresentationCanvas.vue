@@ -3,7 +3,7 @@
     <div class="canvas-wrapper">
       <div class="presentation-canvas" :style="canvasStyle">
         <CanvasElement v-for="(item, index) in getSlideElements" :item="item" :key="index">
-          <div v-if="item.elementType === elementTypes.CONTENT">
+          <div v-if="item.elementType === 'content'">
             {{ item.text }}
           </div>
         </CanvasElement>
