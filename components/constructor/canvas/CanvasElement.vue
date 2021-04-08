@@ -34,11 +34,6 @@ export default class CanvasElement extends Vue {
 
   @Prop() readonly element: IContent
 
-  // @Watch('getSlideElementsCount')
-  // onSlidesChanges () {
-  //   this.reload()
-  // }
-
   get getSlideElementsCount () {
     return PresentationModule.getActiveSlide.elements.length
   }
@@ -84,7 +79,7 @@ export default class CanvasElement extends Vue {
     ]
   }
 
-  created () {
+  mounted () {
     this.init()
   }
 
@@ -124,9 +119,6 @@ export default class CanvasElement extends Vue {
       edges: { left: true, right: true, bottom: true, top: true },
       onmove: event => this.onResizeMove(event),
       modifiers: [
-        interact.modifiers.restrictEdges({
-          outer: 'parent'
-        }),
         interact.modifiers.restrictSize({
           min: { width: CONFINES.layout.width.min, height: CONFINES.layout.height.min },
           max: { width: CONFINES.layout.width.max, height: CONFINES.layout.height.max }
@@ -145,8 +137,8 @@ export default class CanvasElement extends Vue {
     target.style.height = event.rect.height + 'px'
 
     // translate when resizing from top or left edges
-    x += event.deltaRect.left
-    y += event.deltaRect.top
+    x += +(event.deltaRect.left)
+    y += +(event.deltaRect.top)
 
     target.style.webkitTransform = target.style.transform =
       'translate(' + x + 'px,' + y + 'px)'
@@ -161,8 +153,8 @@ export default class CanvasElement extends Vue {
   }
 
   onDragMove (event: InteractEvent) {
-    const x = this.getCurrentLayout.x + event.dx
-    const y = this.getCurrentLayout.y + event.dy
+    const x = +this.getCurrentLayout.x + +(event.dx)
+    const y = +this.getCurrentLayout.y + +(event.dy)
 
     PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.element.slideId, elementId: this.element.elementId })
     PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.element.slideId, elementId: this.element.elementId })
