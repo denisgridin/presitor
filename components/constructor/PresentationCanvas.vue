@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="canvas-wrapper">
+    <div class="canvas-wrapper" @mousedown="resetActiveElement">
       <div class="presentation-canvas" :style="canvasStyle">
         <CanvasElement v-for="(item, index) in getSlideElements" :item="item" :key="index">
           <div v-if="item.elementType === 'content'">
-            {{ item.text }}
+            <CanvasElementContent :item="item" />
           </div>
         </CanvasElement>
       </div>
@@ -15,13 +15,15 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import CanvasElement from '@/components/constructor/canvas/CanvasElement.vue'
+import CanvasElementContent from '@/components/constructor/canvas/CanvasElementContent.vue'
 import { PresentationModule } from '@/store/presentation'
 import { ELEMENT_TYPE } from '~/utils/enums'
 
 @Component({
   components: {
     VueSlider: () => import('vue-slider-component'),
-    CanvasElement
+    CanvasElement,
+    CanvasElementContent
   },
   data: () => {
     return {
@@ -61,6 +63,10 @@ export default class PresentationCanvas extends Vue {
 
   setZoom (zoom: number) {
     PresentationModule.SET_ZOOM(zoom)
+  }
+
+  resetActiveElement () {
+    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null, type: null })
   }
 }
 </script>

@@ -31,11 +31,17 @@ export interface IElement {
 
 export interface IContent extends IElement{
   text: string,
-  fontFamily: string,
-  fontSize: number,
-  letterSpacing: 'normal' | number,
-  lineHeight: 'normal' | number,
-  fontCase: 'normal' | 'uppercase' | 'lowercase'
+  font: {
+    fontFamily: string,
+    fontSize: number,
+    letterSpacing: 'normal' | number,
+    lineHeight: 'normal' | number,
+    fontCase: 'normal' | 'uppercase' | 'lowercase',
+    color: string,
+    [ key: string ]: any,
+    bold: boolean,
+    italic: boolean
+  }
 }
 
 export interface ISlide {

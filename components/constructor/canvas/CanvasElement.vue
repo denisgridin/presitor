@@ -1,17 +1,16 @@
 <template>
   <div
     v-if="item"
-    v-click-outside="(e) => setActive(false, e)"
     class="canvas-element"
-    :class="[ { 'canvas-element__active': isActive } ]"
+    :class="[ { 'canvas-element__active': isElementActive } ]"
     :style="getElementStyle"
-    @mousedown="setActive(true, null)"
+    @mousedown.stop="setActive"
   >
     <div class="wrapper">
-      <div v-show="isActive" class="handler handler-top-left" />
-      <div v-show="isActive" class="handler handler-top-right" />
-      <div v-show="isActive" class="handler handler-bottom-right" />
-      <div v-show="isActive" class="handler handler-bottom-left" />
+      <div v-show="isElementActive" class="handler handler-top-left" />
+      <div v-show="isElementActive" class="handler handler-top-right" />
+      <div v-show="isElementActive" class="handler handler-bottom-right" />
+      <div v-show="isElementActive" class="handler handler-bottom-left" />
       <slot />
     </div>
   </div>
@@ -24,6 +23,7 @@ import type { Interactable } from '@interactjs/core/Interactable'
 import type { InteractEvent } from '@interactjs/core/InteractEvent'
 import { IContent } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
+import { CONFINES } from '~/utils/constants'
 
 @Component
 export default class CanvasElement extends Vue {
@@ -32,11 +32,8 @@ export default class CanvasElement extends Vue {
 
   @Prop() readonly item: IContent
 
-  @Watch('isActive')
-  onActiveChanged (flag: boolean) {
-    if (flag) {
-      PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.item.elementId, type: this.item.elementType })
-    }
+  get isElementActive () {
+    return PresentationModule.getActiveElement?.elementId === this.item.elementId
   }
 
   get getCurrentLayout () {
@@ -59,9 +56,8 @@ export default class CanvasElement extends Vue {
     this.unset()
   }
 
-
-  setActive (flag: boolean, e: Event) {
-    this.isActive = flag
+  setActive () {
+    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.item.elementId, type: this.item.elementType })
   }
 
   unset () {
@@ -81,7 +77,8 @@ export default class CanvasElement extends Vue {
           outer: 'parent'
         }),
         interact.modifiers.restrictSize({
-          min: { width: 100, height: 50 }
+          min: { width: CONFINES.layout.width.min, height: CONFINES.layout.height.min },
+          max: { width: CONFINES.layout.width.max, height: CONFINES.layout.height.max }
         })
       ]
     })

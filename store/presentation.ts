@@ -1,6 +1,6 @@
 import { getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
-import { IElement, IPresentation, ISlide } from '~/interfaces/presentation'
+import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
 import { ELEMENT_TYPE } from '~/utils/enums'
 
 export interface IConstructorPresentation extends IPresentation{
@@ -46,14 +46,17 @@ export class PresentationStore extends VuexModule implements IPresentationState 
               height: 500,
               rotation: 0
             },
-
-            text: 'Текстовый элемент',
-            fontFamily: 'Roboto',
-            fontSize: 14,
-            letterSpacing: 'normal',
-            lineHeight: 'normal',
-            fontCase: 'normal',
-            color: '#304add'
+            font: {
+              fontFamily: 'Roboto',
+              fontSize: 14,
+              letterSpacing: 'normal',
+              lineHeight: 'normal',
+              fontCase: 'normal',
+              color: '#304add',
+              bold: false,
+              italic: false
+            },
+            text: 'Текстовый элемент'
           }
         ]
       },
@@ -105,7 +108,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     if (activeElementType) {
       const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
       if (activeElementType === ELEMENT_TYPE.CONTENT) {
-        return activeSlide.elements.find((el: IElement) => el.elementId === activeElementId) as IElement
+        return activeSlide.elements.find((el: IContent) => el.elementId === activeElementId) as IContent
       }
     }
     return null
@@ -149,6 +152,16 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     if (element) {
       console.log(`set ${key} = ${value}`)
       element.layout[`${key}`] = value
+    }
+  }
+
+  @Mutation
+  public UPDATE_ELEMENT_FONT ({ key, value, elementId, slideId }: { key: string, value: any, elementId: string, slideId: string }) {
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
+    const element = slide?.elements.find(element => element.elementId === elementId)
+    if (element) {
+      console.log(`set ${key} = ${value}`)
+      element.font[`${key}`] = value
     }
   }
 }

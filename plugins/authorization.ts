@@ -40,8 +40,10 @@ function login (cookies: NuxtCookies, redirect: () => void, user: IUser) {
     try {
       console.log('login user')
       const data = await UserModule.loginUser(user) as ITokenData
-      setCookies(cookies, data, user)
-      await UserModule.getCookieUser(cookies)
+      removeCookies(cookies)
+      setCookies(cookies, data, data.user as IUser)
+      const cookieUser = await UserModule.getCookieUser(cookies)
+      console.log('cookie user: ' + JSON.stringify(cookieUser))
       console.log(UserModule.getAuthenticationState)
       await redirect()
       resolve(data)

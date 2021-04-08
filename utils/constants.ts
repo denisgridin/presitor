@@ -78,10 +78,29 @@ export const MIME_TYPES_IMAGE = [
 
 export const GOOGLE_FONTS = [
   { name: 'Roboto', definition: 'Roboto' },
-  { name: 'Dela Gothic One', definition: 'Dela Gothic One, sans-serif' },
+  { name: 'Dela Gothic', definition: 'Dela Gothic One, sans-serif' },
   { name: 'Open Sans', definition: 'Open Sans, sans-serif' },
   { name: 'Kiwi Maru', definition: 'Kiwi Maru, sans-serif' },
   { name: 'Source Sans Pro', definition: 'Source Sans Pro, sans-serif' },
   { name: 'Train One', definition: 'Train One, sans-serif' },
   { name: 'Montserrat', definition: 'Montserrat, sans-serif' }
 ]
+
+export const CONFINES = {
+  layout: {
+    width: {
+      min: 50,
+      max: 1500
+    },
+    height: {
+      min: 50,
+      max: 1500
+    }
+  },
+  font: {
+    fontSize: {
+      min: 5,
+      max: 70
+    }
+  }
+}

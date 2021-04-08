@@ -59,6 +59,9 @@ export default class PresentationActions extends Vue {
 .presentation-actions {
   margin: 20px 5px;
   .presentation-section {
+    max-height: calc(100vh - 180px);
+    overflow: auto;
+
     h4 {
       margin: 5px 10px;
     }

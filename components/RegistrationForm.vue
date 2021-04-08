@@ -151,7 +151,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 
 .form {
-  width: 470px;
+  width: 540px;
   border-radius: var(--vs-radius);
   background: white;
   padding: 30px 30px 0 30px;
@@ -184,14 +184,15 @@ export default Vue.extend({
   &-body {
     padding: 10px 16px;
     position: relative;
-    display: grid;
 
     @media screen and (min-width: 560px) {
-      grid-template-columns: 1fr 1fr;
-      grid-gap: 30px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
     }
 
     @media screen and (max-width: 561px) {
+      display: grid;
       grid-template-rows: 1fr 1fr;
       grid-gap: 10px;
       align-items: center;
