@@ -1,7 +1,7 @@
 <template>
   <div>
     <ElementsTable v-if="getCurrentElements.length" />
-    <div v-if="getActiveElement" class="presentation-section">
+    <div v-if="getActiveElement" class="presentation-section" :style="actionsStyle">
       <EditorCommon />
       <EditorLayout />
       <EditorFont />
@@ -33,6 +33,12 @@ export default class ActionsEditor extends Vue {
 
   get getCurrentElements () {
     return PresentationModule.getActiveSlide.elements
+  }
+
+  get actionsStyle () {
+    return {
+      maxHeight: this.getActiveElement ? '60vh' : 'calc(100vh - 200px)'
+    }
   }
 }
 </script>

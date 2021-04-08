@@ -31,6 +31,8 @@ export default class ElementsList extends Vue {
   display: flex;
   flex-direction: column;
   padding: 5px 10px;
+  max-height: 25vh;
+  overflow: auto;
 
   &__item {
     margin-top: 5px;
