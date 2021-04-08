@@ -10,3 +10,18 @@ export interface IConstructorElementShape {
   name: string,
   type: FIGURE
 }
+
+export interface IContextMenuItem {
+  id: number,
+  text: string,
+  handler: () => void
+}
+
+export interface IContextMenu {
+  items: IContextMenuItem[],
+  active: boolean,
+  coords: {
+    x: number,
+    y: number
+  }
+}

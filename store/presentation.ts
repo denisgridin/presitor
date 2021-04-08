@@ -1,7 +1,10 @@
-import { getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
-import { IContent, IPresentation, ISlide } from '~/interfaces/presentation'
+import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
 import { ELEMENT_TYPE } from '~/utils/enums'
+import { CANVAS_OPTIONS } from '~/utils/constants'
+const uuid = require('uuid-random')
+var cloneDeep = require('lodash.clonedeep')
 
 export interface IConstructorPresentation extends IPresentation{
   slides: ISlide[],
@@ -50,11 +53,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             },
             font: {
               fontFamily: 'Roboto',
-              fontSize: 14,
+              fontSize: 20,
               letterSpacing: 'normal',
               lineHeight: 'normal',
               fontCase: 'normal',
-              color: '#304add',
+              color: '#ffffff',
               bold: false,
               italic: false
             },
@@ -184,6 +187,33 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       console.log(`set ${key} = ${value}`)
       element[`${key}`] = value
     }
+  }
+
+  @Mutation
+  public REMOVE_SLIDE_ELEMENT ({ slideId, elementId }: { slideId: string, elementId: string }) {
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
+    if (slide) {
+      slide.elements = slide.elements.filter((el: IElement) => el.elementId !== elementId)
+    }
+  }
+
+  @Action({ rawError: true })
+  public copySlideElement (element: IContent) {
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === element.slideId)
+    if (slide) {
+      const x = (CANVAS_OPTIONS.layout.width / 2) - (element.layout.width / 2)
+      const y = (CANVAS_OPTIONS.layout.height / 2) - (element.layout.height / 2)
+      const item = cloneDeep({ ...element, layout: { ...element.layout, x, y } })
+      item.elementId = uuid()
+      console.log(item)
+      slide.elements.push(item)
+    }
+  }
+
+  @Action({ rawError: true })
+  public removeSlideElement ({ slideId, elementId }: { slideId: string, elementId: string }) {
+    console.log(`remove element ${elementId} from slide ${slideId}`)
+    this.REMOVE_SLIDE_ELEMENT({ slideId, elementId })
   }
 }
 

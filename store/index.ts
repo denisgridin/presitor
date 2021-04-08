@@ -1,9 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { IUser, IUserState, UserModule } from './user'
-import { FIELD } from '~/utils/constants'
-import { ITokenData } from '~/interfaces/token'
-import { PresentationModule } from '~/store/presentation'
+import { IUserState } from './user'
 
 Vue.use(Vuex)
 

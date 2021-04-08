@@ -1,6 +1,6 @@
 <template>
   <div class="canvas-element-content" :style="contentStyle">
-    {{ item.text }}
+    {{ element.text }}
   </div>
 </template>
 
@@ -10,14 +10,14 @@ import { IContent } from '@/interfaces/presentation'
 
 @Component
 export default class CanvasElementContent extends Vue {
-  @Prop() item: IContent
+  @Prop() element: IContent
 
   get contentStyle () {
     return {
-      ...this.item.font,
-      fontSize: `${this.item.font.fontSize}px`,
-      fontWeight: this.item.font.bold ? '700' : 'normal',
-      fontStyle: this.item.font.italic ? 'italic' : 'normal'
+      ...this.element.font,
+      fontSize: `${this.element.font.fontSize}px`,
+      fontWeight: this.element.font.bold ? '700' : 'normal',
+      fontStyle: this.element.font.italic ? 'italic' : 'normal'
     }
   }
 }

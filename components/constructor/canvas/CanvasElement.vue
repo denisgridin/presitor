@@ -1,10 +1,11 @@
 <template>
   <div
-    v-if="item"
+    v-if="element"
     class="canvas-element"
-    :class="[ { 'canvas-element__active': isElementActive } ]"
+    :class="[ { 'canvas-element__active': isElementActive }, elementClass ]"
     :style="getElementStyle"
     @mousedown.stop="setActive"
+    @click.right.prevent="openContext"
   >
     <div class="wrapper">
       <div v-show="isElementActive" class="handler handler-top-left" />
@@ -24,20 +25,34 @@ import type { InteractEvent } from '@interactjs/core/InteractEvent'
 import { IContent } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
 import { CONFINES } from '~/utils/constants'
+import { CommonModule } from '~/store/common'
 
 @Component
 export default class CanvasElement extends Vue {
   component = {} as Interactable
   isActive: boolean = false
 
-  @Prop() readonly item: IContent
+  @Prop() readonly element: IContent
+
+  // @Watch('getSlideElementsCount')
+  // onSlidesChanges () {
+  //   this.reload()
+  // }
+
+  get getSlideElementsCount () {
+    return PresentationModule.getActiveSlide.elements.length
+  }
 
   get isElementActive () {
-    return PresentationModule.getActiveElement?.elementId === this.item.elementId | PresentationModule.getHoveredElementId === this.item.elementId
+    return PresentationModule.getActiveElement?.elementId === this.element.elementId | PresentationModule.getHoveredElementId === this.element.elementId
+  }
+
+  get elementClass () {
+    return `canvas-element_${this.element.elementId}`
   }
 
   get getCurrentLayout () {
-    return this.item?.layout || null
+    return this.element?.layout || null
   }
 
   get getElementStyle () {
@@ -48,7 +63,28 @@ export default class CanvasElement extends Vue {
     }
   }
 
-  mounted () {
+  get getContextMenuItems () {
+    return [
+      {
+        id: 1,
+        text: 'Удалить',
+        handler: () => {
+          PresentationModule.removeSlideElement({ slideId: this.element.slideId, elementId: this.element.elementId })
+        },
+        icon: 'bx-trash'
+      },
+      {
+        id: 2,
+        text: 'Копировать',
+        handler: () => {
+          PresentationModule.copySlideElement(this.element)
+        },
+        icon: 'bx-copy'
+      }
+    ]
+  }
+
+  created () {
     this.init()
   }
 
@@ -57,15 +93,30 @@ export default class CanvasElement extends Vue {
   }
 
   setActive () {
-    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.item.elementId, type: this.item.elementType })
+    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.element.elementId, type: this.element.elementType })
+  }
+
+  reload () {
+    console.log('reload', this.element.elementId)
+    this.unset()
+    this.init()
   }
 
   unset () {
     this.component.unset()
   }
 
+  openContext (event) {
+    console.log('open context')
+    CommonModule.SET_CONTEXT_MENU_OPTIONS({
+      active: true,
+      items: this.getContextMenuItems,
+      event
+    })
+  }
+
   init () {
-    this.component = interact('.canvas-element') as Interactable
+    this.component = interact(`.${this.elementClass}`) as Interactable
     this.component.draggable({
       onmove: event => this.onDragMove(event)
     })
@@ -103,18 +154,18 @@ export default class CanvasElement extends Vue {
     target.setAttribute('data-x', x)
     target.setAttribute('data-y', y)
 
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.item.slideId, elementId: this.item.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.item.slideId, elementId: this.item.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'width', value: event.rect.width, slideId: this.item.slideId, elementId: this.item.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'height', value: event.rect.height, slideId: this.item.slideId, elementId: this.item.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.element.slideId, elementId: this.element.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.element.slideId, elementId: this.element.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'width', value: event.rect.width, slideId: this.element.slideId, elementId: this.element.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'height', value: event.rect.height, slideId: this.element.slideId, elementId: this.element.elementId })
   }
 
   onDragMove (event: InteractEvent) {
     const x = this.getCurrentLayout.x + event.dx
     const y = this.getCurrentLayout.y + event.dy
 
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.item.slideId, elementId: this.item.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.item.slideId, elementId: this.item.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.element.slideId, elementId: this.element.elementId })
+    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.element.slideId, elementId: this.element.elementId })
   }
 }
 </script>
@@ -122,6 +173,7 @@ export default class CanvasElement extends Vue {
 <style lang="scss" scoped>
 .canvas-element {
   border: 1px solid transparent;
+  position: absolute;
 
   &__active {
     border: 1px solid $canvas-element-border-color;

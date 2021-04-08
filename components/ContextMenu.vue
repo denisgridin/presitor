@@ -1,19 +1,17 @@
 <template>
   <transition name="fade">
     <div
-      v-show="isVisible"
       v-click-outside="close"
       class="context-menu"
-      :style="style">
+      :style="style"
+    >
       <template>
         <a
-          v-for="(item, i) in filteredItems"
+          v-for="(item, i) in getContextMenu.items"
           :key="i"
           class="item"
-          :class="itemClassNames(item)"
-          @click="item.handler"
-          @mousedown="close">
-          <div v-show="item.icon" class="icon">{{ item.icon }}</div>
+          @click="onItemClick(item.handler)">
+          <i v-show="item.icon" class="bx" :class="item.icon"></i>
           <div class="text">{{ item.text }}</div>
         </a>
       </template>
@@ -24,33 +22,39 @@
 <script lang="ts">
 
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
+import { CommonModule } from '~/store/common'
 
 @Component
 export default class ContextMenu extends Vue {
-  @Prop() coords
-  @Prop() items
   @Prop({ default: 160 }) width
 
   isVisible: boolean = false
-  x: number = 0
-  y: number = 0
 
   get style () {
     return {
-      left: this.x + 'px',
       minWidth: typeof this.width === 'number' ? this.width + 'px' : this.width,
-      top: this.y + 'px'
+      left: this.getContextMenu.coords.x + 'px',
+      top: this.getContextMenu.coords.y + 'px',
+      display: this.getContextMenu.active ? 'block' : 'none'
     }
   }
 
   close () {
-    this.isVisible = false
+    console.log('close')
+    if (CommonModule.getContextMenu.active) {
+      CommonModule.SET_CONTEXT_MENU_OPTIONS({
+        active: false
+      })
+    }
   }
 
-  open (event) {
-    this.isVisible = true
-    this.x = event.pageX
-    this.y = event.pageY
+  onItemClick (handler: () => void) {
+    handler()
+    this.close()
+  }
+
+  get getContextMenu () {
+    return CommonModule.getContextMenu
   }
 }
 </script>
@@ -64,14 +68,16 @@ export default class ContextMenu extends Vue {
   padding: 8px 0;
   position: fixed;
   white-space: nowrap;
-  z-index: 1;
+  z-index: 1000;
 
   .item {
     align-items: center;
     color: #333;
     cursor: pointer;
-    display: flex;
-    padding: 7px 24px;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    grid-gap: 10px;
+    padding: 5px 10px;
     text-decoration: none;
 
     &:hover {

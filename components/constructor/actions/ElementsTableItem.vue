@@ -4,7 +4,8 @@
     :class="{ 'elements-table-item__active': isSelected }"
     @mouseover="setHoverElement(element.elementId)"
     @mouseleave="setHoverElement(null)"
-    @click="setActiveElement"
+    @click.exact="setActiveElement"
+    @click.right.prevent="openContext"
   >
     <i class="bx" :class="getIconClass"></i>
     <span>{{ element.name }}</span>
@@ -16,6 +17,7 @@ import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import { IContent } from '~/interfaces/presentation'
 import { ELEMENT_TYPE } from '~/utils/enums'
 import { PresentationModule } from '~/store/presentation'
+import { CommonModule } from '~/store/common'
 
 @Component
 export default class ElementsTableItem extends Vue {
@@ -37,6 +39,27 @@ export default class ElementsTableItem extends Vue {
     }
   }
 
+  get getContextMenuItems () {
+    return [
+      {
+        id: 1,
+        text: 'Удалить',
+        handler: () => {
+          PresentationModule.removeSlideElement({ slideId: this.element.slideId, elementId: this.element.elementId })
+        },
+        icon: 'bx-trash'
+      },
+      {
+        id: 2,
+        text: 'Копировать',
+        handler: () => {
+          PresentationModule.copySlideElement(this.element)
+        },
+        icon: 'bx-copy'
+      }
+    ]
+  }
+
   setHoverElement (id) {
     PresentationModule.SET_HOVER_ELEMENT({ id })
   }
@@ -44,6 +67,15 @@ export default class ElementsTableItem extends Vue {
   setActiveElement () {
     console.log('click', { key: this.element.elementId, type: this.element.elementType })
     PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.element.elementId, type: this.element.elementType })
+  }
+
+  openContext (event) {
+    console.log('open context')
+    CommonModule.SET_CONTEXT_MENU_OPTIONS({
+      active: true,
+      items: this.getContextMenuItems,
+      event
+    })
   }
 }
 </script>

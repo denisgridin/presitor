@@ -104,3 +104,29 @@ export const CONFINES = {
     }
   }
 }
+
+export const CONTEXT_MENU_ITEMS = {
+  ACTIONS_TABLE_ELEMENTS: [
+    {
+      id: 1,
+      text: 'Удалить',
+      handler: () => {
+        console.log('Удалить')
+      }
+    },
+    {
+      id: 2,
+      text: 'Копировать',
+      handler: () => {
+        console.log('Копировать')
+      }
+    }
+  ]
+}
+
+export const CANVAS_OPTIONS = {
+  layout: {
+    width: 1400,
+    height: 700
+  }
+}

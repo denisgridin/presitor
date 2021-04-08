@@ -2,11 +2,13 @@
   <div>
     <div class="canvas-wrapper" @mousedown="resetActiveElement">
       <div class="presentation-canvas" :style="canvasStyle">
-        <CanvasElement v-for="(item, index) in getSlideElements" :item="item" :key="index">
-          <div v-if="item.elementType === 'content'">
-            <CanvasElementContent :item="item" />
-          </div>
-        </CanvasElement>
+        <div v-for="element in getSlideElements" :key="element.elementId">
+          <CanvasElement :element="element">
+            <div v-if="element.elementType === 'content'">
+              <CanvasElementContent :element="element" />
+            </div>
+          </CanvasElement>
+        </div>
       </div>
     </div>
   </div>

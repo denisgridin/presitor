@@ -1,7 +1,7 @@
 <template>
   <div class="elements-table">
     <h4>Элементы слайда</h4>
-    <ElementsTableItem v-for="element in getCurrentElements" :key="element.elementId" :element="element" />
+    <ElementsTableItem v-for="element in getCurrentElements" :key="element.elementId" :element="element" class="elements-table__item" />
   </div>
 </template>
 
@@ -31,5 +31,9 @@ export default class ElementsList extends Vue {
   display: flex;
   flex-direction: column;
   padding: 5px 10px;
+
+  &__item {
+    margin-top: 5px;
+  }
 }
 </style>

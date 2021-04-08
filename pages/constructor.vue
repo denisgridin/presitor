@@ -3,6 +3,11 @@
     <SlidesSidebar />
     <PresentationCanvas />
     <PresentationActions />
+    <ContextMenu
+      v-if="getContextMenu.active"
+      ref="contextMenu"
+      :context-menu-items="getContextMenu.items"
+    ></ContextMenu>
   </div>
 </template>
 
@@ -11,10 +16,13 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import SlidesSidebar from '@/components/constructor/SlidesSidebar'
 import PresentationCanvas from '@/components/constructor/PresentationCanvas'
 import PresentationActions from '@/components/constructor/PresentationActions'
+import ContextMenu from '@/components/ContextMenu'
 import { LAYOUTS } from '@/utils/enums'
+import { CommonModule } from '@/store/common'
 
 @Component({
   components: {
+    ContextMenu,
     SlidesSidebar,
     PresentationCanvas,
     PresentationActions
@@ -22,6 +30,9 @@ import { LAYOUTS } from '@/utils/enums'
   layout: LAYOUTS.APP
 })
 export default class Constructor extends Vue {
+  get getContextMenu () {
+    return CommonModule.getContextMenu
+  }
 }
 </script>
 

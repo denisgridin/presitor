@@ -7,10 +7,6 @@
           <h4>Общие</h4>
         </div>
       </template>
-      <div class="options">
-        <vs-button relief success>Копировать</vs-button>
-        <vs-button relief danger>Удалить</vs-button>
-      </div>
       <div class="inputs">
         <div class="inputs-item">
           <label for="name">Имя</label>
