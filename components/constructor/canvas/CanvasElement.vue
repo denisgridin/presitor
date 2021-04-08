@@ -33,7 +33,7 @@ export default class CanvasElement extends Vue {
   @Prop() readonly item: IContent
 
   get isElementActive () {
-    return PresentationModule.getActiveElement?.elementId === this.item.elementId
+    return PresentationModule.getActiveElement?.elementId === this.item.elementId | PresentationModule.getHoveredElementId === this.item.elementId
   }
 
   get getCurrentLayout () {

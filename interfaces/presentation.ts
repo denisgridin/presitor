@@ -26,7 +26,8 @@ export interface IElement {
   name: string,
   layout: ILayout,
   color: string,
-  elementType: ELEMENT_TYPE
+  elementType: ELEMENT_TYPE,
+  [ key: string ]: any
 }
 
 export interface IContent extends IElement{

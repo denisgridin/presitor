@@ -1,6 +1,6 @@
 import { getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
-import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
+import { IContent, IPresentation, ISlide } from '~/interfaces/presentation'
 import { ELEMENT_TYPE } from '~/utils/enums'
 
 export interface IConstructorPresentation extends IPresentation{
@@ -8,7 +8,8 @@ export interface IConstructorPresentation extends IPresentation{
   activeSlideId: string,
   activeSlide: ISlide,
   activeElementId: string | null,
-  activeElementType: ELEMENT_TYPE | null
+  activeElementType: ELEMENT_TYPE | null,
+  hoverElementId: string | null
 }
 
 export interface IPresentationState {
@@ -24,6 +25,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     activeSlideId: '1',
     activeElementId: null,
     activeElementType: null,
+    hoverElementId: null,
     fillColor: '#304abb',
     fontFamily: 'Roboto',
     slides: [
@@ -101,6 +103,10 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     return this.currentPresentation.slides.find((slide : ISlide) => slide.slideId === activeSlideId)
   }
 
+  public get getHoveredElementId () {
+    return this.currentPresentation.hoverElementId
+  }
+
   public get getActiveElement () {
     const activeElementType = this.currentPresentation.activeElementType
     const activeElementId = this.currentPresentation.activeElementId
@@ -127,6 +133,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public SET_ACTIVE_ELEMENT_ID_AND_TYPE ({ id, type }: { id: string | null, type: ELEMENT_TYPE | null }) {
     this.currentPresentation.activeElementId = id
     this.currentPresentation.activeElementType = type
+  }
+
+  @Mutation
+  public SET_HOVER_ELEMENT ({ id }: { id: string | null }) {
+    this.currentPresentation.hoverElementId = id
   }
 
   @Mutation
@@ -162,6 +173,16 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     if (element) {
       console.log(`set ${key} = ${value}`)
       element.font[`${key}`] = value
+    }
+  }
+
+  @Mutation
+  public UPDATE_ELEMENT_VALUE ({ key, value, elementId, slideId }: { key: string, value: any, elementId: string, slideId: string }) {
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
+    const element = slide?.elements.find(element => element.elementId === elementId)
+    if (element) {
+      console.log(`set ${key} = ${value}`)
+      element[`${key}`] = value
     }
   }
 }
