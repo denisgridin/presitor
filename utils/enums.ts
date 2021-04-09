@@ -32,3 +32,10 @@ export enum CONTENT_TYPE {
   PARAGRAPH = 'paragraph',
   LIST = 'list'
 }
+
+export enum LIST_STYLE {
+  DISC = 'disc',
+  CIRCLE = 'circle',
+  SQUARE = 'square',
+  DECIMAL = 'decimal'
+}

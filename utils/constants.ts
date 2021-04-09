@@ -1,5 +1,5 @@
 import { IConstructorElementShape } from '~/interfaces'
-import { CONTENT_TYPE, FIGURE } from '~/utils/enums'
+import { CONTENT_TYPE, FIGURE, LIST_STYLE } from '~/utils/enums'
 
 export const MESSAGE = {
   greeting: 'Создайте свою первую впечатляющую презентацию'
@@ -101,6 +101,14 @@ export const CONFINES = {
     fontSize: {
       min: 5,
       max: 70
+    },
+    lineHeight: {
+      min: 1,
+      max: 30
+    },
+    letterSpacing: {
+      min: 0,
+      max: 30
     }
   }
 }
@@ -143,5 +151,28 @@ export const CONTENT_ELEMENTS = [
   {
     type: CONTENT_TYPE.LIST,
     html: '<ul><li>Список</li></ul>'
+  }
+]
+
+export const LIST_STYLE_TYPES = [
+  {
+    name: 'Диск',
+    icon: 'bx-disc',
+    type: LIST_STYLE.DISC
+  },
+  {
+    name: 'Круг',
+    icon: 'bx-circle',
+    type: LIST_STYLE.CIRCLE
+  },
+  {
+    name: 'Квадрат',
+    icon: 'bx-square',
+    type: LIST_STYLE.SQUARE
+  },
+  {
+    name: 'Число',
+    icon: 'bx-list-ol',
+    type: LIST_STYLE.DECIMAL
   }
 ]

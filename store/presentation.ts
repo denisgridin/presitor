@@ -1,7 +1,7 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
 import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
-import { CONTENT_TYPE, ELEMENT_TYPE } from '~/utils/enums'
+import { CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
 import { CANVAS_OPTIONS } from '~/utils/constants'
 
 const uuid = require('uuid-random')
@@ -59,8 +59,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             font: {
               fontFamily: 'Roboto',
               fontSize: 20,
-              letterSpacing: 'normal',
-              lineHeight: 'normal',
+              letterSpacing: 3,
+              lineHeight: 30,
               fontCase: 'normal',
               color: '#ffffff',
               bold: false,
@@ -88,8 +88,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             font: {
               fontFamily: 'Montserrat',
               fontSize: 23,
-              letterSpacing: 'normal',
-              lineHeight: 'normal',
+              letterSpacing: 3,
+              lineHeight: 30,
               fontCase: 'normal',
               color: '#ffffff',
               bold: false,
@@ -105,7 +105,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             name: 'Title',
             insertion: {
               tag: 'li',
-              contentType: CONTENT_TYPE.LIST
+              contentType: CONTENT_TYPE.LIST,
+              listStyle: LIST_STYLE.CIRCLE
             },
             layout: {
               x: 150,
@@ -117,8 +118,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             font: {
               fontFamily: 'Montserrat, sans-serif',
               fontSize: 14,
-              letterSpacing: 'normal',
-              lineHeight: 'normal',
+              letterSpacing: 3,
+              lineHeight: 30,
               fontCase: 'normal',
               color: '#ffffff',
               bold: false,
@@ -277,6 +278,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public removeSlideElement ({ slideId, elementId }: { slideId: string, elementId: string }) {
     console.log(`remove element ${elementId} from slide ${slideId}`)
     this.REMOVE_SLIDE_ELEMENT({ slideId, elementId })
+  }
+
+  @Action({ rawError: true })
+  public updateElementValue ({ elementId, slideId, key, value }: { key: string, value: any, elementId: string, slideId: string }) {
+    this.UPDATE_ELEMENT_VALUE({ elementId, slideId, key, value })
   }
 }
 

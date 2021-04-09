@@ -49,6 +49,30 @@
             <span>Наклоненный</span>
           </vs-checkbox>
         </div>
+        <div class="inputs-item">
+          <label for="fontSize">Межстрочное расстояние</label>
+          <input
+            id="lineHeight"
+            class="vs-input"
+            type="number"
+            :min="confines.font.lineHeight.min"
+            :max="confines.font.lineHeight.max"
+            :value="getCurrentFontOptions.fontSize"
+            @input="(e) => setElementValue('lineHeight', e.target.value)"
+          >
+        </div>
+        <div class="inputs-item">
+          <label for="fontSize">Межбуквенное расстояние</label>
+          <input
+            id="letterSpacing"
+            class="vs-input"
+            type="number"
+            :min="confines.font.letterSpacing.min"
+            :max="confines.font.letterSpacing.max"
+            :value="getCurrentFontOptions.letterSpacing"
+            @input="(e) => setElementValue('letterSpacing', e.target.value)"
+          >
+        </div>
       </div>
     </vs-alert>
   </div>

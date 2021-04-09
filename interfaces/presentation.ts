@@ -1,4 +1,4 @@
-import { CONTENT_TYPE, ELEMENT_TYPE } from '~/utils/enums'
+import { CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
 
 export interface IPresentation {
   presentationId: string,
@@ -33,7 +33,8 @@ export interface IElement {
 export interface IContent extends IElement{
   insertion: {
     tag: string,
-    contentType: CONTENT_TYPE
+    contentType: CONTENT_TYPE,
+    listStyle?: LIST_STYLE
   },
   text: string,
   font: {

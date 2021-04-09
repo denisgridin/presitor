@@ -16,7 +16,7 @@ export default class CanvasElementContent extends Vue {
   get contentHTML () {
     if (this.element.insertion.contentType === CONTENT_TYPE.LIST) {
       return `
-        <ul>
+        <ul style="list-style-type: ${this.element.insertion.listStyle}">
           ${this.parseTextToList(this.element.text)}
         </ul>
       `
@@ -30,7 +30,9 @@ export default class CanvasElementContent extends Vue {
       ...this.element.font,
       fontSize: `${this.element.font.fontSize}px`,
       fontWeight: this.element.font.bold ? '700' : 'normal',
-      fontStyle: this.element.font.italic ? 'italic' : 'normal'
+      fontStyle: this.element.font.italic ? 'italic' : 'normal',
+      lineHeight: this.element.font.lineHeight + 'px',
+      letterSpacing: this.element.font.letterSpacing + 'px'
     }
   }
 

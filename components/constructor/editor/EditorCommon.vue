@@ -30,6 +30,9 @@
             @input="(e) => setElementValue('text', e.target.value)"
           ></textarea>
         </div>
+        <div class="inputs-item">
+          <ContentEditor v-if="getActiveElement.elementType === 'content'" :content="getActiveElement" />
+        </div>
       </div>
     </vs-alert>
   </div>
@@ -37,9 +40,14 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
+import ContentEditor from '@/components/constructor/content/ContentEditor.vue'
 import { PresentationModule } from '@/store/presentation'
 
-@Component
+@Component({
+  components: {
+    ContentEditor
+  }
+})
 export default class EditorCommon extends Vue {
   hidden: boolean = false
 
