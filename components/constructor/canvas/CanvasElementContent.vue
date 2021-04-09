@@ -1,5 +1,14 @@
 <template>
-  <div class="canvas-element-content" :style="contentStyle" v-html="contentHTML">
+  <div
+    ref="input"
+    class="canvas-element-content"
+    :contenteditable="isContentEditable"
+    :style="contentStyle"
+    @input="editElementText"
+    @blur="setElementText"
+    @dblclick="setContentEditable(true)"
+    v-html="contentHTML"
+  >
     {{ element.text }}
   </div>
 </template>
@@ -8,10 +17,18 @@
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import { IContent } from '@/interfaces/presentation'
 import { CONTENT_TYPE } from '~/utils/enums'
+import { PresentationModule } from '~/store/presentation'
 
 @Component
 export default class CanvasElementContent extends Vue {
   @Prop() element: IContent
+
+  text: string = ''
+  isContentEditable: boolean = false
+
+  mounted () {
+    this.text = this.element.text
+  }
 
   get contentHTML () {
     if (this.element.insertion.contentType === CONTENT_TYPE.LIST) {
@@ -39,9 +56,36 @@ export default class CanvasElementContent extends Vue {
   parseTextToList (text: string) {
     const list = text.split('\n')
     console.log(list)
-    const html = list.map(el => `<li>${el}</li>`).join('')
+    const html = list.map(el => {
+      if (el) {
+        return `<li>${el}</li>`
+      } else {
+        return ''
+      }
+    }).join('')
     console.log(html)
     return html
+  }
+
+  editElementText (event) {
+    const value = event.target.innerText
+    this.text = value
+    console.log(value)
+  }
+
+  setElementText () {
+    PresentationModule.updateElementValue({ elementId: this.element.elementId, slideId: this.element.slideId, key: 'text', value: this.text })
+    this.setContentEditable(false)
+  }
+
+  setContentEditable (flag: boolean) {
+    this.isContentEditable = flag
+
+    if (flag) {
+      setTimeout(() => {
+        this.$refs.input.focus()
+      }, 0)
+    }
   }
 }
 </script>
