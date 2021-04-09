@@ -1,4 +1,4 @@
-import { CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
+import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
 
 export interface IPresentation {
   presentationId: string,
@@ -46,6 +46,7 @@ export interface IContent extends IElement{
     color: string,
     bold: boolean,
     italic: boolean,
+    align: ALIGN,
     [ key: string ]: any
   }
 }

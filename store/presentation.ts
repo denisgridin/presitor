@@ -1,7 +1,7 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
 import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
-import { CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
+import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
 import { CANVAS_OPTIONS } from '~/utils/constants'
 
 const uuid = require('uuid-random')
@@ -64,7 +64,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
               fontCase: 'normal',
               color: '#ffffff',
               bold: false,
-              italic: false
+              italic: false,
+              align: ALIGN.RIGHT
             },
             text: 'Текстовый элемент'
           },
@@ -93,7 +94,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
               fontCase: 'normal',
               color: '#ffffff',
               bold: false,
-              italic: false
+              italic: false,
+              align: ALIGN.LEFT
             },
             text: 'Заголовок'
           },
@@ -123,7 +125,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
               fontCase: 'normal',
               color: '#ffffff',
               bold: false,
-              italic: false
+              italic: false,
+              align: ALIGN.CENTER
             },
             text: 'Список'
           }

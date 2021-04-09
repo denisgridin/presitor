@@ -49,7 +49,8 @@ export default class CanvasElementContent extends Vue {
       fontWeight: this.element.font.bold ? '700' : 'normal',
       fontStyle: this.element.font.italic ? 'italic' : 'normal',
       lineHeight: this.element.font.lineHeight + 'px',
-      letterSpacing: this.element.font.letterSpacing + 'px'
+      letterSpacing: this.element.font.letterSpacing + 'px',
+      textAlign: this.element.font.align
     }
   }
 

@@ -25,6 +25,10 @@
           <FontSelector :value="getCurrentFontOptions.fontFamily" @input="(value) => setElementValue('fontFamily', value)" />
         </div>
         <div class="inputs-item">
+          <label>Выравнивание</label>
+          <Selector :items="aligns" :value="getActiveElement.font.align" @input="(value) => setElementValue('align', value)" />
+        </div>
+        <div class="inputs-item">
           <h4>Цвет текста</h4>
           <v-color-picker
             width="250px"
@@ -82,16 +86,19 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import FontSelector from '@/components/FontSelector.vue'
-import { CONFINES } from '~/utils/constants'
+import { CONFINES, TEXT_ALIGNS } from '~/utils/constants'
+import Selector from '@/components/constructor/Selector.vue'
 
 @Component({
   components: {
-    FontSelector
+    FontSelector,
+    Selector
   }
 })
 export default class EditorFont extends Vue {
   hidden: boolean = false
   confines: CONFINES = CONFINES
+  aligns = TEXT_ALIGNS
 
   get getActiveElement () {
     return PresentationModule.getActiveElement

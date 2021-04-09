@@ -1,4 +1,4 @@
-import { FIGURE } from '~/utils/enums'
+import { ALIGN, FIGURE } from '~/utils/enums'
 
 export interface ITabItem {
   id: string | number,
@@ -24,4 +24,11 @@ export interface IContextMenu {
     x: number,
     y: number
   }
+}
+
+export interface ISelectorItem {
+  icon: string,
+  value: ALIGN,
+  id: number,
+  tooltip: string
 }

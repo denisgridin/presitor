@@ -39,3 +39,10 @@ export enum LIST_STYLE {
   SQUARE = 'square',
   DECIMAL = 'decimal'
 }
+
+export enum ALIGN {
+  JUSTIFY = 'justify',
+  LEFT = 'left',
+  RIGHT = 'right',
+  CENTER = 'center'
+}

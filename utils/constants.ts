@@ -1,5 +1,5 @@
 import { IConstructorElementShape } from '~/interfaces'
-import { CONTENT_TYPE, FIGURE, LIST_STYLE } from '~/utils/enums'
+import { ALIGN, CONTENT_TYPE, FIGURE, LIST_STYLE } from '~/utils/enums'
 
 export const MESSAGE = {
   greeting: 'Создайте свою первую впечатляющую презентацию'
@@ -174,5 +174,32 @@ export const LIST_STYLE_TYPES = [
     name: 'Число',
     icon: 'bx-list-ol',
     type: LIST_STYLE.DECIMAL
+  }
+]
+
+export const TEXT_ALIGNS = [
+  {
+    icon: 'bx-align-justify',
+    value: ALIGN.JUSTIFY,
+    id: 1,
+    tooltip: 'Ширина'
+  },
+  {
+    icon: 'bx-align-left',
+    value: ALIGN.LEFT,
+    id: 2,
+    tooltip: 'Слева'
+  },
+  {
+    icon: 'bx-align-right',
+    value: ALIGN.RIGHT,
+    id: 3,
+    tooltip: 'Справа'
+  },
+  {
+    icon: 'bx-align-middle',
+    value: ALIGN.CENTER,
+    id: 4,
+    tooltip: 'Центр'
   }
 ]
