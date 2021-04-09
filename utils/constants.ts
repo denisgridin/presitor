@@ -1,5 +1,5 @@
 import { IConstructorElementShape } from '~/interfaces'
-import { FIGURE } from '~/utils/enums'
+import { CONTENT_TYPE, FIGURE } from '~/utils/enums'
 
 export const MESSAGE = {
   greeting: 'Создайте свою первую впечатляющую презентацию'
@@ -130,3 +130,18 @@ export const CANVAS_OPTIONS = {
     height: 700
   }
 }
+
+export const CONTENT_ELEMENTS = [
+  {
+    type: CONTENT_TYPE.TITLE,
+    html: '<h1>Заголовок</h1>'
+  },
+  {
+    type: CONTENT_TYPE.PARAGRAPH,
+    html: '<p>Параграф</p>'
+  },
+  {
+    type: CONTENT_TYPE.LIST,
+    html: '<ul><li>Список</li></ul>'
+  }
+]

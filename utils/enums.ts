@@ -26,3 +26,9 @@ export enum ELEMENT_TYPE {
   SHAPE = 'shape',
   IMAGE = 'image'
 }
+
+export enum CONTENT_TYPE {
+  TITLE = 'title',
+  PARAGRAPH = 'paragraph',
+  LIST = 'list'
+}

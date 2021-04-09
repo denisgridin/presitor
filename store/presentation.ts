@@ -1,10 +1,11 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
 import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
-import { ELEMENT_TYPE } from '~/utils/enums'
+import { CONTENT_TYPE, ELEMENT_TYPE } from '~/utils/enums'
 import { CANVAS_OPTIONS } from '~/utils/constants'
+
 const uuid = require('uuid-random')
-var cloneDeep = require('lodash.clonedeep')
+const cloneDeep = require('lodash.clonedeep')
 
 export interface IConstructorPresentation extends IPresentation{
   slides: ISlide[],
@@ -42,8 +43,12 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             presentationId: '1',
             slideId: '1',
             elementId: '1',
-            elementType: ELEMENT_TYPE.CONTENT,
             name: 'Text element',
+            elementType: ELEMENT_TYPE.CONTENT,
+            insertion: {
+              tag: 'p',
+              contentType: CONTENT_TYPE.PARAGRAPH
+            },
             layout: {
               x: 100,
               y: 200,
@@ -62,6 +67,64 @@ export class PresentationStore extends VuexModule implements IPresentationState 
               italic: false
             },
             text: 'Текстовый элемент'
+          },
+          {
+            presentationId: '1',
+            slideId: '1',
+            elementId: '2',
+            elementType: ELEMENT_TYPE.CONTENT,
+            name: 'Title',
+            insertion: {
+              tag: 'h1',
+              contentType: CONTENT_TYPE.TITLE
+            },
+            layout: {
+              x: 150,
+              y: 300,
+              width: 300,
+              height: 100,
+              rotation: 0
+            },
+            font: {
+              fontFamily: 'Montserrat',
+              fontSize: 23,
+              letterSpacing: 'normal',
+              lineHeight: 'normal',
+              fontCase: 'normal',
+              color: '#ffffff',
+              bold: false,
+              italic: false
+            },
+            text: 'Заголовок'
+          },
+          {
+            presentationId: '1',
+            slideId: '1',
+            elementId: '3',
+            elementType: ELEMENT_TYPE.CONTENT,
+            name: 'Title',
+            insertion: {
+              tag: 'li',
+              contentType: CONTENT_TYPE.LIST
+            },
+            layout: {
+              x: 150,
+              y: 300,
+              width: 300,
+              height: 100,
+              rotation: 0
+            },
+            font: {
+              fontFamily: 'Montserrat, sans-serif',
+              fontSize: 14,
+              letterSpacing: 'normal',
+              lineHeight: 'normal',
+              fontCase: 'normal',
+              color: '#ffffff',
+              bold: false,
+              italic: false
+            },
+            text: 'Список'
           }
         ]
       },

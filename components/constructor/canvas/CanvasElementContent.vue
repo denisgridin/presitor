@@ -1,16 +1,29 @@
 <template>
-  <div class="canvas-element-content" :style="contentStyle">
+  <div class="canvas-element-content" :style="contentStyle" v-html="contentHTML">
     {{ element.text }}
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'nuxt-property-decorator'
+import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import { IContent } from '@/interfaces/presentation'
+import { CONTENT_TYPE } from '~/utils/enums'
 
 @Component
 export default class CanvasElementContent extends Vue {
   @Prop() element: IContent
+
+  get contentHTML () {
+    if (this.element.insertion.contentType === CONTENT_TYPE.LIST) {
+      return `
+        <ul>
+          ${this.parseTextToList(this.element.text)}
+        </ul>
+      `
+    } else {
+      return `<${this.element.insertion.tag}>${this.element.text}</${this.element.insertion.tag}>`
+    }
+  }
 
   get contentStyle () {
     return {
@@ -19,6 +32,14 @@ export default class CanvasElementContent extends Vue {
       fontWeight: this.element.font.bold ? '700' : 'normal',
       fontStyle: this.element.font.italic ? 'italic' : 'normal'
     }
+  }
+
+  parseTextToList (text: string) {
+    const list = text.split('\n')
+    console.log(list)
+    const html = list.map(el => `<li>${el}</li>`).join('')
+    console.log(html)
+    return html
   }
 }
 </script>

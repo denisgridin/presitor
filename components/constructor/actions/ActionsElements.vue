@@ -6,14 +6,7 @@
     </div>
     <div class="presentation-section">
       <h4>Контент</h4>
-      <div>
-        <div class="presentation-section__content">
-          <input v-model="actions.content.text" type="text" placeholder="Текст" class="vs-input">
-          <vs-button :disabled="!(!!actions.content.text)" relief>
-            Добавить
-          </vs-button>
-        </div>
-      </div>
+      <ContentSelector />
     </div>
     <div class="presentation-section">
       <h4>Изображение</h4>
@@ -27,6 +20,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import FileInput from '@/components/FileInput.vue'
+import ContentSelector from '@/components/constructor/content/ContentSelector.vue'
 
 @Component({
   data: () => {
@@ -45,7 +39,8 @@ import FileInput from '@/components/FileInput.vue'
     }
   },
   components: {
-    FileInput
+    FileInput,
+    ContentSelector
   }
 })
 export default class ActionsElements extends Vue {
