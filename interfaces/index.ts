@@ -1,4 +1,5 @@
-import { ALIGN, FIGURE } from '~/utils/enums'
+import { ALIGN, ELEMENT_TYPE, FIGURE } from '~/utils/enums'
+import { IContent } from '~/interfaces/presentation'
 
 export interface ITabItem {
   id: string | number,
@@ -31,4 +32,12 @@ export interface ISelectorItem {
   value: ALIGN,
   id: number,
   tooltip: string
+}
+
+export type IDefaultElements = {
+  content: {
+    title: IContent,
+    paragraph: IContent,
+    list: IContent
+  }
 }

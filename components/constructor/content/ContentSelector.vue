@@ -1,6 +1,12 @@
 <template>
   <div class="content-selector">
-    <div v-for="element in contentElements" class="selector-element" v-html="element.html">
+    <div
+      v-for="element in contentElements"
+      :key="element.type"
+      class="selector-element"
+      @click="addElement(element.type)"
+      v-html="element.html"
+    >
     </div>
   </div>
 </template>
@@ -8,6 +14,8 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { CONTENT_ELEMENTS } from '~/utils/constants'
+import { PresentationModule } from '~/store/presentation'
+import { ELEMENT_TYPE } from '~/utils/enums'
 
 @Component
 export default class ContentSelector extends Vue {

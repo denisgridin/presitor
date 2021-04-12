@@ -2,7 +2,7 @@ import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-dec
 import store from '~/store/index'
 import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
 import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
-import { CANVAS_OPTIONS } from '~/utils/constants'
+import { CANVAS_OPTIONS, DEFAULT_ELEMENTS } from '~/utils/constants'
 
 const uuid = require('uuid-random')
 const cloneDeep = require('lodash.clonedeep')
@@ -287,6 +287,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public updateElementValue ({ elementId, slideId, key, value }: { key: string, value: any, elementId: string, slideId: string }) {
     this.UPDATE_ELEMENT_VALUE({ elementId, slideId, key, value })
   }
+
+  // @Action({ rawError: true })
+  // public addSlideElement ({ slideId, type, contentType }: { slideId: string, type: ELEMENT_TYPE, contentType: CONTENT_TYPE }) {
+  //   const element = DEFAULT_ELEMENTS[type][contentType]
+  // }
 }
 
 export const PresentationModule = getModule(PresentationStore)

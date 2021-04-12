@@ -4,6 +4,9 @@
       <Logo class="header-logo" width="60px" height="60px" />
       <slot name="middle-data">
       </slot>
+      <div v-if="currentPresentation" class="middle-data">
+        {{ currentPresentation.name }}
+      </div>
       <HeaderButtons />
     </div>
   </div>
@@ -11,7 +14,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { PresentationModule } from '~/store/presentation'
 export default Vue.extend({
+  computed: {
+    currentPresentation () {
+      return PresentationModule.getCurrentPresentation
+    }
+  }
 })
 
 </script>
@@ -28,6 +37,19 @@ export default Vue.extend({
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+
+    .middle-data {
+      width: 400px;
+      text-align: center;
+      border-radius: 3px;
+      color: $color-primary;
+      font-family: "Open Sans Bold", sans-serif;
+      background: $grey-1;
+      padding: 5px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 }
 
