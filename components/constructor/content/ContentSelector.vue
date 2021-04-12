@@ -20,6 +20,10 @@ import { ELEMENT_TYPE } from '~/utils/enums'
 @Component
 export default class ContentSelector extends Vue {
   contentElements = CONTENT_ELEMENTS
+
+  addElement (contentType) {
+    PresentationModule.addSlideElement({ slideId: this.$current('slide').slideId, data: { elementType: ELEMENT_TYPE.CONTENT, contentType, name: 'Тестовый элемент' } })
+  }
 }
 </script>
 

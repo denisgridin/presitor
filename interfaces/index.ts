@@ -1,4 +1,4 @@
-import { ALIGN, ELEMENT_TYPE, FIGURE } from '~/utils/enums'
+import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, FIGURE } from '~/utils/enums'
 import { IContent } from '~/interfaces/presentation'
 
 export interface ITabItem {
@@ -40,4 +40,10 @@ export type IDefaultElements = {
     paragraph: IContent,
     list: IContent
   }
+}
+
+export interface ELEMENT_BUILDER_DATA {
+  elementType: ELEMENT_TYPE,
+  contentType?: CONTENT_TYPE,
+  name?: string
 }

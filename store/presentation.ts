@@ -3,6 +3,8 @@ import store from '~/store/index'
 import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
 import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
 import { CANVAS_OPTIONS, DEFAULT_ELEMENTS } from '~/utils/constants'
+import { buildElement } from '~/utils/helpers'
+import { ELEMENT_BUILDER_DATA } from '~/interfaces'
 
 const uuid = require('uuid-random')
 const cloneDeep = require('lodash.clonedeep')
@@ -25,6 +27,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public zoom: number = 100
 
   public currentPresentation = {
+    presentationId: '1',
     name: 'Презентация 2',
     activeSlideId: '1',
     activeElementId: null,
@@ -264,6 +267,14 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     }
   }
 
+  @Mutation
+  public ADD_SLIDE_ELEMENT ({ slideId, element }: { slideId: string, element: IContent }) {
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
+    if (slide) {
+      slide.elements.push(element)
+    }
+  }
+
   @Action({ rawError: true })
   public copySlideElement (element: IContent) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === element.slideId)
@@ -288,10 +299,12 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     this.UPDATE_ELEMENT_VALUE({ elementId, slideId, key, value })
   }
 
-  // @Action({ rawError: true })
-  // public addSlideElement ({ slideId, type, contentType }: { slideId: string, type: ELEMENT_TYPE, contentType: CONTENT_TYPE }) {
-  //   const element = DEFAULT_ELEMENTS[type][contentType]
-  // }
+  @Action({ rawError: true })
+  public addSlideElement ({ slideId, data }: { slideId: string, data: ELEMENT_BUILDER_DATA }) {
+    const element = buildElement(this.currentPresentation, slideId, data as ELEMENT_BUILDER_DATA)
+    console.log(element)
+    this.ADD_SLIDE_ELEMENT({ slideId, element })
+  }
 }
 
 export const PresentationModule = getModule(PresentationStore)
