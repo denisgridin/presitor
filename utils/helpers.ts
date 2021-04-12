@@ -1,5 +1,5 @@
 import { CANVAS_OPTIONS, FIELD } from '~/utils/constants'
-import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE } from '~/utils/enums'
+import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
 import { IContent, IPresentation } from '~/interfaces/presentation'
 import { ELEMENT_BUILDER_DATA } from '~/interfaces'
 import uuid from 'uuid-random'
@@ -25,16 +25,18 @@ export function buildElement (presentation: IPresentation, slideId: string, data
   console.log(presentation, slideId, data)
   switch (data.elementType) {
     case ELEMENT_TYPE.CONTENT: {
+      const insertion = {
+        contentType: data.contentType
+      } as { contentType?: CONTENT_TYPE, tag: string, listStyle: LIST_STYLE }
       let tag = 'p'
       if (data.contentType === CONTENT_TYPE.TITLE) {
         tag = 'h1'
       } else if (data.contentType === CONTENT_TYPE.LIST) {
         tag = 'li'
       }
-      const insertion = {
-        tag,
-        contentType: data.contentType
-      }
+      insertion.tag = tag
+      insertion.listStyle = LIST_STYLE.DISC
+
       return {
         presentationId: presentation.presentationId,
         slideId,
