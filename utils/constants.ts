@@ -22,7 +22,16 @@ export const PATH = {
     token: 'api/token'
   },
   presentations: {
-    last: '/api/presentations/last'
+    default: '/presentations',
+    last: '/presentations/last',
+    exact: '/presentations/:presentationId'
+  },
+  slides: {
+    default: '/presentations/:presentationId/slides'
+  },
+  elements: {
+    default: '/presentations/:presentationId/slides/:slideId/elements',
+    exact: '/presentations/:presentationId/slides/:slideId/elements/:elementId'
   }
 }
 

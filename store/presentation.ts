@@ -2,9 +2,11 @@ import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-dec
 import store from '~/store/index'
 import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
 import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
-import { CANVAS_OPTIONS, DEFAULT_ELEMENTS } from '~/utils/constants'
+import { CANVAS_OPTIONS } from '~/utils/constants'
 import { buildElement } from '~/utils/helpers'
 import { ELEMENT_BUILDER_DATA } from '~/interfaces'
+import { PresentationApi } from '~/api/presentation'
+import { UserModule } from '~/store/user'
 
 const uuid = require('uuid-random')
 const cloneDeep = require('lodash.clonedeep')
@@ -225,6 +227,38 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Mutation
+  SET_CURRENT_PRESENTATION (presentation: IPresentation) {
+    this.currentPresentation = {
+      ...presentation,
+      slides: [],
+      activeSlideId: '',
+      activeSlide: {} as ISlide,
+      activeElementId: '',
+      activeElementType: ELEMENT_TYPE.CONTENT,
+      hoverElementId: ''
+    }
+  }
+
+  @Mutation
+  SET_CURRENT_SLIDES (slides: ISlide[]) {
+    this.currentPresentation.slides = slides
+  }
+
+  @Mutation
+  SET_SLIDE_ELEMENTS ({
+    slideId,
+    elements
+  }: {
+    slideId: string,
+    elements: IContent[]
+  }) {
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
+    if (slide) {
+      slide.elements = elements
+    }
+  }
+
+  @Mutation
   public UPDATE_PRESENTATION_FIELD ({ key, value }: { key: string, value: string | number }) {
     this.currentPresentation = { ...this.currentPresentation, ...{ [key]: value } }
   }
@@ -273,6 +307,59 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     if (slide) {
       slide.elements.push(element)
     }
+  }
+
+  @Action({ rawError: true })
+  public getPresentation (presentationId: string) {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        const presentation = await api.getPresentation(presentationId) as IPresentation
+        resolve(presentation)
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
+  }
+
+  @Action({ rawError: true })
+  public getPresentationSlides (presentationId: string) {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        const slides = await api.getPresentationSlides(presentationId)
+        resolve(slides)
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
+  }
+
+  @Action({ rawError: true })
+  public getSlideElements ({ presentationId, slideId }: { presentationId: string, slideId: string }) {
+    console.log('get slide elements', presentationId, slideId)
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        const elements = await api.getSlideElements(presentationId, slideId)
+        if (Array.isArray(elements)) {
+          this.SET_SLIDE_ELEMENTS({
+            slideId,
+            elements
+          })
+          this.SET_ACTIVE_SLIDE_ID(slideId)
+        }
+        resolve(elements)
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
   }
 
   @Action({ rawError: true })
