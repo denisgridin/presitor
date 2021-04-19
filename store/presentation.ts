@@ -1,12 +1,15 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
-import { IContent, IElement, IPresentation, ISlide } from '~/interfaces/presentation'
+import { IContent, IElement, IElementType, IPresentation, ISlide } from '~/interfaces/presentation'
 import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
 import { CANVAS_OPTIONS } from '~/utils/constants'
 import { buildElement } from '~/utils/helpers'
-import { ELEMENT_BUILDER_DATA } from '~/interfaces'
+import { ELEMENT_BUILDER_DATA, IHistoryData } from '~/interfaces'
 import { PresentationApi } from '~/api/presentation'
 import { UserModule } from '~/store/user'
+import { SlideApi } from '~/api/slide'
+import { ElementApi } from '~/api/element'
+import login from '~/pages/login.vue'
 
 const uuid = require('uuid-random')
 const cloneDeep = require('lodash.clonedeep')
@@ -21,12 +24,23 @@ export interface IConstructorPresentation extends IPresentation{
 }
 
 export interface IPresentationState {
-  currentPresentation: IConstructorPresentation
+  currentPresentation: IConstructorPresentation,
+  history: {
+    index: number,
+    items: IHistoryData[]
+  }
 }
 
 @Module({ store: store(), stateFactory: true, name: 'presentation', dynamic: true, namespaced: true })
 export class PresentationStore extends VuexModule implements IPresentationState {
   public zoom: number = 100
+  public history = {
+    index: 0,
+    items: []
+  } as {
+    index: number,
+    items: IHistoryData[]
+  }
 
   public currentPresentation = {
     presentationId: '1',
@@ -161,6 +175,10 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     ] as ISlide[]
   } as IConstructorPresentation
 
+  public get getHistory () {
+    return this.history
+  }
+
   public get getCurrentSlides (): ISlide[] {
     return this.currentPresentation.slides
   }
@@ -182,7 +200,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     return this.currentPresentation.hoverElementId
   }
 
-  public get getActiveElement () {
+  public get getActiveElement (): IElementType | null {
     const activeElementType = this.currentPresentation.activeElementType
     const activeElementId = this.currentPresentation.activeElementId
 
@@ -197,6 +215,18 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   public get getConstructorZoom (): number {
     return this.zoom
+  }
+
+  @Mutation
+  public ADD_HISTORY_RECORD (data: IHistoryData) {
+    const clonedItem = cloneDeep(data.element)
+    this.history.items.push({ type: data.type, element: clonedItem })
+    this.history.index = this.history.items.length - 1
+  }
+
+  @Mutation
+  public SET_HISTORY_CURSOR (index: number) {
+    this.history.index = index
   }
 
   @Mutation
@@ -294,6 +324,20 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Mutation
+  public UPDATE_ELEMENT_BY_ID ({ id, element }: { id: string, element: IElementType }) {
+    console.log('update')
+    const slide = this.currentPresentation.slides.find(slide => slide.slideId === element.slideId)
+    console.log('slide ', slide)
+    if (slide) {
+      const item = slide.elements.find((i: IElementType) => {
+        return i.elementId === id
+      })
+      Object.assign(item, element)
+      console.log('item ', item)
+    }
+  }
+
+  @Mutation
   public REMOVE_SLIDE_ELEMENT ({ slideId, elementId }: { slideId: string, elementId: string }) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     if (slide) {
@@ -329,7 +373,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
-        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        const api = new SlideApi(UserModule.getTokens.accessToken)
         const slides = await api.getPresentationSlides(presentationId)
         resolve(slides)
       } catch (error) {
@@ -345,7 +389,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
-        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        const api = new ElementApi(UserModule.getTokens.accessToken)
         const elements = await api.getSlideElements(presentationId, slideId)
         if (Array.isArray(elements)) {
           this.SET_SLIDE_ELEMENTS({
@@ -363,7 +407,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Action({ rawError: true })
-  public copySlideElement (element: IContent) {
+  public async copySlideElement (element: IContent) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === element.slideId)
     if (slide) {
       const x = (CANVAS_OPTIONS.layout.width / 2) - (element.layout.width / 2)
@@ -372,25 +416,70 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       item.elementId = uuid()
       console.log(item)
       slide.elements.push(item)
+
+      const api = new ElementApi(UserModule.getTokens.accessToken)
+      element.elementId = uuid()
+      const result = await api.createSlideElement(element.presentationId, element.slideId, item)
+      console.log(result)
     }
   }
 
   @Action({ rawError: true })
-  public removeSlideElement ({ slideId, elementId }: { slideId: string, elementId: string }) {
+  public async removeSlideElement ({ slideId, elementId }: { slideId: string, elementId: string }) {
     console.log(`remove element ${elementId} from slide ${slideId}`)
+    const api = new ElementApi(UserModule.getTokens.accessToken)
+    await api.removeSlideElement(this.currentPresentation.presentationId, slideId, elementId)
     this.REMOVE_SLIDE_ELEMENT({ slideId, elementId })
   }
 
   @Action({ rawError: true })
-  public updateElementValue ({ elementId, slideId, key, value }: { key: string, value: any, elementId: string, slideId: string }) {
+  public async updateElementValue ({ elementId, slideId, key, value, element }: { key: string, value: any, elementId: string, slideId: string, element: IElementType }) {
     this.UPDATE_ELEMENT_VALUE({ elementId, slideId, key, value })
+    const item = element?.elementId ? element as IElementType : this.getActiveElement as IElementType
+    console.log('update element ', item)
+    const api = new ElementApi(UserModule.getTokens.accessToken)
+    await api.updateSlideElement(this.currentPresentation.presentationId, slideId, elementId, item as IElementType)
+    PresentationModule.setHistory({ type: 'update', element: item })
   }
 
   @Action({ rawError: true })
-  public addSlideElement ({ slideId, data }: { slideId: string, data: ELEMENT_BUILDER_DATA }) {
+  public async addSlideElement ({ slideId, data }: { slideId: string, data: ELEMENT_BUILDER_DATA }) {
     const element = buildElement(this.currentPresentation, slideId, data as ELEMENT_BUILDER_DATA)
-    console.log(element)
-    this.ADD_SLIDE_ELEMENT({ slideId, element })
+
+    const api = new ElementApi(UserModule.getTokens.accessToken)
+    const id = await api.createSlideElement(this.currentPresentation.presentationId, slideId, element as IElementType) as string
+    const item = { ...element, elementId: id }
+    console.log('added item ', item)
+    this.ADD_SLIDE_ELEMENT({ slideId, element: cloneDeep(item) })
+  }
+
+  @Action({ rawError: true })
+  public setHistory (data: IHistoryData) {
+    this.ADD_HISTORY_RECORD(data)
+  }
+
+  @Action
+  public getHistoryStart (data: IHistoryData) {
+    if (this.getHistory.items.length === 0) {
+      this.setHistory(data)
+    }
+  }
+
+  @Action
+  public setHistoryCursor (index: number) {
+    this.SET_HISTORY_CURSOR(index)
+
+    const cursor = this.getHistory.items[index]
+    const historyElement = this.getHistory.items[index]?.element as IElementType
+    console.log(cursor)
+    switch (cursor.type) {
+      case 'create': { break }
+      case 'update': {
+        this.UPDATE_ELEMENT_BY_ID({ id: historyElement.elementId, element: historyElement })
+        break
+      }
+      case 'delete': { break }
+    }
   }
 }
 

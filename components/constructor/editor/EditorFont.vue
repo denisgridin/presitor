@@ -88,6 +88,7 @@ import { PresentationModule } from '@/store/presentation'
 import FontSelector from '@/components/FontSelector.vue'
 import { CONFINES, TEXT_ALIGNS } from '~/utils/constants'
 import Selector from '@/components/constructor/Selector.vue'
+import { IFont } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -99,6 +100,7 @@ export default class EditorFont extends Vue {
   hidden: boolean = false
   confines: CONFINES = CONFINES
   aligns = TEXT_ALIGNS
+  updateDebounce: any = null
 
   get getActiveElement () {
     return PresentationModule.getActiveElement
@@ -117,6 +119,13 @@ export default class EditorFont extends Vue {
     } else {
       PresentationModule.UPDATE_ELEMENT_FONT({ key, value, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
     }
+
+    clearTimeout(this.updateDebounce)
+    this.updateDebounce = setTimeout(() => {
+      const font = this.getActiveElement?.font as IFont
+      font[key] = value
+      PresentationModule.updateElementValue({ key: 'font', value: font, slideId: this.getActiveElement?.slideId as string, elementId: this.getActiveElement?.elementId as string })
+    }, 1000)
   }
 }
 

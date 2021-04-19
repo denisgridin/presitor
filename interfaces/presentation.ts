@@ -30,6 +30,19 @@ export interface IElement {
   [ key: string ]: any
 }
 
+export interface IFont {
+  fontFamily: string,
+  fontSize: number,
+  letterSpacing: 'normal' | number,
+  lineHeight: 'normal' | number,
+  fontCase: 'normal' | 'uppercase' | 'lowercase',
+  color: string,
+  bold: boolean,
+  italic: boolean,
+  align: ALIGN,
+  [ key: string ]: any
+}
+
 export interface IContent extends IElement{
   insertion: {
     tag: string,
@@ -37,24 +50,15 @@ export interface IContent extends IElement{
     listStyle?: LIST_STYLE
   },
   text: string,
-  font: {
-    fontFamily: string,
-    fontSize: number,
-    letterSpacing: 'normal' | number,
-    lineHeight: 'normal' | number,
-    fontCase: 'normal' | 'uppercase' | 'lowercase',
-    color: string,
-    bold: boolean,
-    italic: boolean,
-    align: ALIGN,
-    [ key: string ]: any
-  }
+  font: IFont
 }
+
+export type IElementType = IContent
 
 export interface ISlide {
   presentationId: string,
   slideId: string,
   name: string,
   index: number,
-  elements: (IContent)[]
+  elements: (IElementType)[]
 }

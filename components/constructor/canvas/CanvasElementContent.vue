@@ -75,7 +75,7 @@ export default class CanvasElementContent extends Vue {
   }
 
   setElementText () {
-    PresentationModule.updateElementValue({ elementId: this.element.elementId, slideId: this.element.slideId, key: 'text', value: this.text })
+    PresentationModule.updateElementValue({ elementId: this.element.elementId, slideId: this.element.slideId, key: 'text', value: this.text, element: this.element })
     this.setContentEditable(false)
   }
 

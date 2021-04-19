@@ -42,6 +42,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import ContentEditor from '@/components/constructor/content/ContentEditor.vue'
 import { PresentationModule } from '@/store/presentation'
+import { IFont } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -50,6 +51,7 @@ import { PresentationModule } from '@/store/presentation'
 })
 export default class EditorCommon extends Vue {
   hidden: boolean = false
+  updateDebounce: any = null
 
   get getActiveElement () {
     return PresentationModule.getActiveElement
@@ -63,8 +65,13 @@ export default class EditorCommon extends Vue {
     }
   }
 
-  setElementValue (key, value) {
-    PresentationModule.UPDATE_ELEMENT_VALUE({ key, value, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
+  setElementValue (key: string, value: any) {
+    PresentationModule.UPDATE_ELEMENT_VALUE({ key, value, slideId: this.getActiveElement?.slideId as string, elementId: this.getActiveElement?.elementId as string })
+
+    clearTimeout(this.updateDebounce)
+    this.updateDebounce = setTimeout(() => {
+      PresentationModule.updateElementValue({ key, value, slideId: this.getActiveElement?.slideId as string, elementId: this.getActiveElement?.elementId as string })
+    }, 1000)
   }
 }
 </script>

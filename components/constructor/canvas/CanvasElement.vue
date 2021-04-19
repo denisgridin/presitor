@@ -19,10 +19,10 @@
 
 <script lang="ts">
 import interact from 'interactjs'
-import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator'
+import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import type { Interactable } from '@interactjs/core/Interactable'
 import type { InteractEvent } from '@interactjs/core/InteractEvent'
-import { IContent } from '~/interfaces/presentation'
+import { IElementType } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
 import { CONFINES } from '~/utils/constants'
 import { CommonModule } from '~/store/common'
@@ -32,14 +32,16 @@ export default class CanvasElement extends Vue {
   component = {} as Interactable
   isActive: boolean = false
 
-  @Prop() readonly element: IContent
+  updateDebounce: any = null
+
+  @Prop() readonly element: IElementType
 
   get getSlideElementsCount () {
-    return PresentationModule.getActiveSlide.elements.length
+    return PresentationModule.getActiveSlide?.elements.length
   }
 
   get isElementActive () {
-    return PresentationModule.getActiveElement?.elementId === this.element.elementId | PresentationModule.getHoveredElementId === this.element.elementId
+    return PresentationModule.getActiveElement?.elementId === this.element.elementId || PresentationModule.getHoveredElementId === this.element.elementId
   }
 
   get elementClass () {
@@ -101,23 +103,39 @@ export default class CanvasElement extends Vue {
     this.component.unset()
   }
 
-  openContext (event) {
+  openContext (event: any) {
     console.log('open context')
     CommonModule.SET_CONTEXT_MENU_OPTIONS({
       active: true,
       items: this.getContextMenuItems,
-      event
+      event: { pageX: event.pageX, pageY: event.pageY }
     })
   }
 
   init () {
     this.component = interact(`.${this.elementClass}`) as Interactable
     this.component.draggable({
-      onmove: event => this.onDragMove(event)
+      onstart: () => {
+        console.log('start move')
+        PresentationModule.getHistoryStart({ type: 'update', element: this.element })
+      },
+      onmove: event => this.onDragMove(event),
+      onend: () => {
+        console.log('end move')
+        PresentationModule.setHistory({ type: 'update', element: this.element })
+      }
     })
     this.component.resizable({
       edges: { left: true, right: true, bottom: true, top: true },
+      onstart: () => {
+        console.log('start resize')
+        PresentationModule.getHistoryStart({ type: 'update', element: this.element })
+      },
       onmove: event => this.onResizeMove(event),
+      onend: () => {
+        console.log('end resize')
+        PresentationModule.setHistory({ type: 'update', element: this.element })
+      },
       modifiers: [
         interact.modifiers.restrictSize({
           min: { width: CONFINES.layout.width.min, height: CONFINES.layout.height.min },
@@ -137,8 +155,8 @@ export default class CanvasElement extends Vue {
     target.style.height = event.rect.height + 'px'
 
     // translate when resizing from top or left edges
-    x += +(event.deltaRect.left)
-    y += +(event.deltaRect.top)
+    x += +((event as any).deltaRect.left)
+    y += +((event as any).deltaRect.top)
 
     target.style.webkitTransform = target.style.transform =
       'translate(' + x + 'px,' + y + 'px)'
@@ -150,6 +168,22 @@ export default class CanvasElement extends Vue {
     PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.element.slideId, elementId: this.element.elementId })
     PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'width', value: event.rect.width, slideId: this.element.slideId, elementId: this.element.elementId })
     PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'height', value: event.rect.height, slideId: this.element.slideId, elementId: this.element.elementId })
+
+    clearTimeout(this.updateDebounce)
+    this.updateDebounce = setTimeout(async () => {
+      await PresentationModule.updateElementValue({
+        elementId: this.element.elementId,
+        slideId: this.element.slideId,
+        key: 'layout',
+        value: {
+          x,
+          y,
+          width: event.rect.width,
+          height: event.rect.height,
+          rotation: 0
+        }
+      })
+    }, 1000)
   }
 
   onDragMove (event: InteractEvent) {
@@ -158,6 +192,22 @@ export default class CanvasElement extends Vue {
 
     PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.element.slideId, elementId: this.element.elementId })
     PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.element.slideId, elementId: this.element.elementId })
+
+    clearTimeout(this.updateDebounce)
+    this.updateDebounce = setTimeout(async () => {
+      await PresentationModule.updateElementValue({
+        elementId: this.element.elementId,
+        slideId: this.element.slideId,
+        key: 'layout',
+        value: {
+          x,
+          y,
+          width: this.element.layout.width,
+          height: this.element.layout.height,
+          rotation: 0
+        }
+      })
+    }, 1000)
   }
 }
 </script>

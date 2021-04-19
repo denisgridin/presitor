@@ -36,24 +36,30 @@
 <script lang="ts">
 
 import { Component, Vue } from 'nuxt-property-decorator'
-import { IElement, ILayout } from '~/interfaces/presentation'
+import { IElementType, ILayout } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
 
 @Component
 export default class EditorLayout extends Vue {
   hidden: boolean = false
-
-  get getActiveElement (): IElement {
-    return PresentationModule.getActiveElement
+  updateDebounce: any = null
+  get getActiveElement (): IElementType {
+    return PresentationModule.getActiveElement as IElementType
   }
 
-  get getCurrentLayout (): ILayout | null {
+  get getCurrentLayout (): ILayout | undefined {
     return PresentationModule.getActiveElement?.layout
   }
 
-  setElementValue (key: string, event: Event) {
+  setElementValue (key: string, event: any) {
     console.log(event.target.value)
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key, value: event.target.value, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
+    const layout = this.getActiveElement.layout
+    layout[key] = event.target.value
+    PresentationModule.UPDATE_ELEMENT_VALUE({ key: 'layout', value: layout, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
+    clearTimeout(this.updateDebounce)
+    this.updateDebounce = setTimeout(() => {
+      PresentationModule.updateElementValue({ key: 'layout', value: layout, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
+    }, 1000)
   }
 }
 </script>

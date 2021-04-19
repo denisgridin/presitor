@@ -1,5 +1,6 @@
 <template>
   <div>
+    <History />
     <ElementsTable v-if="getCurrentElements.length" />
     <div v-if="getActiveElement" class="presentation-section" :style="actionsStyle">
       <EditorCommon />
@@ -16,6 +17,7 @@ import EditorLayout from '@/components/constructor/editor/EditorLayout.vue'
 import EditorCommon from '@/components/constructor/editor/EditorCommon.vue'
 import EditorFont from '@/components/constructor/editor/EditorFont.vue'
 import ElementsTable from '@/components/constructor/actions/ElementsTable.vue'
+import History from '@/components/History'
 import { PresentationModule } from '@/store/presentation'
 
 @Component({
@@ -23,7 +25,8 @@ import { PresentationModule } from '@/store/presentation'
     EditorLayout,
     EditorFont,
     EditorCommon,
-    ElementsTable
+    ElementsTable,
+    History
   }
 })
 export default class ActionsEditor extends Vue {

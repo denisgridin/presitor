@@ -22,7 +22,7 @@ export class CommonStore extends VuexModule implements ICommonState {
   }
 
   @Mutation
-  private SET_CONTEXT_MENU_OPTIONS ({ active, event, items }: { active: boolean, event: { pageX: number, pageY: number }, items: IContextMenuItem[] }) {
+  public SET_CONTEXT_MENU_OPTIONS ({ active, event, items }: { active: boolean, event: { pageX: number, pageY: number }, items: IContextMenuItem[] }) {
     this.contextMenu.coords = {
       x: event?.pageX || 0,
       y: event?.pageY || 0

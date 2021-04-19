@@ -19,7 +19,6 @@ import PresentationActions from '@/components/constructor/PresentationActions'
 import ContextMenu from '@/components/ContextMenu'
 import { LAYOUTS } from '@/utils/enums'
 import { CommonModule } from '@/store/common'
-import { PresentationApi } from '@/api/presentation'
 import { PresentationModule } from '@/store/presentation'
 
 @Component({

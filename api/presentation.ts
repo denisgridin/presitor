@@ -42,34 +42,4 @@ export class PresentationApi {
       }
     })
   }
-
-  public getPresentationSlides (presentationId: string) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      try {
-        const path = PATH.slides.default.replace(':presentationId', presentationId)
-        const { data } = await this.instance.get(this.getUrl(path))
-        console.log(data)
-        resolve(data)
-      } catch (error) {
-        console.log(error)
-        reject(error)
-      }
-    })
-  }
-
-  public getSlideElements (presentationId: string, slideId: string) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      try {
-        const path = PATH.elements.default.replace(':presentationId', presentationId).replace(':slideId', slideId)
-        const { data } = await this.instance.get(this.getUrl(path))
-        console.log(data)
-        resolve(data)
-      } catch (error) {
-        console.log(error)
-        reject(error)
-      }
-    })
-  }
 }

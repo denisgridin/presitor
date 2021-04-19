@@ -12,7 +12,8 @@ export const FIELD = {
   ACCESS_TOKEN: 'ACCESS_TOKEN',
   REFRESH_TOKEN: 'REFRESH_TOKEN',
   USER: 'USER',
-  IS_AUTHENTICATED: 'IS_AUTHENTICATED'
+  IS_AUTHENTICATED: 'IS_AUTHENTICATED',
+  LAYOUT: 'layout'
 }
 
 export const PATH = {
@@ -31,7 +32,8 @@ export const PATH = {
   },
   elements: {
     default: '/presentations/:presentationId/slides/:slideId/elements',
-    exact: '/presentations/:presentationId/slides/:slideId/elements/:elementId'
+    exact: '/presentations/:presentationId/slides/:slideId/elements/:elementId',
+    copy: '/presentations/:presentationId/slides/:slideId/elements/:elementId/copy'
   }
 }
 

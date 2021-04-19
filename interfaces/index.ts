@@ -1,5 +1,5 @@
 import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, FIGURE } from '~/utils/enums'
-import { IContent } from '~/interfaces/presentation'
+import { IContent, IElement, IElementType } from '~/interfaces/presentation'
 
 export interface ITabItem {
   id: string | number,
@@ -46,4 +46,9 @@ export interface ELEMENT_BUILDER_DATA {
   elementType: ELEMENT_TYPE,
   contentType?: CONTENT_TYPE,
   name?: string
+}
+
+export interface IHistoryData {
+  type: 'update' | 'create' | 'delete',
+  element: IElementType
 }
