@@ -433,7 +433,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Action({ rawError: true })
-  public async updateElementValue ({ elementId, slideId, key, value, element }: { key: string, value: any, elementId: string, slideId: string, element: IElementType }) {
+  public async updateElementValue ({ elementId, slideId, key, value, element = null }: { key: string, value: any, elementId: string, slideId: string, element: IElementType | null }) {
     this.UPDATE_ELEMENT_VALUE({ elementId, slideId, key, value })
     const item = element?.elementId ? element as IElementType : this.getActiveElement as IElementType
     console.log('update element ', item)

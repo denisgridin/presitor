@@ -164,11 +164,18 @@ export default class CanvasElement extends Vue {
     target.setAttribute('data-x', x)
     target.setAttribute('data-y', y)
 
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.element.slideId, elementId: this.element.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.element.slideId, elementId: this.element.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'width', value: event.rect.width, slideId: this.element.slideId, elementId: this.element.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'height', value: event.rect.height, slideId: this.element.slideId, elementId: this.element.elementId })
-
+    PresentationModule.UPDATE_ELEMENT_VALUE({
+      key: 'layout',
+      value: {
+        x,
+        y,
+        width: event.rect.width,
+        height: event.rect.height,
+        rotation: 0
+      },
+      slideId: this.element.slideId,
+      elementId: this.element.elementId
+    })
     clearTimeout(this.updateDebounce)
     this.updateDebounce = setTimeout(async () => {
       await PresentationModule.updateElementValue({
@@ -181,7 +188,8 @@ export default class CanvasElement extends Vue {
           width: event.rect.width,
           height: event.rect.height,
           rotation: 0
-        }
+        },
+        element: this.element
       })
     }, 1000)
   }
@@ -190,8 +198,18 @@ export default class CanvasElement extends Vue {
     const x = +this.getCurrentLayout.x + +(event.dx)
     const y = +this.getCurrentLayout.y + +(event.dy)
 
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'x', value: x, slideId: this.element.slideId, elementId: this.element.elementId })
-    PresentationModule.UPDATE_ELEMENT_LAYOUT({ key: 'y', value: y, slideId: this.element.slideId, elementId: this.element.elementId })
+    PresentationModule.UPDATE_ELEMENT_VALUE({
+      key: 'layout',
+      value: {
+        x,
+        y,
+        width: this.element.layout.width,
+        height: this.element.layout.height,
+        rotation: 0
+      },
+      slideId: this.element.slideId,
+      elementId: this.element.elementId
+    })
 
     clearTimeout(this.updateDebounce)
     this.updateDebounce = setTimeout(async () => {
@@ -205,7 +223,8 @@ export default class CanvasElement extends Vue {
           width: this.element.layout.width,
           height: this.element.layout.height,
           rotation: 0
-        }
+        },
+        element: this.element
       })
     }, 1000)
   }

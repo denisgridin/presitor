@@ -55,10 +55,22 @@ export default class EditorLayout extends Vue {
     console.log(event.target.value)
     const layout = this.getActiveElement.layout
     layout[key] = event.target.value
-    PresentationModule.UPDATE_ELEMENT_VALUE({ key: 'layout', value: layout, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
+    PresentationModule.UPDATE_ELEMENT_VALUE(
+      {
+        key: 'layout',
+        value: layout,
+        slideId: this.getActiveElement?.slideId,
+        elementId: this.getActiveElement?.elementId
+      })
     clearTimeout(this.updateDebounce)
     this.updateDebounce = setTimeout(() => {
-      PresentationModule.updateElementValue({ key: 'layout', value: layout, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
+      PresentationModule.updateElementValue(
+        {
+          key: 'layout',
+          value: layout,
+          slideId: this.getActiveElement?.slideId,
+          elementId: this.getActiveElement?.elementId
+        })
     }, 1000)
   }
 }
