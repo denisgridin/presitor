@@ -43,20 +43,20 @@ export default class ActionsPresentation extends Vue {
     return PresentationModule.getCurrentPresentation
   }
 
-  setPresentationFontFamily (font: string) {
+  async setPresentationFontFamily (font: string) {
     console.log(font)
-    PresentationModule.UPDATE_PRESENTATION_FIELD({ key: 'fontFamily', value: font })
+    await PresentationModule.editPresentation({ key: 'fontFamily', value: font })
   }
 
-  setPresentationColor (color: string) {
+  async setPresentationColor (color: string) {
     console.log(color)
-    PresentationModule.UPDATE_PRESENTATION_FIELD({ key: 'fillColor', value: color })
+    await PresentationModule.editPresentation({ key: 'fillColor', value: color })
   }
 
-  setPresentationName (e: Event) {
+  async setPresentationName (e: Event) {
     const name = e.target.value
     console.log(name)
-    PresentationModule.UPDATE_PRESENTATION_FIELD({ key: 'name', value: name })
+    await PresentationModule.editPresentation({ key: 'name', value: name })
   }
 }
 </script>

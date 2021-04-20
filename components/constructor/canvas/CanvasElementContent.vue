@@ -1,15 +1,27 @@
 <template>
-  <div
-    ref="input"
-    class="canvas-element-content"
-    :contenteditable="isContentEditable"
-    :style="contentStyle"
-    @input="editElementText"
-    @blur="setElementText"
-    @dblclick="setContentEditable(true)"
-    v-html="contentHTML"
-  >
-    {{ element.text }}
+  <div>
+    <div
+      v-if="disabled"
+      ref="input"
+      class="canvas-element-content"
+      :style="contentStyle"
+      v-html="contentHTML"
+    >
+      {{ element.text }}
+    </div>
+    <div
+      v-else
+      ref="input"
+      class="canvas-element-content"
+      :contenteditable="isContentEditable"
+      :style="contentStyle"
+      @blur="setElementText"
+      @input="editElementText"
+      @dblclick="setContentEditable(true)"
+      v-html="contentHTML"
+    >
+      {{ element.text }}
+    </div>
   </div>
 </template>
 
@@ -22,6 +34,7 @@ import { PresentationModule } from '~/store/presentation'
 @Component
 export default class CanvasElementContent extends Vue {
   @Prop() element: IContent
+  @Prop({ default: false }) readonly disabled: boolean
 
   text: string = ''
   isContentEditable: boolean = false

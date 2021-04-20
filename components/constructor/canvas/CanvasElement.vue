@@ -35,13 +35,14 @@ export default class CanvasElement extends Vue {
   updateDebounce: any = null
 
   @Prop() readonly element: IElementType
+  @Prop({ default: false }) readonly disabled: boolean
 
   get getSlideElementsCount () {
     return PresentationModule.getActiveSlide?.elements.length
   }
 
   get isElementActive () {
-    return PresentationModule.getActiveElement?.elementId === this.element.elementId || PresentationModule.getHoveredElementId === this.element.elementId
+    return (PresentationModule.getActiveElement?.elementId === this.element.elementId || PresentationModule.getHoveredElementId === this.element.elementId) && !this.disabled
   }
 
   get elementClass () {
@@ -56,7 +57,8 @@ export default class CanvasElement extends Vue {
     return {
       transform: `translate(${this.getCurrentLayout.x}px, ${this.getCurrentLayout.y}px) rotate(${this.getCurrentLayout.rotation}deg)`,
       width: `${this.getCurrentLayout.width}px`,
-      height: `${this.getCurrentLayout.height}px`
+      height: `${this.getCurrentLayout.height}px`,
+      pointerEvents: this.disabled ? 'none' : null
     }
   }
 
@@ -82,21 +84,29 @@ export default class CanvasElement extends Vue {
   }
 
   mounted () {
-    this.init()
+    if (!this.disabled) {
+      this.init()
+    }
   }
 
   beforeDestroy () {
-    this.unset()
+    if (!this.disabled) {
+      this.unset()
+    }
   }
 
   setActive () {
-    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.element.elementId, type: this.element.elementType })
+    if (!this.disabled) {
+      PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.element.elementId, type: this.element.elementType })
+    }
   }
 
   reload () {
-    console.log('reload', this.element.elementId)
-    this.unset()
-    this.init()
+    if (!this.disabled) {
+      console.log('reload', this.element.elementId)
+      this.unset()
+      this.init()
+    }
   }
 
   unset () {
@@ -104,12 +114,14 @@ export default class CanvasElement extends Vue {
   }
 
   openContext (event: any) {
-    console.log('open context')
-    CommonModule.SET_CONTEXT_MENU_OPTIONS({
-      active: true,
-      items: this.getContextMenuItems,
-      event: { pageX: event.pageX, pageY: event.pageY }
-    })
+    if (!this.disabled) {
+      console.log('open context')
+      CommonModule.SET_CONTEXT_MENU_OPTIONS({
+        active: true,
+        items: this.getContextMenuItems,
+        event: { pageX: event.pageX, pageY: event.pageY }
+      })
+    }
   }
 
   init () {

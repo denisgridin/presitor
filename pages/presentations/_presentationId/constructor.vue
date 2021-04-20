@@ -69,7 +69,7 @@ export default class Constructor extends Vue {
   background: $grey-1;
 
   display: grid;
-  grid-template-columns: minmax(150px, 10%) 1fr minmax(150px, 15%);
+  grid-template-columns: 250px calc(100vw - 550px - 50px) 300px;
   grid-gap: 20px;
 }
 </style>

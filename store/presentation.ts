@@ -10,6 +10,7 @@ import { UserModule } from '~/store/user'
 import { SlideApi } from '~/api/slide'
 import { ElementApi } from '~/api/element'
 import login from '~/pages/login.vue'
+const pick = require('lodash.pick')
 
 const uuid = require('uuid-random')
 const cloneDeep = require('lodash.clonedeep')
@@ -41,6 +42,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     index: number,
     items: IHistoryData[]
   }
+
+  private updatePresentationDebounce: any
 
   public currentPresentation = {
     presentationId: '1',
@@ -291,6 +294,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   @Mutation
   public UPDATE_PRESENTATION_FIELD ({ key, value }: { key: string, value: string | number }) {
     this.currentPresentation = { ...this.currentPresentation, ...{ [key]: value } }
+
   }
 
   @Mutation
@@ -479,6 +483,29 @@ export class PresentationStore extends VuexModule implements IPresentationState 
         break
       }
       case 'delete': { break }
+    }
+  }
+
+  @Action
+  public editPresentation ({ key, value }: { key: string, value: any }) {
+    PresentationModule.UPDATE_PRESENTATION_FIELD({ key, value })
+
+    clearTimeout(this.updatePresentationDebounce)
+    this.updatePresentationDebounce = setTimeout(async () => {
+      await this.updatePresentation()
+    }, 1000)
+  }
+
+  @Action({ rawError: true })
+  public async updatePresentation () {
+    try {
+      const api = new PresentationApi(UserModule.getTokens.accessToken)
+      const presentation = pick(this.currentPresentation, [
+        'name', 'fillColor', 'fontFamily', 'presentationId'
+      ])
+      const result = await api.updatePresentation(presentation)
+    } catch (error) {
+      console.log(error)
     }
   }
 }

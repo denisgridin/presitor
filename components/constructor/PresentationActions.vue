@@ -58,6 +58,7 @@ export default class PresentationActions extends Vue {
 <style lang="scss">
 .presentation-actions {
   margin: 20px 5px;
+  padding: 0 10px;
   .presentation-section {
     overflow: auto;
 

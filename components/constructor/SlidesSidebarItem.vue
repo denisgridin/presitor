@@ -1,15 +1,23 @@
 <template>
   <div class="slide" :class="{ 'slide-active': active }" @click="selectSlide">
     <div class="slide-index">{{ index }}</div>
-    <div class="slide-backdrop"></div>
+    <div class="preview">
+      <Canvas v-if="index === 1" class="slide-preview" :slide-elements="getSlideElements" :disabled="true" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'nuxt-property-decorator'
 import { ISlide } from '~/interfaces/presentation'
+import { PresentationModule } from '~/store/presentation'
+import Canvas from '~/components/constructor/canvas/Canvas.vue'
 
-@Component({})
+@Component({
+  components: {
+    Canvas
+  }
+})
 export default class SlidesSidebarItem extends Vue {
   @Prop()
   slide: ISlide
@@ -19,6 +27,10 @@ export default class SlidesSidebarItem extends Vue {
 
   @Prop()
   active: boolean
+
+  get getSlideElements () {
+    return this.slide.elements || []
+  }
 
   @Emit('select')
   selectSlide () {
@@ -42,9 +54,9 @@ export default class SlidesSidebarItem extends Vue {
   display: grid;
   grid-template-columns: 30px 1fr;
   grid-gap: 5px;
+  height: 100px;
 
   margin: 10px;
-  height: 80px;
   padding: 5px;
 
   border-radius: 3px;
@@ -63,8 +75,13 @@ export default class SlidesSidebarItem extends Vue {
     font-size: 0.8rem;
   }
 
-  &-backdrop {
-    background: $black-1;
+  &-preview {
+    transform-origin: top left;
+    transform: $canvas-preview-scale;
+  }
+
+  .preview {
+    overflow: hidden;
   }
 }
 </style>
