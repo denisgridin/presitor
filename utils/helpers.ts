@@ -71,6 +71,13 @@ export function buildElement (presentation: IPresentation, slideId: string, data
   }
 }
 
+export async function asyncForEach (array: any[], callback: (item: any, i: number, array: any[]) => void) {
+  for (let i = 0; i < array.length; i++) {
+    // eslint-disable-next-line node/no-callback-literal
+    await callback(array[i] as any, i as number, array as any[])
+  }
+}
+
 // export function parseImageInBlob (file: File) {
 //
 //   console.log(data)

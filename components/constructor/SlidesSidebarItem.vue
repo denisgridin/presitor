@@ -2,7 +2,7 @@
   <div class="slide" :class="{ 'slide-active': active }" @click="selectSlide">
     <div class="slide-index">{{ index }}</div>
     <div class="preview">
-      <Canvas v-if="index === 1" class="slide-preview" :slide-elements="getSlideElements" :disabled="true" />
+      <Canvas class="slide-preview" :slide-elements="getSlideElements" :disabled="true" />
     </div>
   </div>
 </template>
@@ -10,7 +10,6 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'nuxt-property-decorator'
 import { ISlide } from '~/interfaces/presentation'
-import { PresentationModule } from '~/store/presentation'
 import Canvas from '~/components/constructor/canvas/Canvas.vue'
 
 @Component({

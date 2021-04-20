@@ -209,8 +209,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
     if (activeElementType) {
       const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
-      if (activeElementType === ELEMENT_TYPE.CONTENT) {
-        return activeSlide.elements.find((el: IContent) => el.elementId === activeElementId) as IContent
+      if (activeElementType === ELEMENT_TYPE.CONTENT && activeSlide.elements?.length > 0) {
+        return activeSlide.elements.find((el: IContent) => el.elementId === activeElementId) as IElementType
       }
     }
     return null
@@ -353,7 +353,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public ADD_SLIDE_ELEMENT ({ slideId, element }: { slideId: string, element: IContent }) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     if (slide) {
-      slide.elements.push(element)
+      slide.elements = slide.elements?.length ? [...slide.elements, element] : [element]
     }
   }
 
@@ -504,6 +504,17 @@ export class PresentationStore extends VuexModule implements IPresentationState 
         'name', 'fillColor', 'fontFamily', 'presentationId'
       ])
       const result = await api.updatePresentation(presentation)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Action({ rawError: true })
+  public async addPresentationSlide (slide: ISlide) {
+    try {
+      const api = new SlideApi(UserModule.getTokens.accessToken)
+      const id = await api.addPresentationSlide(slide) as string
+      PresentationModule.ADD_PRESENTATION_SLIDE({ ...slide, slideId: id })
     } catch (error) {
       console.log(error)
     }

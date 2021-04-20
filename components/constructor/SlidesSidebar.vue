@@ -54,13 +54,11 @@ export default class SlidesSidebar extends Vue {
 
   addSlide () {
     const slide: ISlide = {
-      presentationId: this.currentPresentation.name,
-      slideId: (+this.currentPresentation.slides[this.currentPresentation.slides.length - 1].slideId + 1).toString(),
+      presentationId: this.currentPresentation.presentationId,
       name: `Slide ${this.currentPresentation.slides.length + 1}`,
-      index: this.currentPresentation.slides.length + 1,
-      elements: []
+      index: this.currentPresentation.slides.length + 1
     }
-    PresentationModule.ADD_PRESENTATION_SLIDE(slide)
+    PresentationModule.addPresentationSlide(slide)
   }
 }
 </script>

@@ -32,10 +32,11 @@ $canvas-width: 1400px;
   width: 100%;
   height: 80vh;
   margin-top: 20px;
-  overflow: auto;
   border: $grey-2 1px solid;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  position: relative;
 }
 </style>

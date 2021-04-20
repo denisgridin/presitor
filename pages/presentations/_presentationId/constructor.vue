@@ -20,6 +20,7 @@ import ContextMenu from '@/components/ContextMenu'
 import { LAYOUTS } from '@/utils/enums'
 import { CommonModule } from '@/store/common'
 import { PresentationModule } from '@/store/presentation'
+import { asyncForEach } from '@/utils/helpers'
 
 @Component({
   components: {
@@ -41,14 +42,14 @@ export default class Constructor extends Vue {
         console.log(slides)
         if (Array.isArray(slides)) {
           PresentationModule.SET_CURRENT_SLIDES(slides)
-          if (slides[0]) {
-            const { presentationId, slideId } = slides[0]
+          await asyncForEach(slides, async (slide) => {
+            const { presentationId, slideId } = slide
             console.table({ presentationId, slideId })
             await PresentationModule.getSlideElements({
               presentationId,
               slideId
             })
-          }
+          })
         }
       }
     } catch (error) {
