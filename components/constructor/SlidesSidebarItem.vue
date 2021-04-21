@@ -2,15 +2,16 @@
   <div class="slide" :class="{ 'slide-active': active }" @click="selectSlide">
     <div class="slide-index">{{ index }}</div>
     <div class="preview">
-      <Canvas class="slide-preview" :slide-elements="getSlideElements" :disabled="true" />
+      <Canvas :ref="`slide_${slide.slideId}`" class="slide-preview" :slide-elements="getSlideElements" :disabled="true" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'nuxt-property-decorator'
+import { Component, Vue, Prop, Emit, Watch } from 'nuxt-property-decorator'
 import { ISlide } from '~/interfaces/presentation'
 import Canvas from '~/components/constructor/canvas/Canvas.vue'
+import { PresentationModule } from '~/store/presentation'
 
 @Component({
   components: {
@@ -29,6 +30,27 @@ export default class SlidesSidebarItem extends Vue {
 
   get getSlideElements () {
     return this.slide.elements || []
+  }
+
+  get currentPlayedSlide () {
+    return this.isPresentationPlayed ? PresentationModule.getActiveSlideId : null
+  }
+
+  get isPresentationPlayed () {
+    return PresentationModule.currentPresentation.isPlay
+  }
+
+  @Watch('isPresentationPlayed')
+  onPresentationStateChanged (state: boolean) {
+    if (this.currentPlayedSlide === this.slide.slideId) {
+      console.log(this.$refs)
+      const element = (this as any).$refs[`slide_${this.currentPlayedSlide}`]?.$el
+      console.log('presentation played: ' + state)
+      console.log(element)
+      if (element) {
+        state ? element.requestFullscreen() : document.exitFullscreen()
+      }
+    }
   }
 
   @Emit('select')

@@ -1,7 +1,7 @@
 <template>
   <div class="canvas-wrapper" >
     <client-only>
-      <Canvas :slide-elements="getSlideElements" @mousedown="resetActiveElement"/>
+      <Canvas ref="canvas" :slide-elements="getSlideElements" @mousedown="resetActiveElement" />
     </client-only>
   </div>
 </template>

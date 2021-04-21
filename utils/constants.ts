@@ -218,38 +218,38 @@ export const TEXT_ALIGNS = [
   }
 ]
 
-export const DEFAULT_ELEMENTS: IDefaultElements = {
-  content: {
-    title: {
-      presentationId: PresentationModule.getCurrentPresentation.presentationId,
-      slideId: PresentationModule.getActiveSlideId,
-      name: 'Заголовок',
-      elementType: ELEMENT_TYPE.CONTENT,
-      insertion: {
-        tag: 'h1',
-        contentType: CONTENT_TYPE.TITLE
-      },
-      layout: {
-        x: getCenterCoords(300, 100).x,
-        y: getCenterCoords(300, 100).y,
-        width: 300,
-        height: 100,
-        rotation: 0
-      },
-      font: {
-        fontFamily: PresentationModule.getCurrentPresentation.fontFamily,
-        fontSize: 20,
-        letterSpacing: 3,
-        lineHeight: 30,
-        fontCase: 'normal',
-        color: '#ffffff',
-        bold: false,
-        italic: false,
-        align: ALIGN.LEFT
-      },
-      text: 'Заголовок'
-    } as IContent,
-    paragraph: {} as IContent,
-    list: {} as IContent
-  }
-}
+// export const DEFAULT_ELEMENTS: IDefaultElements = {
+//   content: {
+//     title: {
+//       presentationId: PresentationModule.getCurrentPresentation.presentationId,
+//       slideId: PresentationModule.getActiveSlideId,
+//       name: 'Заголовок',
+//       elementType: ELEMENT_TYPE.CONTENT,
+//       insertion: {
+//         tag: 'h1',
+//         contentType: CONTENT_TYPE.TITLE
+//       },
+//       layout: {
+//         x: getCenterCoords(300, 100).x,
+//         y: getCenterCoords(300, 100).y,
+//         width: 300,
+//         height: 100,
+//         rotation: 0
+//       },
+//       font: {
+//         fontFamily: PresentationModule.getCurrentPresentation.fontFamily,
+//         fontSize: 20,
+//         letterSpacing: 3,
+//         lineHeight: 30,
+//         fontCase: 'normal',
+//         color: '#ffffff',
+//         bold: false,
+//         italic: false,
+//         align: ALIGN.LEFT
+//       },
+//       text: 'Заголовок'
+//     } as IContent,
+//     paragraph: {} as IContent,
+//     list: {} as IContent
+//   }
+// }

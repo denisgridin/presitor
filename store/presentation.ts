@@ -22,7 +22,8 @@ export interface IConstructorPresentation extends IPresentation{
   activeSlide: ISlide,
   activeElementId: string | null,
   activeElementType: ELEMENT_TYPE | null,
-  hoverElementId: string | null
+  hoverElementId: string | null,
+  isPlay: boolean
 }
 
 export interface IPresentationState {
@@ -44,9 +45,20 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     items: IHistoryData[]
   }
 
+  private presentationDefaults = {
+    slides: [],
+    activeSlideId: '',
+    activeSlide: {} as ISlide,
+    activeElementId: '',
+    activeElementType: ELEMENT_TYPE.CONTENT,
+    hoverElementId: '',
+    isPlay: false
+  }
+
   private updatePresentationDebounce: any
 
   public currentPresentation = {
+    isPlay: false,
     presentationId: '1',
     name: 'Презентация 2',
     activeSlideId: '1',
@@ -270,12 +282,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   SET_CURRENT_PRESENTATION (presentation: IPresentation) {
     Vue.set(this, 'currentPresentation', {
       ...presentation,
-      slides: [],
-      activeSlideId: '',
-      activeSlide: {} as ISlide,
-      activeElementId: '',
-      activeElementType: ELEMENT_TYPE.CONTENT,
-      hoverElementId: ''
+      ...this.presentationDefaults
     })
   }
 
@@ -533,6 +540,35 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       PresentationModule.ADD_PRESENTATION_SLIDE({ ...slide, slideId: id })
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  @Mutation
+  public TOGGLE_PRESENTATION_PLAY (state: boolean) {
+    this.currentPresentation.isPlay = state
+  }
+
+  @Action
+  public playPresentation (state: boolean) {
+    this.TOGGLE_PRESENTATION_PLAY(state)
+  }
+
+  @Action
+  public setCurrentSlidePosition (step: number) {
+    this.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null, type: null })
+    const index = this.currentPresentation.slides.findIndex(slide => slide.slideId === this.currentPresentation.activeSlideId)
+    console.log(index, step)
+    const setSlideId = (index: number) => {
+      if (index + step <= this.currentPresentation.slides.length - 1) {
+        const currentSlideId = this.currentPresentation.slides[index + step].slideId
+        this.SET_ACTIVE_SLIDE_ID(currentSlideId)
+      }
+    }
+
+    if (step > 0) {
+      setSlideId(index)
+    } else if (step < this.currentPresentation.slides.length - 1) {
+      setSlideId(index)
     }
   }
 }

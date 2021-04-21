@@ -6,24 +6,15 @@
       </nuxt-link>
       <slot name="middle-data">
       </slot>
-      <div v-if="currentPresentation" class="middle-data">
-        {{ currentPresentation.name }}
-      </div>
-      <HeaderButtons />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { PresentationModule } from '~/store/presentation'
-export default Vue.extend({
-  computed: {
-    currentPresentation () {
-      return PresentationModule.getCurrentPresentation
-    }
-  }
-})
+import { Component, Vue } from 'nuxt-property-decorator'
+@Component
+export default class Header extends Vue {
+}
 
 </script>
 

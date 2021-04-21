@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import SlidesSidebarItem from '@/components/constructor/SlidesSidebarItem.vue'
 import { ISlide } from '~/interfaces/presentation'
