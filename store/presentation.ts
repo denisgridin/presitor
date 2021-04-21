@@ -10,6 +10,7 @@ import { UserModule } from '~/store/user'
 import { SlideApi } from '~/api/slide'
 import { ElementApi } from '~/api/element'
 import login from '~/pages/login.vue'
+import Vue from 'vue'
 const pick = require('lodash.pick')
 
 const uuid = require('uuid-random')
@@ -223,35 +224,41 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   @Mutation
   public ADD_HISTORY_RECORD (data: IHistoryData) {
     const clonedItem = cloneDeep(data.element)
-    this.history.items.push({ type: data.type, element: clonedItem })
-    this.history.index = this.history.items.length - 1
+    // this.history.items.push({ type: data.type, element: clonedItem })
+    // this.history.index = this.history.items.length - 1
+    Vue.set(this.history, 'items', [...this.history.items, { type: data.type, element: clonedItem }])
+    Vue.set(this.history, 'index', this.history.items.length - 1)
   }
 
   @Mutation
   public SET_HISTORY_CURSOR (index: number) {
-    this.history.index = index
+    Vue.set(this.history, 'index', index)
+    // this.history.index = index
   }
 
   @Mutation
   public SET_ACTIVE_SLIDE_ID (id: string) {
-    this.currentPresentation.activeSlideId = id
+    Vue.set(this.currentPresentation, 'activeSlideId', id)
   }
 
   @Mutation
   public SET_ACTIVE_ELEMENT_ID_AND_TYPE ({ id, type }: { id: string | null, type: ELEMENT_TYPE | null }) {
-    this.currentPresentation.activeElementId = id
-    this.currentPresentation.activeElementType = type
+    Vue.set(this.currentPresentation, 'activeElementId', id)
+    Vue.set(this.currentPresentation, 'activeElementType', type)
   }
 
   @Mutation
   public SET_HOVER_ELEMENT ({ id }: { id: string | null }) {
-    this.currentPresentation.hoverElementId = id
+    // this.currentPresentation.hoverElementId = id
+    Vue.set(this.currentPresentation, 'hoverElementId', id)
   }
 
   @Mutation
   public ADD_PRESENTATION_SLIDE (slide: ISlide) {
     console.log(slide)
-    this.currentPresentation.slides.push(slide)
+    Vue.set(this.currentPresentation, 'slides', [...this.currentPresentation.slides, slide])
+    Vue.set(this.currentPresentation, 'activeSlideId', slide.slideId)
+    // this.currentPresentation.slides.push(slide)
   }
 
   @Mutation
@@ -261,7 +268,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   @Mutation
   SET_CURRENT_PRESENTATION (presentation: IPresentation) {
-    this.currentPresentation = {
+    Vue.set(this, 'currentPresentation', {
       ...presentation,
       slides: [],
       activeSlideId: '',
@@ -269,12 +276,13 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       activeElementId: '',
       activeElementType: ELEMENT_TYPE.CONTENT,
       hoverElementId: ''
-    }
+    })
   }
 
   @Mutation
   SET_CURRENT_SLIDES (slides: ISlide[]) {
-    this.currentPresentation.slides = slides
+    Vue.set(this.currentPresentation, 'slides', slides)
+    // this.currentPresentation.slides = slides
   }
 
   @Mutation
@@ -287,14 +295,15 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     if (slide) {
-      slide.elements = elements
+      Vue.set(slide, 'elements', elements)
+      // slide.elements = elements
     }
   }
 
   @Mutation
   public UPDATE_PRESENTATION_FIELD ({ key, value }: { key: string, value: string | number }) {
-    this.currentPresentation = { ...this.currentPresentation, ...{ [key]: value } }
-
+    Vue.set(this, 'currentPresentation', { ...this.currentPresentation, ...{ [key]: value } })
+    // this.currentPresentation = { ...this.currentPresentation, ...{ [key]: value } }
   }
 
   @Mutation
@@ -303,7 +312,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     const element = slide?.elements.find(element => element.elementId === elementId)
     if (element) {
       console.log(`set ${key} = ${value}`)
-      element.layout[`${key}`] = value
+      Vue.set(element.layout, key, value)
+      // element.layout[`${key}`] = value
     }
   }
 
@@ -313,7 +323,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     const element = slide?.elements.find(element => element.elementId === elementId)
     if (element) {
       console.log(`set ${key} = ${value}`)
-      element.font[`${key}`] = value
+      Vue.set(element.font, key, value)
+      // element.font[`${key}`] = value
     }
   }
 
@@ -322,8 +333,10 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     const element = slide?.elements.find(element => element.elementId === elementId)
     if (element) {
-      console.log(`set ${key} = ${value}`)
-      element[`${key}`] = value
+      const valueText = typeof value === 'object' ? JSON.stringify(value) : value
+      // console.log(`set ${key} = ${valueText}`)
+      Vue.set(element, key, value)
+      // element[`${key}`] = value
     }
   }
 
@@ -345,7 +358,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public REMOVE_SLIDE_ELEMENT ({ slideId, elementId }: { slideId: string, elementId: string }) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     if (slide) {
-      slide.elements = slide.elements.filter((el: IElement) => el.elementId !== elementId)
+      Vue.set(slide, 'elements', slide.elements.filter((el: IElement) => el.elementId !== elementId))
+      // slide.elements =
     }
   }
 
@@ -353,7 +367,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   public ADD_SLIDE_ELEMENT ({ slideId, element }: { slideId: string, element: IContent }) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     if (slide) {
-      slide.elements = slide.elements?.length ? [...slide.elements, element] : [element]
+      const elements = slide.elements = slide.elements?.length ? [...slide.elements, element] : [element]
+      console.log('elements', elements)
+      Vue.set(slide, 'elements', elements)
     }
   }
 

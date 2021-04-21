@@ -7,7 +7,7 @@
       :style="contentStyle"
       v-html="contentHTML"
     >
-      {{ element.text }}
+      {{ element.text.trim() }}
     </div>
     <div
       v-else
@@ -40,7 +40,7 @@ export default class CanvasElementContent extends Vue {
   isContentEditable: boolean = false
 
   mounted () {
-    this.text = this.element.text
+    this.text = this.element.text.trim()
   }
 
   get contentHTML () {
@@ -51,7 +51,7 @@ export default class CanvasElementContent extends Vue {
         </ul>
       `
     } else {
-      return `<${this.element.insertion.tag}>${this.element.text}</${this.element.insertion.tag}>`
+      return `<${this.element.insertion.tag}>${this.element.text.trim()}</${this.element.insertion.tag}>`
     }
   }
 

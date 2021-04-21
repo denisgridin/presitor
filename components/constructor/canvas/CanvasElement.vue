@@ -19,20 +19,25 @@
 
 <script lang="ts">
 import interact from 'interactjs'
-import { Component, Prop, Vue } from 'nuxt-property-decorator'
+import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator'
 import type { Interactable } from '@interactjs/core/Interactable'
 import type { InteractEvent } from '@interactjs/core/InteractEvent'
-import { IElementType } from '~/interfaces/presentation'
+import { IElementType, ILayout } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
 import { CONFINES } from '~/utils/constants'
 import { CommonModule } from '~/store/common'
 
-@Component
+@Component({
+  data: () => {
+    return {
+      component: {} as Interactable,
+      isActive: false as boolean,
+      layout: { } as ILayout,
+      updateDebounce: null as any
+    }
+  }
+})
 export default class CanvasElement extends Vue {
-  component = {} as Interactable
-  isActive: boolean = false
-
-  updateDebounce: any = null
 
   @Prop() readonly element: IElementType
   @Prop({ default: false }) readonly disabled: boolean
@@ -83,9 +88,16 @@ export default class CanvasElement extends Vue {
     ]
   }
 
+  @Watch('element.layout')
+  onLayoutUpdated (layout: ILayout) {
+    this.$set(this, 'layout', layout)
+  }
+
   mounted () {
     if (!this.disabled) {
-      this.init()
+      this.$nextTick(() => {
+        this.init()
+      })
     }
   }
 

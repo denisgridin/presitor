@@ -1,13 +1,16 @@
 <template>
   <div class="canvas-wrapper" >
-    <Canvas :slide-elements="getSlideElements" @mousedown="resetActiveElement"/>
+    <client-only>
+      <Canvas :slide-elements="getSlideElements" @mousedown="resetActiveElement"/>
+    </client-only>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import Canvas from '@/components/constructor/canvas/Canvas.vue'
 import { PresentationModule } from '@/store/presentation'
+import { IElementType } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -15,8 +18,21 @@ import { PresentationModule } from '@/store/presentation'
   }
 })
 export default class PresentationCanvas extends Vue {
+  elements: IElementType[] = []
+
   get getSlideElements () {
-    return PresentationModule.getActiveSlide?.elements || []
+    return this.activeSlide?.elements || []
+  }
+
+  get activeSlide () {
+    return PresentationModule.getActiveSlide
+  }
+
+  @Watch('activeSlide.elements')
+  onElementsChanged (elements: IElementType[]) {
+    console.log('elements changed')
+    this.$set(this, 'elements', elements)
+    this.$forceUpdate()
   }
 
   resetActiveElement () {

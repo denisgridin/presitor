@@ -54,7 +54,7 @@ export default class EditorLayout extends Vue {
   setElementValue (key: string, event: any) {
     console.log(event.target.value)
     const layout = this.getActiveElement.layout
-    layout[key] = event.target.value
+    layout[key] = +event.target.value
     PresentationModule.UPDATE_ELEMENT_VALUE(
       {
         key: 'layout',
@@ -69,7 +69,8 @@ export default class EditorLayout extends Vue {
           key: 'layout',
           value: layout,
           slideId: this.getActiveElement?.slideId,
-          elementId: this.getActiveElement?.elementId
+          elementId: this.getActiveElement?.elementId,
+          element: this.getActiveElement
         })
     }, 1000)
   }

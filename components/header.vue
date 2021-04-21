@@ -1,7 +1,9 @@
 <template>
   <div class="wrapper-header">
     <div class="header">
-      <Logo class="header-logo" width="60px" height="60px" />
+      <nuxt-link to="/">
+        <Logo class="header-logo" width="60px" height="60px" />
+      </nuxt-link>
       <slot name="middle-data">
       </slot>
       <div v-if="currentPresentation" class="middle-data">

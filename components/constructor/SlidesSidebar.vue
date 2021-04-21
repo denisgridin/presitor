@@ -27,16 +27,15 @@ import { ISlide } from '~/interfaces/presentation'
 @Component({
   components: {
     SlidesSidebarItem
-  },
-  mounted () {
-    this.activeSlideId = PresentationModule.getActiveSlideId
   }
 })
 export default class SlidesSidebar extends Vue {
-  activeSlideId: string = '1'
-
   get currentPresentation () {
     return PresentationModule.getCurrentPresentation
+  }
+
+  get getActiveSlideId () {
+    return PresentationModule.getActiveSlideId
   }
 
   get slides () {
@@ -44,11 +43,10 @@ export default class SlidesSidebar extends Vue {
   }
 
   isActive (id: string): boolean {
-    return this.activeSlideId === id
+    return this.getActiveSlideId === id
   }
 
   setActiveSlide (id: string): void {
-    this.activeSlideId = id
     PresentationModule.SET_ACTIVE_SLIDE_ID(id)
   }
 
@@ -56,7 +54,8 @@ export default class SlidesSidebar extends Vue {
     const slide: ISlide = {
       presentationId: this.currentPresentation.presentationId,
       name: `Slide ${this.currentPresentation.slides.length + 1}`,
-      index: this.currentPresentation.slides.length + 1
+      index: this.currentPresentation.slides.length + 1,
+      elements: []
     }
     PresentationModule.addPresentationSlide(slide)
   }
