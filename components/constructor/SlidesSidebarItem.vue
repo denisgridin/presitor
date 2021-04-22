@@ -2,7 +2,24 @@
   <div class="slide" :class="{ 'slide-active': active }" @click="selectSlide">
     <div class="slide-index">{{ index }}</div>
     <div class="preview">
-      <Canvas :ref="`slide_${slide.slideId}`" class="slide-preview" :slide-elements="getSlideElements" :disabled="true" />
+      <Canvas :ref="`slide_${slide.slideId}`" class="slide-preview" :slide-elements="getSlideElements" :disabled="true">
+        <template #controller>
+          <div class="fullscreen-controller">
+            <div class="controller-button" @click="setSlidePosition(-1)">
+              <i class="bx bx-left-arrow-circle"></i>
+            </div>
+            <div class="controller-button">
+              <span contenteditable="true" ref="slide-input" @input="setCurrentIndex" @keydown.enter.prevent.stop="changeSlide">{{ index }}</span>
+            </div>
+            <div class="controller-button" @click="setSlidePosition(1)">
+              <i class="bx bx-right-arrow-circle"></i>
+            </div>
+            <div class="controller-button" @click="exit">
+              <i class="bx bx-exit-fullscreen"></i>
+            </div>
+          </div>
+        </template>
+      </Canvas>
     </div>
   </div>
 </template>
@@ -12,6 +29,7 @@ import { Component, Vue, Prop, Emit, Watch } from 'nuxt-property-decorator'
 import { ISlide } from '~/interfaces/presentation'
 import Canvas from '~/components/constructor/canvas/Canvas.vue'
 import { PresentationModule } from '~/store/presentation'
+import { exitFullScreen } from '~/utils/helpers'
 
 @Component({
   components: {
@@ -19,11 +37,14 @@ import { PresentationModule } from '~/store/presentation'
   }
 })
 export default class SlidesSidebarItem extends Vue {
+
   @Prop()
   slide: ISlide
 
   @Prop()
   index: number
+
+  currentPlayedSlideIndex = this.index
 
   @Prop()
   active: boolean
@@ -54,15 +75,59 @@ export default class SlidesSidebarItem extends Vue {
     this.playSlide(state)
   }
 
+  exit () {
+    exitFullScreen()
+  }
+
+  setSlidePosition (step) {
+    PresentationModule.setCurrentSlidePosition(step)
+  }
+
+  setCurrentIndex (event) {
+    const value = event.target.innerText
+    const resetValue = (event) => {
+      event.target.innerText = this.index
+    }
+
+    if (/^\d+$/.test(value)) {
+      if (value <= PresentationModule.getCurrentSlides.length) {
+        console.log('change to ' + value)
+        this.currentPlayedSlideIndex = +value
+      } else {
+        resetValue(event)
+      }
+    } else {
+      resetValue(event)
+    }
+  }
+
+  changeSlide () {
+    this.$refs['slide-input'].blur()
+    const slideId = PresentationModule.getCurrentSlides[this.currentPlayedSlideIndex + 1].slideId
+    PresentationModule.setCurrentSlidePosition(slideId)
+  }
+
   playSlide (state: boolean) {
-    if (this.currentPlayedSlide === this.slide.slideId) {
+    if (this.currentPlayedSlide === this.slide.slideId && PresentationModule.isPresentationPlayed) {
       console.log(this.$refs)
       const element = (this as any).$refs[`slide_${this.currentPlayedSlide}`]?.$el
       console.log('presentation played: ' + state)
       console.log(element)
       if (element) {
-        state ? element.requestFullscreen() : document.exitFullscreen()
+        state ? this.startFullScreen(element) : PresentationModule.playPresentation(false)
       }
+    }
+  }
+
+  startFullScreen (element: HTMLElement) {
+    if (element.requestFullscreen) {
+      element.requestFullscreen()
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen()
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen()
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen()
     }
   }
 
@@ -112,10 +177,59 @@ export default class SlidesSidebarItem extends Vue {
   &-preview {
     transform-origin: top left;
     transform: $canvas-preview-scale;
+
+    &:fullscreen {
+      background: black;
+    }
   }
 
   .preview {
     overflow: hidden;
+
+    .fullscreen-controller {
+      display: none;
+      top: 90%;
+      left: calc(100vw / 2 - 92.5px);
+      position: fixed;
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      align-items: center;
+
+      @media all and (display-mode: fullscreen) {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+      }
+
+      .controller-button {
+        padding: 10px;
+        transition: $transition-delay;
+
+        &:nth-child(2) {
+          &:hover {
+            background: transparent;
+          }
+        }
+
+        &:nth-child(3) {
+          margin: 0 10px;
+        }
+
+        &:hover {
+          background: $color-primary-transparent-10;
+        }
+
+        span {
+          font-family: 'Open Sans Bold', sans-serif;
+          font-size: 32px;
+        }
+
+        .bx {
+          font-size: 35px;
+        }
+      }
+    }
   }
 }
 </style>

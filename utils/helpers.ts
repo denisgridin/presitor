@@ -78,6 +78,18 @@ export async function asyncForEach (array: any[], callback: (item: any, i: numbe
   }
 }
 
+export function exitFullScreen () {
+  if (document.exitFullscreen) {
+    document.exitFullscreen()
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen()
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen()
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen()
+  }
+}
+
 // export function parseImageInBlob (file: File) {
 //
 //   console.log(data)

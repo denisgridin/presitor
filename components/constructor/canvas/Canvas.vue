@@ -6,6 +6,7 @@
           <CanvasElementContent :element="element" :disabled="disabled" />
         </CanvasElement>
       </keep-alive>
+      <slot name="controller" class="controller"></slot>
     </div>
   </div>
 </template>

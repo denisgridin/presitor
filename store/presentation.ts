@@ -191,6 +191,10 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     ] as ISlide[]
   } as IConstructorPresentation
 
+  public get isPresentationPlayed () {
+    return this.currentPresentation.isPlay
+  }
+
   public get getHistory () {
     return this.history
   }
@@ -554,6 +558,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Action
+  public setActiveSlideId (id: string) {
+    this.SET_ACTIVE_SLIDE_ID(id)
+  }
+
+  @Action
   public setCurrentSlidePosition (step: number) {
     this.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null, type: null })
     const index = this.currentPresentation.slides.findIndex(slide => slide.slideId === this.currentPresentation.activeSlideId)
@@ -561,7 +570,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     const setSlideId = (index: number) => {
       if ((index + step <= this.currentPresentation.slides.length - 1) && (index + step >= 0)) {
         const currentSlideId = this.currentPresentation.slides[index + step].slideId
-        this.SET_ACTIVE_SLIDE_ID(currentSlideId)
+        this.setActiveSlideId(currentSlideId)
       }
     }
 
