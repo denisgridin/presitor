@@ -36,12 +36,25 @@ export default class SlidesSidebarItem extends Vue {
     return this.isPresentationPlayed ? PresentationModule.getActiveSlideId : null
   }
 
+  get getActiveSlideId () {
+    return PresentationModule.getActiveSlideId
+  }
+
   get isPresentationPlayed () {
     return PresentationModule.currentPresentation.isPlay
   }
 
+  @Watch('getActiveSlideId')
+  onActiveSlideChanged (state: boolean) {
+    this.playSlide(state)
+  }
+
   @Watch('isPresentationPlayed')
   onPresentationStateChanged (state: boolean) {
+    this.playSlide(state)
+  }
+
+  playSlide (state: boolean) {
     if (this.currentPlayedSlide === this.slide.slideId) {
       console.log(this.$refs)
       const element = (this as any).$refs[`slide_${this.currentPlayedSlide}`]?.$el

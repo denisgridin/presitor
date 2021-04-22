@@ -559,7 +559,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     const index = this.currentPresentation.slides.findIndex(slide => slide.slideId === this.currentPresentation.activeSlideId)
     console.log(index, step)
     const setSlideId = (index: number) => {
-      if (index + step <= this.currentPresentation.slides.length - 1) {
+      if ((index + step <= this.currentPresentation.slides.length - 1) && (index + step >= 0)) {
         const currentSlideId = this.currentPresentation.slides[index + step].slideId
         this.SET_ACTIVE_SLIDE_ID(currentSlideId)
       }
