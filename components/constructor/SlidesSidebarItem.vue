@@ -1,5 +1,5 @@
 <template>
-  <div class="slide" :class="{ 'slide-active': active }" @click="selectSlide">
+  <div class="slide" :class="{ 'slide-active': active }" @click="selectSlide" @click.right.prevent="openContext">
     <div class="slide-index">{{ index }}</div>
     <div class="preview">
       <Canvas :ref="`slide_${slide.slideId}`" class="slide-preview" :slide-elements="getSlideElements" :disabled="true">
@@ -30,6 +30,7 @@ import { ISlide } from '~/interfaces/presentation'
 import Canvas from '~/components/constructor/canvas/Canvas.vue'
 import { PresentationModule } from '~/store/presentation'
 import { exitFullScreen, startFullScreen } from '~/utils/helpers'
+import { CommonModule } from '~/store/common'
 
 @Component({
   components: {
@@ -44,10 +45,13 @@ export default class SlidesSidebarItem extends Vue {
   @Prop()
   index: number
 
-  currentPlayedSlideIndex = this.index
-
   @Prop()
   active: boolean
+
+  @Prop()
+  removable: boolean
+
+  currentPlayedSlideIndex = this.index
 
   get getSlideElements () {
     return this.slide.elements || []
@@ -65,6 +69,19 @@ export default class SlidesSidebarItem extends Vue {
     return PresentationModule.currentPresentation.isPlay
   }
 
+  get getContextMenuItems () {
+    return [
+      {
+        id: 1,
+        text: 'Удалить',
+        handler: () => {
+          PresentationModule.removeSlide(this.slide)
+        },
+        icon: 'bx-trash'
+      }
+    ]
+  }
+
   @Watch('getActiveSlideId')
   onActiveSlideChanged (state: boolean) {
     if (document.fullscreen) {
@@ -80,6 +97,17 @@ export default class SlidesSidebarItem extends Vue {
   exit () {
     console.log('exit')
     exitFullScreen()
+  }
+
+  openContext () {
+    if (this.removable) {
+      console.log('open context')
+      CommonModule.SET_CONTEXT_MENU_OPTIONS({
+        active: true,
+        items: this.getContextMenuItems,
+        event: { pageX: event.pageX, pageY: event.pageY }
+      })
+    }
   }
 
   setSlidePosition (step) {

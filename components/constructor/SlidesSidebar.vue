@@ -3,8 +3,9 @@
     <div class="slides-sidebar__list">
       <SlidesSidebarItem
         v-for="(slide, index) in slides"
-        :key="slide.slideId"
         :ref="'slide_' + slide.slideId"
+        :key="slide.slideId"
+        :removable="true"
         :index="index + 1"
         :active="isActive(slide.slideId)"
         :slide="slide"
@@ -45,11 +46,14 @@ export default class SlidesSidebar extends Vue {
 
   @Watch('getActiveSlideId')
   onActiveSlideChanged (id) {
-    const element = this.$refs[`slide_${id}`][0].$el
-    if (element) {
-      element.scrollIntoView({ block: 'nearest' })
+    const refs = this.$refs[`slide_${id}`]
+    if (Array.isArray(refs)) {
+      const element = refs[0].$el
+      if (element) {
+        element.scrollIntoView({ block: 'nearest' })
+      }
+      console.log(element)
     }
-    console.log(element)
   }
 
   isActive (id: string): boolean {

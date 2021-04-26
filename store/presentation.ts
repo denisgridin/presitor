@@ -579,6 +579,26 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       setSlideId(index)
     }
   }
+
+  @Mutation
+  public REMOVE_SLIDE (slideId: string) {
+    Vue.set(this.currentPresentation, 'slides', this.currentPresentation.slides.filter(slide => slide.slideId !== slideId))
+  }
+
+  @Action
+  public removeSlide (slide: ISlide) {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new SlideApi(UserModule.getTokens.accessToken)
+        const result = await api.removeSlideById(slide)
+        this.REMOVE_SLIDE(slide.slideId)
+        resolve(result)
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 }
 
 export const PresentationModule = getModule(PresentationStore)
