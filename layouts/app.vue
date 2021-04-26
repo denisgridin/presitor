@@ -19,6 +19,11 @@ import { PresentationModule } from '~/store/presentation'
 })
 export default class app extends Vue {
   mounted () {
+    document.addEventListener('fullscreenchange', () => {
+      console.log('fullscreen ' + Boolean(document.fullscreenElement))
+      PresentationModule.playPresentation(Boolean(document.fullscreenElement))
+    })
+
     document.addEventListener('keydown', (event) => {
       switch (event.key) {
         case 'Escape': {
@@ -50,7 +55,7 @@ export default class app extends Vue {
   }
 
   toggleFullscreen () {
-    PresentationModule.playPresentation(!PresentationModule.currentPresentation.isPlay)
+    PresentationModule.playPresentation(true)
   }
 }
 </script>

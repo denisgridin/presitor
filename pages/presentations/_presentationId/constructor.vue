@@ -41,6 +41,7 @@ export default class Constructor extends Vue {
         const slides = await PresentationModule.getPresentationSlides(presentation.presentationId)
         console.log(slides)
         if (Array.isArray(slides)) {
+          PresentationModule.SET_ACTIVE_SLIDE_ID(slides[0].slideId)
           PresentationModule.SET_CURRENT_SLIDES(slides)
           await asyncForEach(slides, async (slide) => {
             const { presentationId, slideId } = slide

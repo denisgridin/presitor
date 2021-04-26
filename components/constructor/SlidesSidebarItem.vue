@@ -78,6 +78,7 @@ export default class SlidesSidebarItem extends Vue {
   }
 
   exit () {
+    console.log('exit')
     exitFullScreen()
   }
 

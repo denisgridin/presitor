@@ -427,7 +427,6 @@ export class PresentationStore extends VuexModule implements IPresentationState 
             slideId,
             elements
           })
-          this.SET_ACTIVE_SLIDE_ID(slideId)
         }
         resolve(elements)
       } catch (error) {
