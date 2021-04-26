@@ -29,7 +29,7 @@ import { Component, Vue, Prop, Emit, Watch } from 'nuxt-property-decorator'
 import { ISlide } from '~/interfaces/presentation'
 import Canvas from '~/components/constructor/canvas/Canvas.vue'
 import { PresentationModule } from '~/store/presentation'
-import { exitFullScreen } from '~/utils/helpers'
+import { exitFullScreen, startFullScreen } from '~/utils/helpers'
 
 @Component({
   components: {
@@ -67,7 +67,9 @@ export default class SlidesSidebarItem extends Vue {
 
   @Watch('getActiveSlideId')
   onActiveSlideChanged (state: boolean) {
-    this.playSlide(state)
+    if (document.fullscreen) {
+      this.playSlide(state)
+    }
   }
 
   @Watch('isPresentationPlayed')
@@ -114,20 +116,8 @@ export default class SlidesSidebarItem extends Vue {
       console.log('presentation played: ' + state)
       console.log(element)
       if (element) {
-        state ? this.startFullScreen(element) : PresentationModule.playPresentation(false)
+        state ? startFullScreen(element) : PresentationModule.playPresentation(false)
       }
-    }
-  }
-
-  startFullScreen (element: HTMLElement) {
-    if (element.requestFullscreen) {
-      element.requestFullscreen()
-    } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen()
-    } else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen()
-    } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen()
     }
   }
 

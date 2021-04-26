@@ -45,7 +45,7 @@ export default class app extends Vue {
     PresentationModule.playPresentation(false)
   }
 
-  setSlidePosition (step) {
+  setSlidePosition (step: number) {
     PresentationModule.setCurrentSlidePosition(step)
   }
 
