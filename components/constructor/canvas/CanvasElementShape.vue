@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="getShapeStyle">
     <div
       v-if="disabled"
       ref="input"
@@ -27,13 +27,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
-import { IContent } from '@/interfaces/presentation'
+import { IContent, IShape } from '@/interfaces/presentation'
 import { CONTENT_TYPE } from '~/utils/enums'
 import { PresentationModule } from '~/store/presentation'
 
 @Component
 export default class CanvasElementContent extends Vue {
-  @Prop() element: IContent
+  @Prop() element: IShape
   @Prop({ default: false }) readonly disabled: boolean
 
   text: string = ''
@@ -43,43 +43,47 @@ export default class CanvasElementContent extends Vue {
     this.text = this.element.text.trim()
   }
 
+  get getShapeStyle () {
+    const s = this.element.style
+    return {
+      // backgroundColor: s.fillColor,
+      // boxShadow: s.boxShadow,
+      // opacity: s.opacity,
+      // borderColor: s.borderColor,
+      // borderRadius: s.borderRadius,
+      // borderWidth: s.borderWidth,
+      // borderStyle: s.borderStyle
+    }
+  }
+
   get contentHTML () {
-    if (this.element.insertion) {
-      if (this.element.insertion.contentType === CONTENT_TYPE.LIST) {
-        return `
+    if (this.element.insertion.contentType === CONTENT_TYPE.LIST) {
+      return `
         <ul style="list-style-type: ${this.element.insertion.listStyle}">
           ${this.parseTextToList(this.element.text)}
         </ul>
       `
-      } else {
-        return `<${this.element.insertion.tag}>${this.element.text.trim()}</${this.element.insertion.tag}>`
-      }
     } else {
-      return ''
+      return `<${this.element.insertion.tag}>${this.element.text.trim()}</${this.element.insertion.tag}>`
     }
   }
 
   get contentStyle () {
-    const f = this.element.font
-    if (f) {
-      return {
-        ...this.element.font,
-        fontSize: `${this.element.font.fontSize}px`,
-        fontWeight: this.element.font.bold ? '700' : 'normal',
-        fontStyle: this.element.font.italic ? 'italic' : 'normal',
-        lineHeight: this.element.font.lineHeight + 'px',
-        letterSpacing: this.element.font.letterSpacing + 'px',
-        textAlign: this.element.font.align
-      }
-    } else {
-      return {}
+    return {
+      ...this.element.font,
+      fontSize: `${this.element.font.fontSize}px`,
+      fontWeight: this.element.font.bold ? '700' : 'normal',
+      fontStyle: this.element.font.italic ? 'italic' : 'normal',
+      lineHeight: this.element.font.lineHeight + 'px',
+      letterSpacing: this.element.font.letterSpacing + 'px',
+      textAlign: this.element.font.align
     }
   }
 
   parseTextToList (text: string) {
     const list = text.split('\n')
     console.log(list)
-    const html = list.map(el => {
+    const html = list.map((el) => {
       if (el) {
         return `<li>${el}</li>`
       } else {

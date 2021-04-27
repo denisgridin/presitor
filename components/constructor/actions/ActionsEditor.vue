@@ -6,6 +6,7 @@
       <EditorCommon />
       <EditorLayout />
       <EditorFont />
+      <EditorStyle />
     </div>
   </div>
 </template>
@@ -16,6 +17,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import EditorLayout from '@/components/constructor/editor/EditorLayout.vue'
 import EditorCommon from '@/components/constructor/editor/EditorCommon.vue'
 import EditorFont from '@/components/constructor/editor/EditorFont.vue'
+import EditorStyle from '@/components/constructor/editor/EditorStyle.vue'
 import ElementsTable from '@/components/constructor/actions/ElementsTable.vue'
 import History from '@/components/History'
 import { PresentationModule } from '@/store/presentation'
@@ -25,6 +27,7 @@ import { PresentationModule } from '@/store/presentation'
     EditorLayout,
     EditorFont,
     EditorCommon,
+    EditorStyle,
     ElementsTable,
     History
   }

@@ -16,12 +16,14 @@ import { IElementType } from '@/interfaces/presentation'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import CanvasElement from './CanvasElement.vue'
-import CanvasElementContent from './CanvasElementContent.vue'
+import CanvasElementContent from './CanvasElementContent'
+import CanvasElementShape from './CanvasElementShape'
 
 @Component({
   components: {
     CanvasElement,
-    CanvasElementContent
+    CanvasElementContent,
+    CanvasElementShape
   }
 })
 export default class Canvas extends Vue {

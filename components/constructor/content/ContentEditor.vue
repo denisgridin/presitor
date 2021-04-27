@@ -31,15 +31,11 @@ export default class ContentEditor extends Vue {
   }
 
   get getElementInsertion () {
-    return this.getActiveElement?.insertion
+    return this.getActiveElement?.insertion || { listStyle: 'none', contentType: 'none' }
   }
 
   get getContentType () {
-    return this.getElementInsertion.contentType
-  }
-
-  get currentOptions () {
-    return PresentationModule.getCurrentContent
+    return this.getElementInsertion?.contentType || 'none'
   }
 
   setElementListStyle (style) {

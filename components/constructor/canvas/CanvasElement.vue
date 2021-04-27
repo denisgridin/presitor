@@ -63,7 +63,25 @@ export default class CanvasElement extends Vue {
       transform: `translate(${this.getCurrentLayout.x}px, ${this.getCurrentLayout.y}px) rotate(${this.getCurrentLayout.rotation}deg)`,
       width: `${this.getCurrentLayout.width}px`,
       height: `${this.getCurrentLayout.height}px`,
-      pointerEvents: this.disabled ? 'none' : null
+      pointerEvents: this.disabled ? 'none' : null,
+      ...this.element.style
+    }
+  }
+
+  get boxStyle () {
+    const s = this.element.style
+    if (s) {
+      return {
+        backgroundColor: s.fillColor,
+        boxShadow: s.boxShadow,
+        opacity: s.opacity,
+        borderColor: s.borderColor,
+        borderRadius: s.borderRadius,
+        borderWidth: s.borderWidth,
+        borderStyle: s.borderStyle
+      }
+    } else {
+      return {}
     }
   }
 

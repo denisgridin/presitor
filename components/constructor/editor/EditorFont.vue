@@ -120,11 +120,12 @@ export default class EditorFont extends Vue {
       PresentationModule.UPDATE_ELEMENT_FONT({ key, value, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
     }
 
+    const currentElement = this.getActiveElement
     clearTimeout(this.updateDebounce)
     this.updateDebounce = setTimeout(() => {
-      const font = this.getActiveElement?.font as IFont
+      const font = currentElement?.font as IFont
       font[key] = value
-      PresentationModule.updateElementValue({ key: 'font', value: font, slideId: this.getActiveElement?.slideId as string, elementId: this.getActiveElement?.elementId as string })
+      PresentationModule.updateElementValue({ key: 'font', value: font, slideId: currentElement?.slideId as string, elementId: currentElement?.elementId as string })
     }, 1000)
   }
 }

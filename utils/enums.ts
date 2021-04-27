@@ -21,6 +21,16 @@ export enum FIGURE {
   rectangle = 'rectangle'
 }
 
+export enum BORDER_STYLE {
+  SOLID = 'solid',
+  DASHED = 'dashed',
+  DOTTED = 'dotted',
+  GROOVE = 'groove',
+  RIDGE = 'ridge',
+  OUTSET = 'outset',
+  NONE = 'none'
+}
+
 export enum ELEMENT_TYPE {
   CONTENT = 'content',
   SHAPE = 'shape',

@@ -1,5 +1,5 @@
 <template>
-  <div class="constructor-element-item">
+  <div class="constructor-element-item" @click="addShape">
     <i :class="[ `bx bxs-${item.icon}` ]"></i>
     <span>{{ item.name }}</span>
   </div>
@@ -8,10 +8,16 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import { IConstructorElementShape } from '~/interfaces'
+import { PresentationModule } from '~/store/presentation'
+import { ELEMENT_TYPE } from '~/utils/enums'
 
 @Component
 export default class ConstructorElementItem extends Vue {
   @Prop() item: IConstructorElementShape
+
+  addShape () {
+    PresentationModule.addSlideElement({ slideId: (this as any).$current('slide').slideId, data: { elementType: ELEMENT_TYPE.CONTENT, name: 'Графический элемент', figure: this.item.type } })
+  }
 }
 </script>
 

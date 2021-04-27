@@ -15,13 +15,13 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { CONTENT_ELEMENTS } from '~/utils/constants'
 import { PresentationModule } from '~/store/presentation'
-import { ELEMENT_TYPE } from '~/utils/enums'
+import { CONTENT_TYPE, ELEMENT_TYPE } from '~/utils/enums'
 
 @Component
 export default class ContentSelector extends Vue {
   contentElements = CONTENT_ELEMENTS
 
-  addElement (contentType) {
+  addElement (contentType: CONTENT_TYPE) {
     PresentationModule.addSlideElement({ slideId: (this as any).$current('slide').slideId, data: { elementType: ELEMENT_TYPE.CONTENT, contentType, name: 'Тестовый элемент' } })
   }
 }

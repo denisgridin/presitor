@@ -226,8 +226,10 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
     if (activeElementType) {
       const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
-      if (activeElementType === ELEMENT_TYPE.CONTENT && activeSlide.elements?.length > 0) {
-        return activeSlide.elements.find((el: IContent) => el.elementId === activeElementId) as IElementType
+      if (activeSlide) {
+        if (activeElementType === ELEMENT_TYPE.CONTENT && activeSlide.elements?.length > 0) {
+          return activeSlide.elements.find((el: IContent) => el.elementId === activeElementId) as IElementType
+        }
       }
     }
     return null

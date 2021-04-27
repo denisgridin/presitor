@@ -219,6 +219,16 @@ export const TEXT_ALIGNS = [
   }
 ]
 
+export const ELEMENT_STYLES = {
+  backgroundColor: '#6C63FF',
+  boxShadow: '',
+  opacity: 1,
+  borderColor: '',
+  borderRadius: '',
+  borderWidth: '',
+  borderStyle: ''
+}
+
 // export const DEFAULT_ELEMENTS: IDefaultElements = {
 //   content: {
 //     title: {

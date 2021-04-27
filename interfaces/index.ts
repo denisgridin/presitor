@@ -44,6 +44,7 @@ export type IDefaultElements = {
 
 export interface ELEMENT_BUILDER_DATA {
   elementType: ELEMENT_TYPE,
+  figure?: 'rectangle' | 'square' | 'circle',
   contentType?: CONTENT_TYPE,
   name?: string
 }
