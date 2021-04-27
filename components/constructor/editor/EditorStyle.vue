@@ -11,6 +11,7 @@
         <div class="inputs-item">
           <label for="backgroundColor">Цвет заднего фона</label>
           <v-color-picker
+            id="backgroundColor"
             width="250px"
             dot-size="25"
             swatches-max-height="200"
@@ -18,11 +19,10 @@
             :value="getCurrentStyle.backgroundColor"
             @input="(val) => setElementValue('backgroundColor', val.hexa, val)"
           ></v-color-picker>
-          <input id="backgroundColor" class="vs-input" type="number" :value="getCurrentStyle.backgroundColor" @input="(e) => setElementValue('backgroundColor', +e.target.value)">
         </div>
         <div class="inputs-item">
           <label for="boxShadow">Тень</label>
-          <input id="boxShadow" class="vs-input" type="number" :value="getCurrentStyle.boxShadow" @input="(e) => setElementValue('boxShadow', +e.target.value)">
+          <ShadowPicker :value="getCurrentStyle.boxShadow" @input="(val) => setElementValue('boxShadow', val)" />
         </div>
         <div class="inputs-item">
           <label for="opacity">Прозрачность</label>
@@ -54,8 +54,13 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { IElementType, IStyle } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
+import ShadowPicker from '~/components/constructor/actions/ShadowPicker'
 const cloneDeep = require('lodash.clonedeep')
-@Component
+@Component({
+  components: {
+    ShadowPicker
+  }
+})
 export default class EditorStyle extends Vue {
   hidden: boolean = false
   updateDebounce: any = null
@@ -67,7 +72,7 @@ export default class EditorStyle extends Vue {
     return PresentationModule.getActiveElement?.style
   }
 
-  setElementValue (key: string, val: any, data: any) {
+  setElementValue (key: string, val: any, data?: any) {
     console.log(data)
     const value = val || data
     console.log(`key: ${key}, value: `, value)

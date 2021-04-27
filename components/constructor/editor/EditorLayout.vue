@@ -38,6 +38,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { IElementType, ILayout } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
+const cloneDeep = require('lodash.clonedeep')
 
 @Component
 export default class EditorLayout extends Vue {
@@ -58,7 +59,7 @@ export default class EditorLayout extends Vue {
     PresentationModule.UPDATE_ELEMENT_VALUE(
       {
         key: 'layout',
-        value: layout,
+        value: cloneDeep(layout),
         slideId: this.getActiveElement?.slideId,
         elementId: this.getActiveElement?.elementId
       })
@@ -68,10 +69,10 @@ export default class EditorLayout extends Vue {
       PresentationModule.updateElementValue(
         {
           key: 'layout',
-          value: layout,
-          slideId: this.currentElement?.slideId,
-          elementId: this.currentElement?.elementId,
-          element: this.currentElement
+          value: cloneDeep(layout),
+          slideId: currentElement?.slideId,
+          elementId: currentElement?.elementId,
+          element: currentElement
         })
     }, 1000)
   }
