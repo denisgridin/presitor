@@ -264,3 +264,26 @@ export const ELEMENT_STYLES = {
 //     list: {} as IContent
 //   }
 // }
+
+export const BORDER_STYLES = [
+  {
+    value: 'solid',
+    text: 'Сплошная'
+  },
+  {
+    value: 'dashed',
+    text: 'Прерывистая'
+  },
+  {
+    value: 'dotted',
+    text: 'Точечная'
+  },
+  {
+    value: 'inset',
+    text: 'Внутренняя'
+  },
+  {
+    value: 'outset',
+    text: 'Внешняя'
+  }
+]

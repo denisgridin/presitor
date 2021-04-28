@@ -54,8 +54,8 @@ export interface IStyle {
   boxShadow: string,
   opacity: number,
   borderColor: string,
-  borderRadius: string,
-  borderWidth: string,
+  borderRadius: number,
+  borderWidth: number,
   borderStyle: BORDER_STYLE,
   [ key: string ]: any
 }

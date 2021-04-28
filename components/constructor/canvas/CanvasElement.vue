@@ -38,7 +38,6 @@ import { CommonModule } from '~/store/common'
   }
 })
 export default class CanvasElement extends Vue {
-
   @Prop() readonly element: IElementType
   @Prop({ default: false }) readonly disabled: boolean
 
@@ -60,28 +59,15 @@ export default class CanvasElement extends Vue {
 
   get getElementStyle () {
     return {
+      ...this.element.style,
       transform: `translate(${this.getCurrentLayout.x}px, ${this.getCurrentLayout.y}px) rotate(${this.getCurrentLayout.rotation}deg)`,
       width: `${this.getCurrentLayout.width}px`,
       height: `${this.getCurrentLayout.height}px`,
       pointerEvents: this.disabled ? 'none' : null,
-      ...this.element.style
-    }
-  }
-
-  get boxStyle () {
-    const s = this.element.style
-    if (s) {
-      return {
-        backgroundColor: s.fillColor,
-        boxShadow: s.boxShadow,
-        opacity: s.opacity,
-        borderColor: s.borderColor,
-        borderRadius: s.borderRadius,
-        borderWidth: s.borderWidth,
-        borderStyle: s.borderStyle
-      }
-    } else {
-      return {}
+      borderWidth: this.element.style?.borderWidth + 'px',
+      borderRadius: this.element.style?.borderRadius + 'px',
+      borderColor: this.element.style?.borderColor || 'transparent',
+      borderStyle: this.element.style?.borderStyle || 'solid'
     }
   }
 
