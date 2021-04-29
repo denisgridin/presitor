@@ -7,21 +7,20 @@
     @click.exact="setActiveElement"
     @click.right.prevent="openContext"
   >
-    <i class="bx" :class="getIconClass"></i>
+    <i class="bx"></i>
     <span>{{ element.name }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
-import { IContent } from '~/interfaces/presentation'
-import { ELEMENT_TYPE } from '~/utils/enums'
 import { PresentationModule } from '~/store/presentation'
 import { CommonModule } from '~/store/common'
+import { IElement } from '~/interfaces/presentation'
 
 @Component
 export default class ElementsTableItem extends Vue {
-  @Prop() element: IContent
+  @Prop() element: IElement
 
   get isSelected () {
     return this.getActiveElement?.elementId === this.element.elementId
@@ -29,14 +28,6 @@ export default class ElementsTableItem extends Vue {
 
   get getActiveElement () {
     return PresentationModule.getActiveElement
-  }
-
-  get getIconClass () {
-    switch (this.element.elementType) {
-      case ELEMENT_TYPE.CONTENT: {
-        return 'bx-text'
-      }
-    }
   }
 
   get getContextMenuItems () {

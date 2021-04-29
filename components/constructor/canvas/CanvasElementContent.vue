@@ -27,13 +27,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
-import { IContent } from '@/interfaces/presentation'
 import { CONTENT_TYPE } from '~/utils/enums'
 import { PresentationModule } from '~/store/presentation'
+import { IElement } from '~/interfaces/presentation'
 
 @Component
 export default class CanvasElementContent extends Vue {
-  @Prop() element: IContent
+  @Prop() element: IElement
   @Prop({ default: false }) readonly disabled: boolean
 
   text: string = ''
@@ -79,7 +79,7 @@ export default class CanvasElementContent extends Vue {
   parseTextToList (text: string) {
     const list = text.split('\n')
     console.log(list)
-    const html = list.map(el => {
+    const html = list.map((el: string) => {
       if (el) {
         return `<li>${el}</li>`
       } else {
@@ -90,7 +90,7 @@ export default class CanvasElementContent extends Vue {
     return html
   }
 
-  editElementText (event) {
+  editElementText (event: any) {
     const value = event.target.innerText
     this.text = value
     console.log(value)
@@ -112,7 +112,7 @@ export default class CanvasElementContent extends Vue {
 
     if (flag) {
       setTimeout(() => {
-        this.$refs.input.focus()
+        (this as any).$refs.input.focus()
       }, 0)
     }
   }

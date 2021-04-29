@@ -31,7 +31,7 @@
           ></textarea>
         </div>
         <div class="inputs-item">
-          <ContentEditor v-if="getActiveElement.elementType === 'content'" :content="getActiveElement" />
+          <ContentEditor :content="getActiveElement" />
         </div>
       </div>
     </vs-alert>

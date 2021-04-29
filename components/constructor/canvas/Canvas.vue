@@ -1,9 +1,9 @@
 <template>
   <div ref="canvas" class="presentation-canvas" :style="canvasStyle">
-    <div v-for="element in slideElements" :key="element.elementId">
+    <div v-for="(element, index) in slideElements" :key="element.elementId" @dblclick="setContentEditable(index)">
       <keep-alive>
         <CanvasElement :element="element" :disabled="disabled">
-          <CanvasElementContent :element="element" :disabled="disabled" />
+          <CanvasElementContent :ref="'child_' + index" :element="element" :disabled="disabled" />
         </CanvasElement>
       </keep-alive>
     </div>
@@ -12,22 +12,20 @@
 </template>
 
 <script lang="ts">
-import { IElementType } from '@/interfaces/presentation'
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import CanvasElement from './CanvasElement.vue'
 import CanvasElementContent from './CanvasElementContent'
-import CanvasElementShape from './CanvasElementShape'
+import { IElement } from '~/interfaces/presentation'
 
 @Component({
   components: {
     CanvasElement,
-    CanvasElementContent,
-    CanvasElementShape
+    CanvasElementContent
   }
 })
 export default class Canvas extends Vue {
-  @Prop() slideElements: IElementType
+  @Prop() slideElements: IElement
   @Prop({ default: false }) disabled: boolean
 
   updated () {
@@ -36,20 +34,26 @@ export default class Canvas extends Vue {
 
   get canvasStyle () {
     return {
-      background: this.presentationOptions.fillColor,
+      background: this.presentationOptions.background,
       fontFamily: this.presentationOptions.fontFamily
     }
   }
 
   get presentationOptions () {
     return {
-      fillColor: this.getCurrentPresentation.fillColor,
+      background: this.getCurrentPresentation.background,
       fontFamily: this.getCurrentPresentation.fontFamily
     }
   }
 
   get getCurrentPresentation () {
     return PresentationModule.getCurrentPresentation
+  }
+
+  setContentEditable (index: number) {
+    const element = (this as any).$refs['child_' + index][0]
+    console.log(element, index)
+    element.setContentEditable(true)
   }
 }
 </script>

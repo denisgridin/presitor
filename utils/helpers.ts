@@ -1,6 +1,11 @@
-import { CANVAS_OPTIONS, ELEMENT_STYLES, FIELD } from '~/utils/constants'
-import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
-import { IContent, IInsertion, IPresentation, IShape, IStyle } from '~/interfaces/presentation'
+import { CANVAS_OPTIONS, DEFAULT_ELEMENT, ELEMENT_STYLES, FIELD } from '~/utils/constants'
+import { CONTENT_TYPE, LIST_STYLE } from '~/utils/enums'
+import {
+  IElement,
+  IFont,
+  IPresentation,
+  IStyle
+} from '~/interfaces/presentation'
 import { ELEMENT_BUILDER_DATA } from '~/interfaces'
 import uuid from 'uuid-random'
 
@@ -21,99 +26,45 @@ export function getCenterCoords (width: number, height: number) {
   }
 }
 
-export function buildElement (presentation: IPresentation, slideId: string, data: ELEMENT_BUILDER_DATA): IContent {
-  console.log(presentation, slideId, data)
-  switch (data.elementType) {
-    case ELEMENT_TYPE.CONTENT: {
-      const element = {
-        presentationId: presentation.presentationId,
-        slideId,
-        elementId: uuid(),
-        name: data.name,
-        elementType: data.elementType,
-        layout: {
-          x: getCenterCoords(200, 50).x,
-          y: getCenterCoords(200, 50).y,
-          width: 200,
-          height: 50,
-          rotation: 0
-        },
-        font: {
-          fontFamily: presentation.fontFamily,
-          fontSize: 20,
-          letterSpacing: 3,
-          lineHeight: 30,
-          fontCase: 'normal',
-          color: '#ffffff',
-          bold: false,
-          italic: false,
-          align: ALIGN.LEFT
-        },
-        text: 'Текстовый элемент'
-      } as IContent
-
-      if (data.contentType) {
-        const insertion = {
-          contentType: data.contentType
-        } as { contentType?: CONTENT_TYPE, tag: string, listStyle: LIST_STYLE }
-        let tag = 'p'
-        if (data.contentType === CONTENT_TYPE.TITLE) {
-          tag = 'h1'
-        } else if (data.contentType === CONTENT_TYPE.LIST) {
-          tag = 'li'
-        }
-        insertion.tag = tag
-        insertion.listStyle = LIST_STYLE.DISC
-        element.insertion = insertion as IInsertion
-      }
-
-      if (data.figure) {
-        element.style = ELEMENT_STYLES
-        element.text = ''
-      }
-      return element
-    }
-    case ELEMENT_TYPE.SHAPE: {
-      return {
-        presentationId: presentation.presentationId,
-        slideId,
-        elementId: uuid(),
-        name: data.name,
-        elementType: data.elementType,
-        layout: {
-          x: getCenterCoords(200, 50).x,
-          y: getCenterCoords(200, 50).y,
-          width: 200,
-          height: 50,
-          rotation: 0
-        },
-        font: {
-          fontFamily: presentation.fontFamily,
-          fontSize: 20,
-          letterSpacing: 3,
-          lineHeight: 30,
-          fontCase: 'normal',
-          color: '#ffffff',
-          bold: false,
-          italic: false,
-          align: ALIGN.LEFT
-        },
-        text: 'Внутренний контент',
-        style: {
-          fillColor: '#f2f2f2',
-          boxShadow: '',
-          opacity: 1,
-          borderColor: '#f2f2f2',
-          borderRadius: '0px',
-          borderWidth: '0px',
-          borderStyle: 'solid'
-        } as IStyle
-      } as IShape
-    }
-    default: {
-      return {} as IContent
-    }
+export function buildIntsertion (data) {
+  const insertion = {
+    contentType: data.contentType
+  } as { contentType?: CONTENT_TYPE, tag: string, listStyle: LIST_STYLE }
+  let tag = 'p'
+  if (data.contentType === CONTENT_TYPE.TITLE) {
+    tag = 'h1'
+  } else if (data.contentType === CONTENT_TYPE.LIST) {
+    tag = 'li'
   }
+  insertion.tag = tag
+  insertion.listStyle = LIST_STYLE.DISC
+  return insertion
+}
+
+export function buildElement (presentation: IPresentation, slideId: string, data: ELEMENT_BUILDER_DATA): IElement {
+  console.log(presentation, slideId, data)
+  return {
+    ...DEFAULT_ELEMENT,
+    elementId: uuid(),
+    presentationId: presentation.presentationId,
+    slideId,
+    name: data.name,
+    font: {
+      ...DEFAULT_ELEMENT.font as IFont,
+      fontFamily: presentation.fontFamily,
+      color: '#333333'
+    },
+    insertion: buildIntsertion(data) || {},
+    layout: {
+      ...DEFAULT_ELEMENT.layout,
+      ...data.layout
+    },
+    style: {
+      ...ELEMENT_STYLES as IStyle,
+      ...data.style
+    },
+    text: data.text === null ? DEFAULT_ELEMENT.text : data.text
+  } as IElement
 }
 
 export async function asyncForEach (array: any[], callback: (item: any, i: number, array: any[]) => void) {

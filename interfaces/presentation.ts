@@ -1,10 +1,10 @@
-import { ALIGN, BORDER_STYLE, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
+import { ALIGN, BORDER_STYLE, CONTENT_TYPE, LIST_STYLE } from '~/utils/enums'
 
 export interface IPresentation {
   presentationId: string,
   editorIds: string[],
   name: string,
-  fillColor: string,
+  background: string,
   fontFamily: string,
   description: string,
   lastUpdated: Date
@@ -16,17 +16,6 @@ export interface ILayout {
   width: number,
   height: number,
   rotation: number,
-  [ key: string ]: any
-}
-
-export interface IElement {
-  presentationId: string,
-  slideId: string,
-  elementId: string,
-  name: string,
-  layout: ILayout,
-  color: string,
-  elementType: ELEMENT_TYPE,
   [ key: string ]: any
 }
 
@@ -50,7 +39,7 @@ export interface IInsertion {
 }
 
 export interface IStyle {
-  fillColor: string,
+  background: string,
   boxShadow: string,
   opacity: number,
   borderColor: string,
@@ -60,23 +49,22 @@ export interface IStyle {
   [ key: string ]: any
 }
 
-export interface IContent extends IElement{
-  insertion?: IInsertion,
-  text: string,
+export interface IElement {
+  presentationId: string,
+  slideId: string,
+  elementId: string,
+  name: string,
+  layout: ILayout,
   font: IFont,
-  style?: IStyle
+  style: IStyle,
+  insertion: IInsertion,
+  [ key: string ]: any
 }
-
-export interface IShape extends IContent {
-  style: IStyle
-}
-
-export type IElementType = IContent | IShape
 
 export interface ISlide {
   presentationId: string,
   slideId: string,
   name: string,
   index: number,
-  elements: (IElementType)[]
+  elements: IElement[]
 }

@@ -15,14 +15,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'nuxt-property-decorator'
+import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
-import { IContent } from '~/interfaces/presentation'
 import { LIST_STYLE_TYPES } from '~/utils/constants'
+import { IElement } from '~/interfaces/presentation'
+import { LIST_STYLE } from '~/utils/enums'
 
 @Component
 export default class ContentEditor extends Vue {
-  @Prop() content: IContent
+  @Prop() content: IElement
 
   listTypes = Object.values(LIST_STYLE_TYPES)
 
@@ -38,11 +39,11 @@ export default class ContentEditor extends Vue {
     return this.getElementInsertion?.contentType || 'none'
   }
 
-  setElementListStyle (style) {
+  setElementListStyle (style: LIST_STYLE) {
     console.log('input')
     const insertion = this.getElementInsertion
     insertion.listStyle = style
-    PresentationModule.updateElementValue({ id: this.content.elementId, slideId: this.content.slideId, key: 'insertion', value: insertion })
+    PresentationModule.updateElementValue({ elementId: this.content.elementId, slideId: this.content.slideId, key: 'insertion', value: insertion, element: this.content })
   }
 }
 </script>

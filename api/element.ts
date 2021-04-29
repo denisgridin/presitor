@@ -1,6 +1,6 @@
 import { Api } from '~/api/index'
 import { PATH } from '~/utils/constants'
-import { IElement, IElementType } from '~/interfaces/presentation'
+import { IElement } from '~/interfaces/presentation'
 
 export class ElementApi {
   private instance: Api
@@ -61,7 +61,7 @@ export class ElementApi {
     })
   }
 
-  public updateSlideElement (presentationId: string, slideId: string, elementId: string, element: IElementType) {
+  public updateSlideElement (presentationId: string, slideId: string, elementId: string, element: IElement) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {

@@ -12,7 +12,7 @@
       <div v-show="isElementActive" class="handler handler-top-right" />
       <div v-show="isElementActive" class="handler handler-bottom-right" />
       <div v-show="isElementActive" class="handler handler-bottom-left" />
-      <slot />
+      <slot ref="child"/>
     </div>
   </div>
 </template>
@@ -22,24 +22,20 @@ import interact from 'interactjs'
 import { Component, Prop, Vue, Watch } from 'nuxt-property-decorator'
 import type { Interactable } from '@interactjs/core/Interactable'
 import type { InteractEvent } from '@interactjs/core/InteractEvent'
-import { IElementType, ILayout } from '~/interfaces/presentation'
+import { IElement, ILayout } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
 import { CONFINES } from '~/utils/constants'
 import { CommonModule } from '~/store/common'
 
-@Component({
-  data: () => {
-    return {
-      component: {} as Interactable,
-      isActive: false as boolean,
-      layout: { } as ILayout,
-      updateDebounce: null as any
-    }
-  }
-})
+@Component
 export default class CanvasElement extends Vue {
-  @Prop() readonly element: IElementType
+  @Prop() readonly element: IElement
   @Prop({ default: false }) readonly disabled: boolean
+
+  component = {} as Interactable
+  isActive = false as boolean
+  layout = { } as ILayout
+  updateDebounce = null as any
 
   get getSlideElementsCount () {
     return PresentationModule.getActiveSlide?.elements.length
@@ -265,7 +261,7 @@ export default class CanvasElement extends Vue {
   position: absolute;
 
   &__active {
-    border: 1px solid $canvas-element-border-color;
+    border: 1px solid $canvas-element-border-color !important;
   }
 
   .wrapper {

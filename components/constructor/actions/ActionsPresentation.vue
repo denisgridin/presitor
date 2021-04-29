@@ -17,7 +17,7 @@
         dot-size="25"
         swatches-max-height="200"
         mode="hexa"
-        :value="currentPresentation.fillColor"
+        :value="currentPresentation.background"
         @input="setPresentationColor"
       ></v-color-picker>
     </div>
@@ -48,9 +48,10 @@ export default class ActionsPresentation extends Vue {
     await PresentationModule.editPresentation({ key: 'fontFamily', value: font })
   }
 
-  async setPresentationColor (color: string) {
+  async setPresentationColor (color: any) {
     console.log(color)
-    await PresentationModule.editPresentation({ key: 'fillColor', value: color })
+    const value = color.hexa || color
+    await PresentationModule.editPresentation({ key: 'background', value: value })
   }
 
   async setPresentationName (e: Event) {

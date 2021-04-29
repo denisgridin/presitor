@@ -1,7 +1,8 @@
+import Vue from 'vue'
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '~/store/index'
-import { IContent, IElement, IElementType, IPresentation, ISlide } from '~/interfaces/presentation'
-import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, LIST_STYLE } from '~/utils/enums'
+import { IElement, IPresentation, ISlide } from '~/interfaces/presentation'
+import { ELEMENT_TYPE } from '~/utils/enums'
 import { CANVAS_OPTIONS } from '~/utils/constants'
 import { buildElement } from '~/utils/helpers'
 import { ELEMENT_BUILDER_DATA, IHistoryData } from '~/interfaces'
@@ -9,8 +10,6 @@ import { PresentationApi } from '~/api/presentation'
 import { UserModule } from '~/store/user'
 import { SlideApi } from '~/api/slide'
 import { ElementApi } from '~/api/element'
-import login from '~/pages/login.vue'
-import Vue from 'vue'
 const pick = require('lodash.pick')
 
 const uuid = require('uuid-random')
@@ -57,139 +56,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   private updatePresentationDebounce: any
 
-  public currentPresentation = {
-    isPlay: false,
-    presentationId: '1',
-    name: 'Презентация 2',
-    activeSlideId: '1',
-    activeElementId: null,
-    activeElementType: null,
-    hoverElementId: null,
-    fillColor: '#304abb',
-    fontFamily: 'Roboto',
-    slides: [
-      {
-        presentationId: '1',
-        slideId: '1',
-        name: 'Slide 1',
-        index: 1,
-        elements: [
-          {
-            presentationId: '1',
-            slideId: '1',
-            elementId: '1',
-            name: 'Text element',
-            elementType: ELEMENT_TYPE.CONTENT,
-            insertion: {
-              tag: 'p',
-              contentType: CONTENT_TYPE.PARAGRAPH
-            },
-            layout: {
-              x: 100,
-              y: 200,
-              width: 300,
-              height: 500,
-              rotation: 0
-            },
-            font: {
-              fontFamily: 'Roboto',
-              fontSize: 20,
-              letterSpacing: 3,
-              lineHeight: 30,
-              fontCase: 'normal',
-              color: '#ffffff',
-              bold: false,
-              italic: false,
-              align: ALIGN.RIGHT
-            },
-            text: 'Текстовый элемент'
-          },
-          {
-            presentationId: '1',
-            slideId: '1',
-            elementId: '2',
-            elementType: ELEMENT_TYPE.CONTENT,
-            name: 'Title',
-            insertion: {
-              tag: 'h1',
-              contentType: CONTENT_TYPE.TITLE
-            },
-            layout: {
-              x: 150,
-              y: 300,
-              width: 300,
-              height: 100,
-              rotation: 0
-            },
-            font: {
-              fontFamily: 'Montserrat',
-              fontSize: 23,
-              letterSpacing: 3,
-              lineHeight: 30,
-              fontCase: 'normal',
-              color: '#ffffff',
-              bold: false,
-              italic: false,
-              align: ALIGN.LEFT
-            },
-            text: 'Заголовок'
-          },
-          {
-            presentationId: '1',
-            slideId: '1',
-            elementId: '3',
-            elementType: ELEMENT_TYPE.CONTENT,
-            name: 'Title',
-            insertion: {
-              tag: 'li',
-              contentType: CONTENT_TYPE.LIST,
-              listStyle: LIST_STYLE.CIRCLE
-            },
-            layout: {
-              x: 150,
-              y: 300,
-              width: 300,
-              height: 100,
-              rotation: 0
-            },
-            font: {
-              fontFamily: 'Montserrat, sans-serif',
-              fontSize: 14,
-              letterSpacing: 3,
-              lineHeight: 30,
-              fontCase: 'normal',
-              color: '#ffffff',
-              bold: false,
-              italic: false,
-              align: ALIGN.CENTER
-            },
-            text: 'Список'
-          }
-        ]
-      },
-      {
-        presentationId: '1',
-        slideId: '2',
-        name: 'Slide 2',
-        index: 2,
-        elements: []
-      },
-      {
-        presentationId: '1',
-        slideId: '3',
-        name: 'Slide 3',
-        index: 3,
-        elements: []
-      },
-      {
-        presentationId: '1',
-        slideId: '4',
-        name: 'Slide 4',
-        index: 4,
-        elements: []
-      }
-    ] as ISlide[]
-  } as IConstructorPresentation
+  public currentPresentation = {} as IConstructorPresentation
 
   public get isPresentationPlayed () {
     return this.currentPresentation.isPlay
@@ -220,17 +87,11 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     return this.currentPresentation.hoverElementId
   }
 
-  public get getActiveElement (): IElementType | null {
-    const activeElementType = this.currentPresentation.activeElementType
+  public get getActiveElement (): IElement | null {
     const activeElementId = this.currentPresentation.activeElementId
-
-    if (activeElementType) {
-      const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
-      if (activeSlide) {
-        if (activeElementType === ELEMENT_TYPE.CONTENT && activeSlide.elements?.length > 0) {
-          return activeSlide.elements.find((el: IContent) => el.elementId === activeElementId) as IElementType
-        }
-      }
+    const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
+    if (activeSlide) {
+      return activeSlide.elements.find((el: IElement) => el.elementId === activeElementId) as IElement
     }
     return null
   }
@@ -304,7 +165,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     elements
   }: {
     slideId: string,
-    elements: IContent[]
+    elements: IElement[]
   }) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     if (slide) {
@@ -354,12 +215,12 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Mutation
-  public UPDATE_ELEMENT_BY_ID ({ id, element }: { id: string, element: IElementType }) {
+  public UPDATE_ELEMENT_BY_ID ({ id, element }: { id: string, element: IElement }) {
     console.log('update')
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === element.slideId)
     console.log('slide ', slide)
     if (slide) {
-      const item = slide.elements.find((i: IElementType) => {
+      const item = slide.elements.find((i: IElement) => {
         return i.elementId === id
       })
       Object.assign(item, element)
@@ -377,7 +238,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Mutation
-  public ADD_SLIDE_ELEMENT ({ slideId, element }: { slideId: string, element: IContent }) {
+  public ADD_SLIDE_ELEMENT ({ slideId, element }: { slideId: string, element: IElement }) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     if (slide) {
       const elements = slide.elements = slide.elements?.length ? [...slide.elements, element] : [element]
@@ -439,7 +300,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Action({ rawError: true })
-  public async copySlideElement (element: IContent) {
+  public async copySlideElement (element: IElement) {
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === element.slideId)
     if (slide) {
       const x = (CANVAS_OPTIONS.layout.width / 2) - (element.layout.width / 2)
@@ -465,12 +326,12 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Action({ rawError: true })
-  public async updateElementValue ({ elementId, slideId, key, value, element = null }: { key: string, value: any, elementId: string, slideId: string, element: IElementType | null }) {
+  public async updateElementValue ({ elementId, slideId, key, value, element = null }: { key: string, value: any, elementId: string, slideId: string, element: IElement | null }) {
     this.UPDATE_ELEMENT_VALUE({ elementId, slideId, key, value })
-    const item = element?.elementId ? element as IElementType : this.getActiveElement as IElementType
+    const item = element?.elementId ? element as IElement : this.getActiveElement as IElement
     console.log('update element ', item)
     const api = new ElementApi(UserModule.getTokens.accessToken)
-    await api.updateSlideElement(this.currentPresentation.presentationId, slideId, elementId, item as IElementType)
+    await api.updateSlideElement(this.currentPresentation.presentationId, slideId, elementId, item as IElement)
     PresentationModule.setHistory({ type: 'update', element: item })
   }
 
@@ -479,7 +340,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     const element = buildElement(this.currentPresentation, slideId, data as ELEMENT_BUILDER_DATA)
 
     const api = new ElementApi(UserModule.getTokens.accessToken)
-    const id = await api.createSlideElement(this.currentPresentation.presentationId, slideId, element as IElementType) as string
+    const id = await api.createSlideElement(this.currentPresentation.presentationId, slideId, element as IElement) as string
     const item = { ...element, elementId: id }
     console.log('added item ', item)
     this.ADD_SLIDE_ELEMENT({ slideId, element: cloneDeep(item) })
@@ -502,7 +363,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     this.SET_HISTORY_CURSOR(index)
 
     const cursor = this.getHistory.items[index]
-    const historyElement = this.getHistory.items[index]?.element as IElementType
+    const historyElement = this.getHistory.items[index]?.element as IElement
     console.log(cursor)
     switch (cursor.type) {
       case 'create': { break }
@@ -529,9 +390,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     try {
       const api = new PresentationApi(UserModule.getTokens.accessToken)
       const presentation = pick(this.currentPresentation, [
-        'name', 'fillColor', 'fontFamily', 'presentationId'
+        'name', 'background', 'fontFamily', 'presentationId'
       ])
-      const result = await api.updatePresentation(presentation)
+      await api.updatePresentation(presentation)
     } catch (error) {
       console.log(error)
     }

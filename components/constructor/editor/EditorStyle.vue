@@ -16,8 +16,8 @@
             dot-size="25"
             swatches-max-height="200"
             mode="hexa"
-            :value="getCurrentStyle.backgroundColor"
-            @input="(val) => setElementValue('backgroundColor', val.hexa, val)"
+            :value="getCurrentStyle.background"
+            @input="(val) => setElementValue('background', val.hexa, val)"
           ></v-color-picker>
         </div>
         <div class="inputs-item">
@@ -46,7 +46,7 @@
         </div>
         <div class="inputs-item">
           <label for="borderStyle">Стиль рамки</label>
-          <vs-select placeholder="Выберете стиль рамки" :value="getCurrentStyle.borderStyle" @input="(val) => setElementValue('borderStyle', val)">
+          <vs-select id="borderStyle" placeholder="Выберете стиль рамки" :value="getCurrentStyle.borderStyle" @input="(val) => setElementValue('borderStyle', val)">
             <vs-option v-for="(style, index) in borderStyles" :key="index" :label="style.text" :value="style.value">
               {{ style.text }}
             </vs-option>
@@ -64,7 +64,7 @@
 <script lang="ts">
 
 import { Component, Vue } from 'nuxt-property-decorator'
-import { IElementType, IStyle } from '~/interfaces/presentation'
+import { IElement, IStyle } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
 import ShadowPicker from '~/components/constructor/actions/ShadowPicker'
 import { BORDER_STYLE } from '~/utils/enums'
@@ -80,8 +80,8 @@ export default class EditorStyle extends Vue {
   hidden: boolean = false
   updateDebounce: any = null
   borderStyles = BORDER_STYLES
-  get getActiveElement (): IElementType {
-    return PresentationModule.getActiveElement as IElementType
+  get getActiveElement (): IElement {
+    return PresentationModule.getActiveElement as IElement
   }
 
   get getCurrentStyle (): IStyle {

@@ -10,7 +10,7 @@
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import Canvas from '@/components/constructor/canvas/Canvas.vue'
 import { PresentationModule } from '@/store/presentation'
-import { IElementType } from '~/interfaces/presentation'
+import { IElement } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -18,7 +18,7 @@ import { IElementType } from '~/interfaces/presentation'
   }
 })
 export default class PresentationCanvas extends Vue {
-  elements: IElementType[] = []
+  elements: IElement[] = []
 
   get getSlideElements () {
     return this.activeSlide?.elements || []
@@ -29,7 +29,7 @@ export default class PresentationCanvas extends Vue {
   }
 
   @Watch('activeSlide.elements')
-  onElementsChanged (elements: IElementType[]) {
+  onElementsChanged (elements: IElement[]) {
     console.log('elements changed')
     this.$set(this, 'elements', elements)
     this.$forceUpdate()

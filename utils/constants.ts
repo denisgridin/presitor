@@ -1,8 +1,5 @@
-import { IConstructorElementShape, IDefaultElements } from '~/interfaces'
-import { ALIGN, CONTENT_TYPE, ELEMENT_TYPE, FIGURE, LIST_STYLE } from '~/utils/enums'
-import { IContent } from '~/interfaces/presentation'
-import { getCenterCoords } from '~/utils/helpers'
-import { PresentationModule } from '~/store/presentation'
+import { IConstructorElementShape } from '~/interfaces'
+import { ALIGN, BORDER_STYLE, CONTENT_TYPE, FIGURE, LIST_STYLE } from '~/utils/enums'
 
 export const MESSAGE = {
   greeting: 'Создайте свою первую впечатляющую презентацию'
@@ -220,50 +217,35 @@ export const TEXT_ALIGNS = [
 ]
 
 export const ELEMENT_STYLES = {
-  backgroundColor: '#6C63FF',
+  background: '#6C63FF',
   boxShadow: '',
   opacity: 1,
   borderColor: '',
-  borderRadius: '',
-  borderWidth: '',
-  borderStyle: ''
+  borderRadius: 0,
+  borderWidth: 0,
+  borderStyle: BORDER_STYLE.SOLID
 }
 
-// export const DEFAULT_ELEMENTS: IDefaultElements = {
-//   content: {
-//     title: {
-//       presentationId: PresentationModule.getCurrentPresentation.presentationId,
-//       slideId: PresentationModule.getActiveSlideId,
-//       name: 'Заголовок',
-//       elementType: ELEMENT_TYPE.CONTENT,
-//       insertion: {
-//         tag: 'h1',
-//         contentType: CONTENT_TYPE.TITLE
-//       },
-//       layout: {
-//         x: getCenterCoords(300, 100).x,
-//         y: getCenterCoords(300, 100).y,
-//         width: 300,
-//         height: 100,
-//         rotation: 0
-//       },
-//       font: {
-//         fontFamily: PresentationModule.getCurrentPresentation.fontFamily,
-//         fontSize: 20,
-//         letterSpacing: 3,
-//         lineHeight: 30,
-//         fontCase: 'normal',
-//         color: '#ffffff',
-//         bold: false,
-//         italic: false,
-//         align: ALIGN.LEFT
-//       },
-//       text: 'Заголовок'
-//     } as IContent,
-//     paragraph: {} as IContent,
-//     list: {} as IContent
-//   }
-// }
+export const DEFAULT_ELEMENT = {
+  layout: {
+    x: 0,
+    y: 0,
+    width: 200,
+    height: 50,
+    rotation: 0
+  },
+  font: {
+    fontSize: 20,
+    letterSpacing: 3,
+    lineHeight: 30,
+    fontCase: 'normal',
+    color: '#ffffff',
+    bold: false,
+    italic: false,
+    align: ALIGN.LEFT
+  },
+  text: 'Текстовый контект'
+}
 
 export const BORDER_STYLES = [
   {

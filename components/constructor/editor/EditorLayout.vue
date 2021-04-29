@@ -36,7 +36,7 @@
 <script lang="ts">
 
 import { Component, Vue } from 'nuxt-property-decorator'
-import { IElementType, ILayout } from '~/interfaces/presentation'
+import { IElement, ILayout } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
 const cloneDeep = require('lodash.clonedeep')
 
@@ -44,8 +44,8 @@ const cloneDeep = require('lodash.clonedeep')
 export default class EditorLayout extends Vue {
   hidden: boolean = false
   updateDebounce: any = null
-  get getActiveElement (): IElementType {
-    return PresentationModule.getActiveElement as IElementType
+  get getActiveElement (): IElement {
+    return PresentationModule.getActiveElement as IElement
   }
 
   get getCurrentLayout (): ILayout | undefined {

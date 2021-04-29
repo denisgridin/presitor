@@ -9,14 +9,57 @@
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import { IConstructorElementShape } from '~/interfaces'
 import { PresentationModule } from '~/store/presentation'
-import { ELEMENT_TYPE } from '~/utils/enums'
+import { ELEMENT_TYPE, FIGURE } from '~/utils/enums'
+import { ILayout, IStyle } from '~/interfaces/presentation'
+import { DEFAULT_ELEMENT, ELEMENT_STYLES } from '~/utils/constants'
 
 @Component
 export default class ConstructorElementItem extends Vue {
   @Prop() item: IConstructorElementShape
 
   addShape () {
-    PresentationModule.addSlideElement({ slideId: (this as any).$current('slide').slideId, data: { elementType: ELEMENT_TYPE.CONTENT, name: 'Графический элемент', figure: this.item.type } })
+    let style = ELEMENT_STYLES
+    let layout = DEFAULT_ELEMENT.layout
+    switch (this.item.type) {
+      case FIGURE.circle: {
+        style = {
+          ...style,
+          borderRadius: 1000
+        } as IStyle
+        layout = {
+          ...layout,
+          width: 100,
+          height: 100
+        } as ILayout
+        break
+      }
+      case FIGURE.rectangle: {
+        layout = {
+          ...layout,
+          width: 200,
+          height: 100
+        } as ILayout
+        break
+      }
+      case FIGURE.square: {
+        layout = {
+          ...layout,
+          width: 100,
+          height: 100
+        } as ILayout
+      }
+    }
+    PresentationModule.addSlideElement(
+      {
+        slideId: (this as any).$current('slide').slideId,
+        data: {
+          name: 'Графический элемент',
+          figure: this.item.type,
+          text: '',
+          style,
+          layout
+        }
+      })
   }
 }
 </script>
