@@ -18,7 +18,7 @@ export default class ConstructorElementItem extends Vue {
   @Prop() item: IConstructorElementShape
 
   addShape () {
-    let style = ELEMENT_STYLES
+    let style = { ...ELEMENT_STYLES, zIndex: PresentationModule.getLastZIndex }
     let layout = DEFAULT_ELEMENT.layout
     switch (this.item.type) {
       case FIGURE.circle: {

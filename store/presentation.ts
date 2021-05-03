@@ -87,6 +87,15 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     return this.currentPresentation.hoverElementId
   }
 
+  public get getLastZIndex () {
+    const indexes = this.getActiveSlide?.elements.map(el => el.style.zIndex).sort()
+    if (Array.isArray(indexes)) {
+      return indexes[indexes.length - 1] + 1 || 1
+    } else {
+      return 1
+    }
+  }
+
   public get getActiveElement (): IElement | null {
     const activeElementId = this.currentPresentation.activeElementId
     const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
@@ -461,6 +470,24 @@ export class PresentationStore extends VuexModule implements IPresentationState 
         reject(error)
       }
     })
+  }
+
+  @Action
+  public updateZIndex ({ pos, zIndex }: { pos: string, zIndex: number }) {
+    console.log({ pos, zIndex })
+    const zIndexes = Array.from(new Set(this.getActiveSlide?.elements.map(el => el.style.zIndex) || [])).sort()
+    console.log(zIndexes)
+    const index = zIndexes.indexOf(zIndex)
+    console.log('index ' + index)
+    if (index > -1) {
+      if (pos === 'up') {
+        return zIndexes[index + 1] || zIndex + 1
+      } else {
+        return zIndexes[index - 1] || zIndex - 1
+      }
+    } else {
+      return 1
+    }
   }
 }
 

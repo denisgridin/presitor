@@ -51,7 +51,9 @@ export default class app extends Vue {
   }
 
   setSlidePosition (step: number) {
-    PresentationModule.setCurrentSlidePosition(step)
+    if (!PresentationModule.getActiveElement) {
+      PresentationModule.setCurrentSlidePosition(step)
+    }
   }
 
   toggleFullscreen () {

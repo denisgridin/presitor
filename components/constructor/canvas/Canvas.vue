@@ -1,5 +1,5 @@
 <template>
-  <div ref="canvas" class="presentation-canvas" :style="canvasStyle">
+  <div ref="canvas" class="presentation-canvas" :style="canvasStyle" @mousedown="deactivateElement">
     <div v-for="(element, index) in slideElements" :key="element.elementId" @dblclick="setContentEditable(index)">
       <keep-alive>
         <CanvasElement :element="element" :disabled="disabled">
@@ -50,10 +50,21 @@ export default class Canvas extends Vue {
     return PresentationModule.getCurrentPresentation
   }
 
+  deactivateElement () {
+    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null })
+  }
+
   setContentEditable (index: number) {
-    const element = (this as any).$refs['child_' + index][0]
-    console.log(element, index)
-    element.setContentEditable(true)
+    const vmElement = (this as any).$refs['child_' + index][0]
+    console.log(vmElement.element, index)
+    PresentationModule.updateElementValue({
+      elementId: vmElement.element.elementId,
+      slideId: vmElement.element.slideId,
+      key: 'text',
+      value: vmElement.element.text || 'Текст',
+      element: vmElement.element
+    })
+    vmElement.setContentEditable(true)
   }
 }
 </script>

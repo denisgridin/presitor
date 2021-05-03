@@ -41,7 +41,8 @@ export interface ELEMENT_BUILDER_DATA {
   background?: string,
   text?: string,
   style?: IStyle,
-  layout?: ILayout
+  layout?: ILayout,
+  zIndex: number
 }
 
 export interface IHistoryData {

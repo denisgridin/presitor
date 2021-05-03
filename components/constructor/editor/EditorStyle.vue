@@ -56,6 +56,27 @@
           <label for="borderRadius">Закругление краев</label>
           <input id="borderRadius" class="vs-input" type="number" min="0" :value="getCurrentStyle.borderRadius" @input="(e) => setElementValue('borderRadius', +e.target.value)">
         </div>
+        <div class="inputs-item">
+          <label>Ближе/Дальше</label>
+          <div class="zIndex-buttons">
+            <vs-tooltip>
+              <div class="zIndex-buttons__item" @click="editZIndex('up')">
+                <i class="bx bx-arrow-from-bottom"></i>
+              </div>
+              <template #tooltip>
+                Переместить слой выше
+              </template>
+            </vs-tooltip>
+            <vs-tooltip>
+              <div class="zIndex-buttons__item" @click="editZIndex('down')">
+                <i class="bx bx-arrow-from-top"></i>
+              </div>
+              <template #tooltip>
+                Переместить слой ниже
+              </template>
+            </vs-tooltip>
+          </div>
+        </div>
       </div>
     </vs-alert>
   </div>
@@ -120,6 +141,11 @@ export default class EditorStyle extends Vue {
     return `${x || 0}px ${y || 0}px ${blur || 0}px ${spread || 0}px ${color}`
   }
 
+  async editZIndex (pos) {
+    const zIndex = await PresentationModule.updateZIndex({ pos, zIndex: this.getActiveElement.style.zIndex || 1 })
+    this.setElementValue('zIndex', zIndex || 1)
+  }
+
   setElementValue (key: string, val: any, data?: any) {
     console.log(data)
     const value = val || data
@@ -164,6 +190,19 @@ export default class EditorStyle extends Vue {
   .inputs {
     &-item {
       margin: 10px auto 0;
+
+      .zIndex-buttons {
+        display: flex;
+        &__item {
+          padding: 10px;
+          transition: 0.3s;
+          cursor: pointer;
+
+          &:hover {
+            background: $color-primary-transparent-10;
+          }
+        }
+      }
     }
   }
 }

@@ -46,6 +46,7 @@ export interface IStyle {
   borderRadius: number,
   borderWidth: number,
   borderStyle: BORDER_STYLE,
+  zIndex: number,
   [ key: string ]: any
 }
 

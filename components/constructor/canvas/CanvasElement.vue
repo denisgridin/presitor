@@ -63,7 +63,8 @@ export default class CanvasElement extends Vue {
       borderWidth: this.element.style?.borderWidth + 'px',
       borderRadius: this.element.style?.borderRadius + 'px',
       borderColor: this.element.style?.borderColor || 'transparent',
-      borderStyle: this.element.style?.borderStyle || 'solid'
+      borderStyle: this.element.style?.borderStyle || 'solid',
+      zIndex: this.element.style?.zIndex
     }
   }
 
