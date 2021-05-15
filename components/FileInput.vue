@@ -12,12 +12,12 @@
       id="file"
       hidden
       type="file"
-      :accept="mimeTypes"
+      :accept="acceptedTypes"
       :multiple="false"
       @change="onChange">
     <div class="loaded-image-wrapper">
       <img v-if="image" :src="image" class="loaded-image" alt="Выбранное изображение">
-      <vs-button v-if="image" relief>
+      <vs-button v-if="image" relief @click="add">
         <i class="bx bxs-image-add"></i>
         <span style="margin-left: 3px;">Добавить на полотно</span>
       </vs-button>
@@ -32,12 +32,18 @@ import { MIME_TYPES_IMAGE } from '~/utils/constants'
 @Component({
   data: () => {
     return {
-      mimeTypes: MIME_TYPES_IMAGE,
-      image: null
+      mimeTypes: MIME_TYPES_IMAGE
     }
   }
 })
 export default class FileInput extends Vue {
+  private image = null
+
+  @Emit('add')
+  add () {
+    return this.image
+  }
+
   @Emit('change')
   onChange ({ target }: Event) {
     const reader = new FileReader()
@@ -51,10 +57,14 @@ export default class FileInput extends Vue {
       reader.onerror = () => {
         console.log(reader.error)
       }
-      return target.files
+      return target.files[0]
     } else {
       return null
     }
+  }
+
+  get acceptedTypes () {
+    return this.mimeTypes.map(type => type.value).join(',')
   }
 
   emitClick () {

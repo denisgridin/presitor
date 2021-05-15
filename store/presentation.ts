@@ -10,6 +10,7 @@ import { PresentationApi } from '~/api/presentation'
 import { UserModule } from '~/store/user'
 import { SlideApi } from '~/api/slide'
 import { ElementApi } from '~/api/element'
+import axios from 'axios'
 const pick = require('lodash.pick')
 
 const uuid = require('uuid-random')
@@ -125,7 +126,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Mutation
-  public SET_ACTIVE_SLIDE_ID (id: string) {
+  public SET_ACTIVE_SLIDE_ID (id: string | null) {
     Vue.set(this.currentPresentation, 'activeSlideId', id)
   }
 
@@ -464,6 +465,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       try {
         const api = new SlideApi(UserModule.getTokens.accessToken)
         const result = await api.removeSlideById(slide)
+        if (this.getActiveSlide?.slideId === slide.slideId) {
+          this.SET_ACTIVE_SLIDE_ID(null)
+        }
         this.REMOVE_SLIDE(slide.slideId)
         resolve(result)
       } catch (error) {
@@ -488,6 +492,22 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     } else {
       return 1
     }
+  }
+
+  @Action({ rawError: true })
+  uploadImage (file: Blob) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new ElementApi(UserModule.getTokens.accessToken)
+        const formData = new FormData()
+        formData.append('key', process.env.IMGBB_API_KEY as string)
+        formData.append('image', file)
+        const data = await api.uploadImage(formData)
+        resolve(data)
+      } catch (error) {
+        reject(error)
+      }
+    })
   }
 }
 

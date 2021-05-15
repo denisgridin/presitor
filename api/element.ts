@@ -78,4 +78,22 @@ export class ElementApi {
       }
     })
   }
+
+  public uploadImage (file: FormData) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const path = PATH.elements.file
+        const { data } = await this.instance.post(this.getUrl(path), file, {
+          // headers: {
+          //   Accept: 'multipart/form-data',
+          //   'Content-Type': 'multipart/form-data'
+          // }
+        })
+        console.log(data)
+        resolve(data.data.medium?.url || data.data.image.url)
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 }

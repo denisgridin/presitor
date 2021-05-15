@@ -31,7 +31,8 @@ export const PATH = {
   elements: {
     default: '/presentations/:presentationId/slides/:slideId/elements',
     exact: '/presentations/:presentationId/slides/:slideId/elements/:elementId',
-    copy: '/presentations/:presentationId/slides/:slideId/elements/:elementId/copy'
+    copy: '/presentations/:presentationId/slides/:slideId/elements/:elementId/copy',
+    file: '/elements/file'
   }
 }
 

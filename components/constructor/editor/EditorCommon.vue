@@ -18,7 +18,7 @@
             @input="(e) => setElementValue('name', e.target.value)"
           >
         </div>
-        <div class="inputs-item">
+        <div class="inputs-item" v-if="!isImage">
           <label for="inner">Наполнение</label>
           <textarea
             id="inner"
@@ -55,6 +55,10 @@ export default class EditorCommon extends Vue {
 
   get getActiveElement () {
     return PresentationModule.getActiveElement
+  }
+
+  get isImage () {
+    return this.getActiveElement?.style.background?.includes('url')
   }
 
   get getCurrentCommonConfig () {

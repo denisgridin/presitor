@@ -8,7 +8,7 @@
         </div>
       </template>
       <div class="inputs">
-        <div class="inputs-item">
+        <div class="inputs-item" v-if="hasBackgroundColor">
           <label for="backgroundColor">Цвет заднего фона</label>
           <v-color-picker
             id="backgroundColor"
@@ -101,8 +101,13 @@ export default class EditorStyle extends Vue {
   hidden: boolean = false
   updateDebounce: any = null
   borderStyles = BORDER_STYLES
+
   get getActiveElement (): IElement {
     return PresentationModule.getActiveElement as IElement
+  }
+
+  get hasBackgroundColor () {
+    return !this.getActiveElement.style.background.includes('url')
   }
 
   get getCurrentStyle (): IStyle {

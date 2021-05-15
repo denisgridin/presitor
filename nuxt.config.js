@@ -1,4 +1,11 @@
 export default {
+  env: {
+    BACKEND_HOST: 'http://localhost:5000/',
+    GOOGLE_API_KEY: 'AIzaSyCbd1oz5O7vNQfOD9N-KwRLkKC2Xgmj2WA',
+    IMGBB_HOST: 'https://api.imgbb.com/1/upload',
+    IMGBB_API_KEY: 'd3d3e75a30d992f104498bdfaccbb34a'
+  },
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'presitor',

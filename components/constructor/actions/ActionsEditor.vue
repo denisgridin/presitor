@@ -5,7 +5,7 @@
     <div v-if="getActiveElement" class="presentation-section" :style="actionsStyle">
       <EditorCommon />
       <EditorLayout />
-      <EditorFont />
+      <EditorFont v-if="!isImage" />
       <EditorStyle />
     </div>
   </div>
@@ -37,8 +37,12 @@ export default class ActionsEditor extends Vue {
     return PresentationModule.getActiveElement
   }
 
+  get isImage () {
+    return this.getActiveElement?.style.background?.includes('url')
+  }
+
   get getCurrentElements () {
-    return PresentationModule.getActiveSlide.elements
+    return PresentationModule.getActiveSlide?.elements || []
   }
 
   get actionsStyle () {

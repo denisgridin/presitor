@@ -22,7 +22,19 @@ export default class ContentSelector extends Vue {
   contentElements = CONTENT_ELEMENTS
 
   addElement (contentType: CONTENT_TYPE) {
-    PresentationModule.addSlideElement({ slideId: (this as any).$current('slide').slideId, data: { contentType, name: 'Тестовый элемент', background: 'transparent', style: { zIndex: PresentationModule.getLastZIndex } } })
+    PresentationModule.addSlideElement(
+      {
+        slideId: (this as any).$current('slide').slideId,
+        data: {
+          contentType,
+          name: 'Текстовый элемент',
+          text: 'Текстовый элемент',
+          style: {
+            background: '#00000000',
+            zIndex: PresentationModule.getLastZIndex
+          }
+        }
+      })
   }
 }
 </script>

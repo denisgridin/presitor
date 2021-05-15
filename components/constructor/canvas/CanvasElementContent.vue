@@ -81,7 +81,7 @@ export default class CanvasElementContent extends Vue {
   }
 
   parseTextToList (text: string) {
-    const list = text.split('\n')
+    const list = text?.split('\n') || []
     console.log(list)
     const html = list.map((el: string) => {
       if (el) {

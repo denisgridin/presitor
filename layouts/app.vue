@@ -21,7 +21,9 @@ export default class app extends Vue {
   mounted () {
     document.addEventListener('fullscreenchange', () => {
       console.log('fullscreen ' + Boolean(document.fullscreenElement))
-      PresentationModule.playPresentation(Boolean(document.fullscreenElement))
+      if (!PresentationModule.getActiveElement) {
+        PresentationModule.playPresentation(Boolean(document.fullscreenElement))
+      }
     })
 
     document.addEventListener('keydown', (event) => {

@@ -48,8 +48,8 @@ export class Api {
     return this.instance.get(url)
   }
 
-  public post (url: string, data: any) {
-    return this.instance.post(url, data)
+  public post (url: string, data: any, config: any) {
+    return this.instance.post(url, data, config)
   }
 
   public put (url: string, data: any) {

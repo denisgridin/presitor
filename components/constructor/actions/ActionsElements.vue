@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="actions-elements">
     <div class="presentation-section presentation-section__shapes">
       <h4>Фигуры</h4>
       <ConstructorElements />
@@ -10,17 +10,19 @@
     </div>
     <div class="presentation-section">
       <h4>Изображение</h4>
-      <div class="presentation-section__image">
-        <FileInput />
-      </div>
+      <ImageSelector @file:load="loadFile" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import FileInput from '@/components/FileInput.vue'
 import ContentSelector from '@/components/constructor/content/ContentSelector.vue'
+import ImageSelector from '@/components/constructor/ImageSelector'
+import { ImagesApi } from '~/api/images'
+import { PresentationModule } from '~/store/presentation'
+import uuid from 'uuid-random'
+import { DEFAULT_ELEMENT, ELEMENT_STYLES } from '~/utils/constants'
 
 @Component({
   data: () => {
@@ -39,11 +41,66 @@ import ContentSelector from '@/components/constructor/content/ContentSelector.vu
     }
   },
   components: {
-    FileInput,
+    ImageSelector,
     ContentSelector
   }
 })
 export default class ActionsElements extends Vue {
+  uploadImage (file: Blob) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const url = await PresentationModule.uploadImage(file)
+        console.log(url)
+        resolve(url)
+      } catch (error) {
+        console.error(error)
+        reject(error)
+      }
+    })
+  }
+
+  async loadFile ({ file, data }: { file: FormData, data: Blob }) {
+    try {
+      const api = new ImagesApi()
+      // const { data } = await api.post(this.image)
+      // PresentationModule.ADD_SLIDE_ELEMENT({
+      //   slideId: (this as any).$current('slide').slideId,
+      //   element: {
+      //     elementId: uuid(),
+      //     slideId: this.$current('slide').slideId,
+      //     name: 'name',
+      //     text: '',
+      //     style: {
+      //       ...ELEMENT_STYLES,
+      //       background: `url(${data})`
+      //     },
+      //     layout: DEFAULT_ELEMENT.layout
+      //   }
+      // })
+      const url = await this.uploadImage(file)
+      await PresentationModule.addSlideElement(
+        {
+          slideId: (this as any).$current('slide').slideId,
+          data: {
+            name: data.fileName || 'Изображение',
+            background: 'transparent',
+            style: {
+              zIndex: PresentationModule.getLastZIndex,
+              background: `url(${url})`
+            }
+          }
+        })
+    } catch (error) {
+      console.error(error)
+    }
+  }
 }
 
 </script>
+
+<style lang="scss" scoped>
+.actions-elements {
+  overflow: auto;
+  max-height: calc(100vh - 200px);
+}
+</style>
