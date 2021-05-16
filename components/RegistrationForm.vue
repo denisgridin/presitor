@@ -126,7 +126,7 @@ export default Vue.extend({
       (this as any).errors[field] = false
     },
     handleError (data: any) {
-      const fail = Array.isArray(data?.errors) ? data.errors : data.code
+      const fail = Array.isArray(data?.errors) ? data.errors : data?.code
 
       if (Array.isArray(fail)) {
         this.errors.email = false
