@@ -18,35 +18,35 @@ import { PresentationModule } from '~/store/presentation'
   }
 })
 export default class app extends Vue {
-  mounted () {
-    document.addEventListener('fullscreenchange', () => {
-      console.log('fullscreen ' + Boolean(document.fullscreenElement))
-      if (!PresentationModule.getActiveElement) {
-        PresentationModule.playPresentation(Boolean(document.fullscreenElement))
-      }
-    })
-
-    document.addEventListener('keydown', (event) => {
-      switch (event.key) {
-        case 'Escape': {
-          this.hideFullscreen()
-          break
-        }
-        case 'ArrowLeft': {
-          this.setSlidePosition(-1)
-          break
-        }
-        case 'ArrowRight': {
-          this.setSlidePosition(1)
-          break
-        }
-        case 'Enter': {
-          this.toggleFullscreen()
-          break
-        }
-      }
-    })
-  }
+  // mounted () {
+  //   document.addEventListener('fullscreenchange', () => {
+  //     console.log('fullscreen ' + Boolean(document.fullscreenElement))
+  //     if (!PresentationModule.getActiveElement) {
+  //       PresentationModule.playPresentation(Boolean(document.fullscreenElement))
+  //     }
+  //   })
+  //
+  //   document.addEventListener('keydown', (event) => {
+  //     switch (event.key) {
+  //       case 'Escape': {
+  //         this.hideFullscreen()
+  //         break
+  //       }
+  //       case 'ArrowLeft': {
+  //         this.setSlidePosition(-1)
+  //         break
+  //       }
+  //       case 'ArrowRight': {
+  //         this.setSlidePosition(1)
+  //         break
+  //       }
+  //       case 'Enter': {
+  //         this.toggleFullscreen()
+  //         break
+  //       }
+  //     }
+  //   })
+  // }
 
   hideFullscreen () {
     PresentationModule.playPresentation(false)

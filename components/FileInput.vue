@@ -29,15 +29,10 @@
 import { Component, Emit, Vue } from 'nuxt-property-decorator'
 import { MIME_TYPES_IMAGE } from '~/utils/constants'
 
-@Component({
-  data: () => {
-    return {
-      mimeTypes: MIME_TYPES_IMAGE
-    }
-  }
-})
+@Component
 export default class FileInput extends Vue {
   private image = null
+  mimeTypes = MIME_TYPES_IMAGE
 
   @Emit('add')
   add () {

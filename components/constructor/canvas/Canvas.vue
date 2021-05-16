@@ -7,7 +7,7 @@
         </CanvasElement>
       </keep-alive>
     </div>
-    <slot name="controller" class="controller"></slot>
+<!--    <slot name="controller" class="controller"></slot>-->
   </div>
 </template>
 

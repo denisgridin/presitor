@@ -28,7 +28,8 @@ export default class HeaderApp extends Vue {
   }
 
   playPresentation () {
-    PresentationModule.playPresentation(true)
+    const path = this.$route.fullPath
+    this.$router.push({ path: path.replace('constructor', 'broadcast') })
   }
 }
 

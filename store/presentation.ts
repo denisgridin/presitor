@@ -500,7 +500,8 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       try {
         const api = new ElementApi(UserModule.getTokens.accessToken)
         const formData = new FormData()
-        formData.append('key', process.env.IMGBB_API_KEY as string)
+        const key = process.env.IMGBB_API_KEY || 'd3d3e75a30d992f104498bdfaccbb34a'
+        formData.append('key', key as string)
         formData.append('image', file)
         const data = await api.uploadImage(formData)
         resolve(data)

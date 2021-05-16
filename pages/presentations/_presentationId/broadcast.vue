@@ -1,0 +1,110 @@
+<template>
+  <div class="presentation-broadcast">
+    <client-only>
+      <keep-alive>
+        <Canvas ref="canvas" class="canvas" :slide-elements="getSlideElements" :style="canvasStyle"/>
+      </keep-alive>
+      <SlidesController></SlidesController>
+    </client-only>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from 'nuxt-property-decorator'
+import Canvas from '@/components/constructor/canvas/Canvas.vue'
+import { PresentationModule } from '@/store/presentation'
+import { asyncForEach } from '@/utils/helpers'
+import { LAYOUTS } from '~/utils/enums'
+import { CANVAS_OPTIONS } from '~/utils/constants'
+import SlidesController from '~/components/SlidesController.vue'
+
+@Component({
+  components: {
+    Canvas,
+    SlidesController
+  },
+  layout: LAYOUTS.EMPTY
+})
+export default class Broadcast extends Vue {
+  canvasScale: { width: number, height: number } = { width: 1, height: 1 }
+
+  mounted () {
+    this.changeScale()
+    window?.addEventListener('resize', this.changeScale)
+  }
+
+  beforeDestroy () {
+    window?.removeEventListener('resize', this.changeScale)
+  }
+
+  async asyncData ({ route }) {
+    if (route.params.presentationId !== PresentationModule.currentPresentation.presentationId) {
+      try {
+        const presentation = await PresentationModule.getPresentation(route.params.presentationId)
+        console.log(presentation)
+        if (presentation) {
+          PresentationModule.SET_CURRENT_PRESENTATION(presentation)
+          const slides = await PresentationModule.getPresentationSlides(presentation.presentationId)
+          console.log(slides)
+          if (Array.isArray(slides)) {
+            PresentationModule.SET_ACTIVE_SLIDE_ID(slides[0].slideId)
+            PresentationModule.SET_CURRENT_SLIDES(slides)
+            await asyncForEach(slides, async (slide) => {
+              const { presentationId, slideId } = slide
+              console.table({ presentationId, slideId })
+              await PresentationModule.getSlideElements({
+                presentationId,
+                slideId
+              })
+            })
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
+  changeScale () {
+    const canvasDefaultHeight = CANVAS_OPTIONS.layout.height
+    const canvasDefaultWidth = CANVAS_OPTIONS.layout.width
+    const heightScale = (window.innerHeight / canvasDefaultHeight) + 0.5
+    const widthScale = (window.innerHeight / canvasDefaultWidth) + 0.5
+    this.canvasScale = {
+      width: widthScale,
+      height: heightScale
+    }
+  }
+
+  get activeSlide () {
+    return PresentationModule.getActiveSlide
+  }
+
+  get getSlideElements () {
+    return this.activeSlide?.elements || []
+  }
+
+  get canvasStyle () {
+    const scale = this.canvasScale.height < this.canvasScale.width ? this.canvasScale.height : this.canvasScale.width
+    return {
+      transform: `scale(${scale})`
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.presentation-broadcast {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  min-height: 100vh;
+  min-width: 100vw;
+  background: black;
+  .canvas {
+    transform: scale(1.5);
+    pointer-events: none;
+  }
+}
+</style>

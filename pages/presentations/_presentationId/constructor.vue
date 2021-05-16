@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import SlidesSidebar from '@/components/constructor/SlidesSidebar'
 import PresentationCanvas from '@/components/constructor/PresentationCanvas'
@@ -33,28 +33,30 @@ import { asyncForEach } from '@/utils/helpers'
 })
 export default class Constructor extends Vue {
   async asyncData ({ route }) {
-    try {
-      const presentation = await PresentationModule.getPresentation(route.params.presentationId)
-      console.log(presentation)
-      if (presentation) {
-        PresentationModule.SET_CURRENT_PRESENTATION(presentation)
-        const slides = await PresentationModule.getPresentationSlides(presentation.presentationId)
-        console.log(slides)
-        if (Array.isArray(slides)) {
-          PresentationModule.SET_ACTIVE_SLIDE_ID(slides[0].slideId)
-          PresentationModule.SET_CURRENT_SLIDES(slides)
-          await asyncForEach(slides, async (slide) => {
-            const { presentationId, slideId } = slide
-            console.table({ presentationId, slideId })
-            await PresentationModule.getSlideElements({
-              presentationId,
-              slideId
+    if (route.params.presentationId !== PresentationModule.currentPresentation.presentationId) {
+      try {
+        const presentation = await PresentationModule.getPresentation(route.params.presentationId)
+        console.log(presentation)
+        if (presentation) {
+          PresentationModule.SET_CURRENT_PRESENTATION(presentation)
+          const slides = await PresentationModule.getPresentationSlides(presentation.presentationId)
+          console.log(slides)
+          if (Array.isArray(slides)) {
+            PresentationModule.SET_ACTIVE_SLIDE_ID(slides[0].slideId)
+            PresentationModule.SET_CURRENT_SLIDES(slides)
+            await asyncForEach(slides, async (slide) => {
+              const { presentationId, slideId } = slide
+              console.table({ presentationId, slideId })
+              await PresentationModule.getSlideElements({
+                presentationId,
+                slideId
+              })
             })
-          })
+          }
         }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
     }
   }
 
