@@ -21,7 +21,7 @@
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.9.1",
     "dayjs": "^1.10.4",
-    "html-to-image": "^1.6.0",
+    "html-to-image": "^1.6.1",
     "interactjs": "^1.10.11",
     "jsonwebtoken": "^8.5.1",
     "lodash.clonedeep": "^4.5.0",
