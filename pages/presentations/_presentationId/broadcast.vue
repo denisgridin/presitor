@@ -2,9 +2,9 @@
   <div class="presentation-broadcast">
     <client-only>
       <keep-alive>
-        <Canvas ref="canvas" class="canvas" :slide-elements="getSlideElements" :style="canvasStyle"/>
+        <Canvas ref="canvas" class="canvas" :slide-elements="getSlideElements" :style="canvasStyle" />
       </keep-alive>
-      <SlidesController></SlidesController>
+      <SlidesController :is-admin="isAdmin" @sync="setSync"></SlidesController>
     </client-only>
   </div>
 </template>
@@ -17,6 +17,7 @@ import { asyncForEach } from '@/utils/helpers'
 import { LAYOUTS } from '~/utils/enums'
 import { CANVAS_OPTIONS } from '~/utils/constants'
 import SlidesController from '~/components/SlidesController.vue'
+import { UserModule } from '~/store/user'
 
 @Component({
   components: {
@@ -27,18 +28,62 @@ import SlidesController from '~/components/SlidesController.vue'
 })
 export default class Broadcast extends Vue {
   canvasScale: { width: number, height: number } = { width: 1, height: 1 }
+  interval = null
+  isSync: boolean = true
+
+  get isAdmin () {
+    return PresentationModule.currentPresentation.editorIds?.includes(UserModule.getUser.userId)
+  }
+
+  setSync (val) {
+    this.isSync = val
+    if (val && !this.interval) {
+      this.startInterval()
+    } else {
+      this.clearInterval()
+    }
+  }
 
   mounted () {
     this.changeScale()
     window?.addEventListener('resize', this.changeScale)
+    this.startInterval(true)
   }
 
   beforeDestroy () {
     window?.removeEventListener('resize', this.changeScale)
+    clearInterval(this.interval)
+  }
+
+  startInterval () {
+    this.interval = setInterval(() => {
+      this.getCurrentSlide()
+    }, 1000)
+  }
+
+  clearInterval () {
+    clearInterval(this.interval)
+    this.interval = null
+  }
+
+  async getCurrentSlide () {
+    if (this.isSync) {
+      try {
+        const presentation = await PresentationModule.getPresentation(this.$route.params.presentationId)
+        if (presentation.slideIndex !== null && Array.isArray(PresentationModule.getCurrentSlides)) {
+          const id = PresentationModule.getCurrentSlides[presentation.slideIndex]?.slideId
+          if (id !== PresentationModule.getActiveSlide.slideId) {
+            PresentationModule.SET_ACTIVE_SLIDE_ID(id)
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
   }
 
   async asyncData ({ route }) {
-    if (route.params.presentationId !== PresentationModule.currentPresentation.presentationId) {
+    if (!PresentationModule.currentPresentation.presentationId) {
       try {
         const presentation = await PresentationModule.getPresentation(route.params.presentationId)
         console.log(presentation)

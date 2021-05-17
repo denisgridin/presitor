@@ -1,12 +1,16 @@
 <template>
   <div class="wrapper">
-    <Header />
+    <HeaderMain />
     <nuxt />
   </div>
 </template>
 
 <script lang="ts">
+import HeaderMain from '@/components/Headers/HeaderMain'
 export default {
+  components: {
+    HeaderMain
+  }
   // created () {
   //   const user = getCookieUser(this.$cookies)
   //   if (user) {

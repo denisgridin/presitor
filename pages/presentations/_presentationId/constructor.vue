@@ -1,8 +1,8 @@
 <template>
   <div class="constructor">
-    <SlidesSidebar />
-    <PresentationCanvas />
-    <PresentationActions />
+    <SlidesSidebar/>
+    <PresentationCanvas :disabled="!isAdmin" />
+    <PresentationActions v-if="isAdmin"/>
     <ContextMenu
       v-if="getContextMenu.active"
       ref="contextMenu"
@@ -21,6 +21,7 @@ import { LAYOUTS } from '@/utils/enums'
 import { CommonModule } from '@/store/common'
 import { PresentationModule } from '@/store/presentation'
 import { asyncForEach } from '@/utils/helpers'
+import { UserModule } from '~/store/user'
 
 @Component({
   components: {
@@ -32,6 +33,10 @@ import { asyncForEach } from '@/utils/helpers'
   layout: LAYOUTS.APP
 })
 export default class Constructor extends Vue {
+  get isAdmin () {
+    return PresentationModule.currentPresentation.editorIds?.includes(UserModule.getUser.userId)
+  }
+
   async asyncData ({ route }) {
     if (route.params.presentationId !== PresentationModule.currentPresentation.presentationId) {
       try {

@@ -58,4 +58,17 @@ export class PresentationApi {
       }
     })
   }
+
+  public createPresentation ({ userId }: { userId: string }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const path = PATH.presentations.default
+        const { data } = await this.instance.post(this.getUrl(path), { userId })
+        console.log(data)
+        resolve(data)
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 }

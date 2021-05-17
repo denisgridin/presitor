@@ -1,13 +1,13 @@
 <template>
   <div class="canvas-wrapper" >
     <client-only>
-      <Canvas ref="canvas" :slide-elements="getSlideElements" @mousedown="resetActiveElement" />
+      <Canvas ref="canvas" :style="{ pointerEvents: disabled ? 'none' : null }" :slide-elements="getSlideElements" @mousedown="resetActiveElement" />
     </client-only>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import { Component, Vue, Watch, Prop } from 'nuxt-property-decorator'
 import Canvas from '@/components/constructor/canvas/Canvas.vue'
 import { PresentationModule } from '@/store/presentation'
 import { IElement } from '~/interfaces/presentation'
@@ -18,6 +18,8 @@ import { IElement } from '~/interfaces/presentation'
   }
 })
 export default class PresentationCanvas extends Vue {
+  @Prop() disabled: boolean
+
   elements: IElement[] = []
 
   get getSlideElements () {

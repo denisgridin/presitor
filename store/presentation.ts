@@ -23,7 +23,8 @@ export interface IConstructorPresentation extends IPresentation{
   activeElementId: string | null,
   activeElementType: ELEMENT_TYPE | null,
   hoverElementId: string | null,
-  isPlay: boolean
+  isPlay: boolean,
+  broadcastSlideIndex: number
 }
 
 export interface IPresentationState {
@@ -81,7 +82,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   public get getActiveSlide () {
     const activeSlideId = this.getActiveSlideId
-    return this.currentPresentation.slides.find((slide : ISlide) => slide.slideId === activeSlideId)
+    return this.currentPresentation.slides?.find((slide : ISlide) => slide.slideId === activeSlideId) || []
   }
 
   public get getHoveredElementId () {
@@ -400,9 +401,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     try {
       const api = new PresentationApi(UserModule.getTokens.accessToken)
       const presentation = pick(this.currentPresentation, [
-        'name', 'background', 'fontFamily', 'presentationId'
+        'name', 'background', 'fontFamily', 'presentationId', 'broadcastSlideIndex'
       ])
-      await api.updatePresentation(presentation)
+      await api.updatePresentation({ ...presentation, slideIndex: presentation.broadcastSlideIndex })
     } catch (error) {
       console.log(error)
     }
@@ -435,22 +436,47 @@ export class PresentationStore extends VuexModule implements IPresentationState 
   }
 
   @Action
-  public setCurrentSlidePosition (step: number) {
+  public setCurrentSlidePosition (data: {
+    step: number,
+    isAdmin: boolean,
+    isSync: boolean
+  } | number) {
+    const isAdmin = data.isAdmin || false
+    const step = data.step || data
+    const isSync = data.isSync || false
     this.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null, type: null })
     const index = this.currentPresentation.slides.findIndex(slide => slide.slideId === this.currentPresentation.activeSlideId)
-    console.log(index, step)
-    const setSlideId = (index: number) => {
+    console.log('change slide index', index, isAdmin)
+    console.log(index + step)
+    const setSlideId = async (index: number) => {
       if ((index + step <= this.currentPresentation.slides.length - 1) && (index + step >= 0)) {
-        const currentSlideId = this.currentPresentation.slides[index + step].slideId
+        const position = index + step
+        const currentSlideId = this.currentPresentation.slides[position].slideId
+        console.log('set active slide', currentSlideId)
         this.setActiveSlideId(currentSlideId)
+        if (isAdmin && isSync) {
+          await this.changeActiveSlideIndex(position)
+        }
+      } else {
+        console.log('out of bounds')
       }
     }
+    setSlideId(index)
+  }
 
-    if (step > 0) {
-      setSlideId(index)
-    } else if (step < this.currentPresentation.slides.length - 1) {
-      setSlideId(index)
-    }
+  @Action({ rawError: true })
+  changeActiveSlideIndex (index: number) {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        this.currentPresentation.broadcastSlideIndex = index
+        const result = await this.updatePresentation()
+        resolve(result)
+      } catch (error) {
+        reject(error)
+      }
+    })
   }
 
   @Mutation
@@ -506,6 +532,20 @@ export class PresentationStore extends VuexModule implements IPresentationState 
         const data = await api.uploadImage(formData)
         resolve(data)
       } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  @Action({ rawError: true })
+  createPresentation () {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        const presentationId = await api.createPresentation({ userId: UserModule.getUser.userId })
+        resolve(presentationId)
+      } catch (error) {
+        console.error(error)
         reject(error)
       }
     })

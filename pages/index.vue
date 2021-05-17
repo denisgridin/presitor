@@ -5,7 +5,7 @@
         <div class="greeting">
           {{ greeting }}
         </div>
-        <vs-button block>
+        <vs-button block @click="createPresentation">
           <div class="create-button-content">
             <i class="bx bxs-paint" />
             <span class="create-button-content__text">Создать</span>
@@ -30,9 +30,12 @@
 <script>
 import { UserModule } from '@/store/user'
 import { MESSAGE } from '~/utils/constants'
+import { LAYOUTS } from '@/utils/enums'
+import { PresentationModule } from '@/store/presentation'
 const presentationImage = require('@/assets/images/presentation.svg')
 
 export default {
+  layout: LAYOUTS.DEFAULT,
   data () {
     return {
       presentationImage,
@@ -42,6 +45,20 @@ export default {
   computed: {
     isAuth () {
       return UserModule.getAuthenticationState
+    }
+  },
+  methods: {
+    async createPresentation () {
+      if (this.isAuth) {
+        try {
+          const id = await PresentationModule.createPresentation()
+          await this.$router.push(`/presentations/${id}/constructor`)
+        } catch (error) {
+          console.error(error)
+        }
+      } else {
+        await this.$router.push('/login')
+      }
     }
   }
 }

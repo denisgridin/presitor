@@ -11,7 +11,7 @@
         :slide="slide"
         @select="setActiveSlide" />
     </div>
-    <div class="slides-sidebar__add-button">
+    <div class="slides-sidebar__add-button" v-if="isAdmin">
       <vs-button relief block @click="addSlide">
         Добавить слайд
         <i class="bx bxs-plus"></i>
@@ -25,6 +25,7 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import SlidesSidebarItem from '@/components/constructor/SlidesSidebarItem.vue'
 import { ISlide } from '~/interfaces/presentation'
+import { UserModule } from '~/store/user'
 
 @Component({
   components: {
@@ -34,6 +35,10 @@ import { ISlide } from '~/interfaces/presentation'
 export default class SlidesSidebar extends Vue {
   get currentPresentation () {
     return PresentationModule.getCurrentPresentation
+  }
+
+  get isAdmin () {
+    return PresentationModule.currentPresentation.editorIds?.includes(UserModule.getUser.userId)
   }
 
   get getActiveSlideId () {

@@ -10,8 +10,12 @@ export class SlideApi {
     this.instance = new Api(token)
   }
 
-  getUrl (path: string, data: { presentationId?: string, slideId?: string }) {
-    return (`${this.prefix}${path}`).replace(':presentationId', data.presentationId as string).replace(':slideId', data.slideId as string)
+  getUrl (path: string, data?: { presentationId?: string, slideId?: string }) {
+    if (data) {
+      return (`${this.prefix}${path}`).replace(':presentationId', data.presentationId as string).replace(':slideId', data.slideId as string)
+    } else {
+      return (`${this.prefix}${path}`)
+    }
   }
 
   public removeSlideById (slide: ISlide) {
@@ -52,6 +56,20 @@ export class SlideApi {
         resolve(data)
       } catch (error) {
         console.log(error)
+        reject(error)
+      }
+    })
+  }
+
+  public setCurrentSlideIndex ({ presentationId, index }: { presentationId: string, index: number }) {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
+      try {
+        const path = this.getUrl(PATH.presentations.exact, { presentationId })
+        const { data } = await this.instance.post(path, { slideIndex: index })
+        console.log(data)
+        resolve(1)
+      } catch (error) {
         reject(error)
       }
     })

@@ -1,8 +1,8 @@
 <template>
   <div class="constructor">
     <SlidesSidebar />
-    <PresentationCanvas />
-    <PresentationActions />
+    <PresentationCanvas :style="{ pointerEvents: isAdmin ? 'all' : 'none' }"/>
+    <PresentationActions v-if="isAdmin" />
     <ContextMenu
       v-if="getContextMenu.active"
       ref="contextMenu"
@@ -19,6 +19,8 @@ import PresentationActions from '@/components/constructor/PresentationActions'
 import ContextMenu from '@/components/ContextMenu'
 import { LAYOUTS } from '@/utils/enums'
 import { CommonModule } from '@/store/common'
+import { PresentationModule } from '@/store/presentation'
+import { UserModule } from '@/store/user'
 
 @Component({
   components: {
@@ -32,6 +34,10 @@ import { CommonModule } from '@/store/common'
 export default class Constructor extends Vue {
   get getContextMenu () {
     return CommonModule.getContextMenu
+  }
+
+  get isAdmin () {
+    return PresentationModule.currentPresentation.editorIds?.includes(UserModule.getUser.userId)
   }
 }
 </script>

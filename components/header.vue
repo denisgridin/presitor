@@ -6,13 +6,19 @@
       </nuxt-link>
       <slot name="middle-data">
       </slot>
+      <HeaderButtons></HeaderButtons>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-@Component
+import HeaderButtons from '~/components/HeaderButtons.vue'
+@Component({
+  components: {
+    HeaderButtons
+  }
+})
 export default class Header extends Vue {
 }
 

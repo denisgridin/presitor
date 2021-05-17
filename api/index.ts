@@ -48,7 +48,7 @@ export class Api {
     return this.instance.get(url)
   }
 
-  public post (url: string, data: any, config: any) {
+  public post (url: string, data: any, config?: any) {
     return this.instance.post(url, data, config)
   }
 

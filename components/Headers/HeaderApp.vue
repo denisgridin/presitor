@@ -12,13 +12,13 @@
           </div>
         </vs-button>
         <vs-button circle>
-          <div class="export-button" @click="exportInPng">
+          <div class="export-button">
             <i class="bx bx-export"></i>
             <span>Экспорт в PNG</span>
           </div>
         </vs-button>
       </div>
-      <HeaderButtons />
+<!--      <HeaderButtons />-->
     </template>
   </Header>
 </template>
