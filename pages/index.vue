@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class="container animate__animated animate__fadeInUp">
-      <LastPresentationsList />
+      <LastPresentationsList/>
     </div>
   </div>
 </template>

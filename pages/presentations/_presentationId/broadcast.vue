@@ -2,7 +2,7 @@
   <div class="presentation-broadcast">
     <client-only>
       <keep-alive>
-        <Canvas ref="canvas" class="canvas" :slide-elements="getSlideElements" :style="canvasStyle" />
+        <Canvas ref="canvas" class="canvas" :slide-elements="getSlideElements" :presentation="currentPresentation" :style="canvasStyle" />
       </keep-alive>
       <SlidesController :is-admin="isAdmin" @sync="setSync"></SlidesController>
     </client-only>
@@ -35,6 +35,10 @@ export default class Broadcast extends Vue {
     return PresentationModule.currentPresentation.editorIds?.includes(UserModule.getUser.userId)
   }
 
+  get currentPresentation () {
+    return PresentationModule.currentPresentation
+  }
+
   setSync (val) {
     this.isSync = val
     if (val && !this.interval) {
@@ -54,6 +58,7 @@ export default class Broadcast extends Vue {
     window?.removeEventListener('resize', this.changeScale)
     clearInterval(this.interval)
   }
+
 
   startInterval () {
     this.interval = setInterval(() => {
@@ -97,10 +102,16 @@ export default class Broadcast extends Vue {
             await asyncForEach(slides, async (slide) => {
               const { presentationId, slideId } = slide
               console.table({ presentationId, slideId })
-              await PresentationModule.getSlideElements({
+              const elements = await PresentationModule.getSlideElements({
                 presentationId,
                 slideId
               })
+              if (Array.isArray(elements)) {
+                PresentationModule.SET_SLIDE_ELEMENTS({
+                  slideId,
+                  elements
+                })
+              }
             })
           }
         }

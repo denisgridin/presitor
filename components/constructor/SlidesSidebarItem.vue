@@ -2,7 +2,7 @@
   <div class="slide" :class="{ 'slide-active': active }" @click="selectSlide" @click.right.prevent="openContext">
     <div class="slide-index">{{ index }}</div>
     <div class="preview">
-      <Canvas :ref="`slide_${slide.slideId}`" class="slide-preview" :slide-elements="getSlideElements" :disabled="true">
+      <Canvas :ref="`slide_${slide.slideId}`" class="slide-preview" :slide-elements="getSlideElements" :presentation="currentPresentation" :disabled="true">
         <template #controller>
           <div class="fullscreen-controller">
             <div class="controller-button" @click="setSlidePosition(-1)">
@@ -63,6 +63,10 @@ export default class SlidesSidebarItem extends Vue {
 
   get getActiveSlideId () {
     return PresentationModule.getActiveSlideId
+  }
+
+  get currentPresentation () {
+    return PresentationModule.currentPresentation
   }
 
   get isPresentationPlayed () {

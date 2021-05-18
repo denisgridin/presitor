@@ -1,7 +1,14 @@
 <template>
   <div class="canvas-wrapper" >
     <client-only>
-      <Canvas ref="canvas" :style="{ pointerEvents: disabled ? 'none' : null }" :slide-elements="getSlideElements" @mousedown="resetActiveElement" />
+      <Canvas
+        ref="canvas"
+        :style="{
+          pointerEvents: disabled ? 'none' : null
+        }"
+        :slide-elements="getSlideElements"
+        :presentation="currentPresentation"
+        @mousedown="resetActiveElement" />
     </client-only>
   </div>
 </template>
@@ -24,6 +31,10 @@ export default class PresentationCanvas extends Vue {
 
   get getSlideElements () {
     return this.activeSlide?.elements || []
+  }
+
+  get currentPresentation () {
+    return PresentationModule.getCurrentPresentation
   }
 
   get activeSlide () {

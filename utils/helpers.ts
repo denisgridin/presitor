@@ -15,7 +15,7 @@ export function getStyleVariable (name: string): any {
 }
 
 export function getCookieUser (cookies: any) {
-  const userString = cookies.get(FIELD.USER)?.toString() || ''
+  const userString = cookies[FIELD.USER]?.toString() || ''
   return userString ? JSON.parse(decodeURIComponent(userString)) : null
 }
 

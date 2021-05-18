@@ -58,7 +58,7 @@ export default class EditorCommon extends Vue {
   }
 
   get isImage () {
-    return this.getActiveElement?.style.background?.includes('url')
+    return this.getActiveElement?.style?.background?.includes('url')
   }
 
   get getCurrentCommonConfig () {

@@ -71,4 +71,16 @@ export class PresentationApi {
       }
     })
   }
+
+  public removePresentation ({ userId, id }: { userId: string, id: string }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const path = `${PATH.presentations.exact.replace(':presentationId', id)}?userId=${userId}`
+        const { data } = await this.instance.delete(this.getUrl(path))
+        resolve(data)
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
 }

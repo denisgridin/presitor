@@ -1,6 +1,6 @@
 <template>
   <div>
-    <History />
+<!--    <History />-->
     <ElementsTable v-if="getCurrentElements.length" />
     <div v-if="getActiveElement" class="presentation-section" :style="actionsStyle">
       <EditorCommon />
@@ -38,7 +38,7 @@ export default class ActionsEditor extends Vue {
   }
 
   get isImage () {
-    return this.getActiveElement?.style.background?.includes('url')
+    return this.getActiveElement?.style?.background?.includes('url')
   }
 
   get getCurrentElements () {

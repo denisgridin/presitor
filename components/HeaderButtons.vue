@@ -1,11 +1,9 @@
 <template>
   <div>
     <div v-if="isAuthenticated" class="header-buttons">
-      <nuxt-link to="/constructor">
-        <vs-button relief>
-          Новая презентация
-        </vs-button>
-      </nuxt-link>
+      <vs-button relief @click="createPresentation">
+        Новая презентация
+      </vs-button>
       <vs-tooltip bottom>
         <vs-avatar circle>
           <template #text>
@@ -46,39 +44,51 @@
 <script lang="ts">
 import { IUser, UserModule } from '@/store/user'
 import { FIELD } from '~/utils/constants'
+import { PresentationModule } from '~/store/presentation'
+import { Component, Vue } from 'nuxt-property-decorator'
 
-export default {
-  data () {
-    return {
-      isLoading: false,
-      isClicked: false
+@Component
+export default class HeaderButtons extends Vue {
+  isLoading: boolean = false
+  isClicked: boolean = false
+
+  get userLetter () {
+    if (this.user?.email) {
+      return this.user.email[0].toUpperCase()
+    } else {
+      return ''
     }
-  },
-  computed: {
-    userLetter () {
-      if (this.user?.email) {
-        return this.user.email[0].toUpperCase()
-      } else {
-        return ''
-      }
-    },
-    isAuthenticated (): boolean {
-      return this.$cookies.get(FIELD.IS_AUTHENTICATED)
-    },
-    user (): IUser {
-      return UserModule.getUser
+  }
+
+  get isAuthenticated (): boolean {
+    return this.$cookies.get(FIELD.IS_AUTHENTICATED)
+  }
+
+  get user (): IUser {
+    return UserModule.getUser
+  }
+
+  async logout (): Promise<void> {
+    this.isLoading = true
+    try {
+      await this.$auth('logout', this.$cookies, () => {})
+      await this.$router.push('/login')
+    } catch (error) {
+      console.log(error)
     }
-  },
-  methods: {
-    async logout (): void {
-      this.isLoading = true
+    this.isLoading = false
+  }
+
+  async createPresentation () {
+    if (this.isAuthenticated) {
       try {
-        await this.$auth('logout', this.$cookies, () => {})
-        await this.$router.push('/login')
+        const id = await PresentationModule.createPresentation()
+        await this.$router.push(`/presentations/${id}/constructor`)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
-      this.isLoading = false
+    } else {
+      await this.$router.push('/login')
     }
   }
 }

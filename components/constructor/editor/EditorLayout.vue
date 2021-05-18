@@ -49,32 +49,39 @@ export default class EditorLayout extends Vue {
   }
 
   get getCurrentLayout (): ILayout | undefined {
-    return PresentationModule.getActiveElement?.layout
+    return PresentationModule.getActiveElement?.layout ? PresentationModule.getActiveElement?.layout : {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0
+    } as ILayout
   }
 
   setElementValue (key: string, event: any) {
     console.log(event.target.value)
-    const layout = this.getActiveElement.layout
-    layout[key] = +event.target.value
-    PresentationModule.UPDATE_ELEMENT_VALUE(
-      {
-        key: 'layout',
-        value: cloneDeep(layout),
-        slideId: this.getActiveElement?.slideId,
-        elementId: this.getActiveElement?.elementId
-      })
-    const currentElement = this.getActiveElement
-    clearTimeout(this.updateDebounce)
-    this.updateDebounce = setTimeout(() => {
-      PresentationModule.updateElementValue(
+    const layout = this.getActiveElement?.layout
+    if (layout) {
+      layout[key] = +event.target.value
+      PresentationModule.UPDATE_ELEMENT_VALUE(
         {
           key: 'layout',
           value: cloneDeep(layout),
-          slideId: currentElement?.slideId,
-          elementId: currentElement?.elementId,
-          element: currentElement
+          slideId: this.getActiveElement?.slideId,
+          elementId: this.getActiveElement?.elementId
         })
-    }, 1000)
+      const currentElement = this.getActiveElement
+      clearTimeout(this.updateDebounce)
+      this.updateDebounce = setTimeout(() => {
+        PresentationModule.updateElementValue(
+          {
+            key: 'layout',
+            value: cloneDeep(layout),
+            slideId: currentElement?.slideId,
+            elementId: currentElement?.elementId,
+            element: currentElement
+          })
+      }, 1000)
+    }
   }
 }
 </script>

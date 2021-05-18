@@ -16,7 +16,7 @@ import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import CanvasElement from './CanvasElement.vue'
 import CanvasElementContent from './CanvasElementContent'
-import { IElement } from '~/interfaces/presentation'
+import { IElement, IPresentation } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -27,6 +27,7 @@ import { IElement } from '~/interfaces/presentation'
 export default class Canvas extends Vue {
   @Prop() slideElements: IElement
   @Prop({ default: false }) disabled: boolean
+  @Prop() presentation: IPresentation
 
   updated () {
     console.log('updated')
@@ -41,13 +42,13 @@ export default class Canvas extends Vue {
 
   get presentationOptions () {
     return {
-      background: this.getCurrentPresentation.background,
-      fontFamily: this.getCurrentPresentation.fontFamily
+      background: this.getCurrentPresentation?.background,
+      fontFamily: this.getCurrentPresentation?.fontFamily
     }
   }
 
   get getCurrentPresentation () {
-    return PresentationModule.getCurrentPresentation
+    return this.presentation
   }
 
   deactivateElement () {

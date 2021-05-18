@@ -107,7 +107,7 @@ export default class EditorStyle extends Vue {
   }
 
   get hasBackgroundColor () {
-    return !this.getActiveElement.style.background.includes('url')
+    return !this.getActiveElement?.style?.background.includes('url')
   }
 
   get getCurrentStyle (): IStyle {
@@ -156,7 +156,7 @@ export default class EditorStyle extends Vue {
     const value = val || data
     console.log(`key: ${key}, value: `, value)
     const style = this.getActiveElement.style as IStyle
-    if (value) {
+    if (value && style) {
       style[key] = value
       PresentationModule.UPDATE_ELEMENT_VALUE(
         {

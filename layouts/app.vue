@@ -11,6 +11,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import HeaderApp from '@/components/Headers/HeaderApp'
 import { PresentationModule } from '~/store/presentation'
+import { UserModule } from '~/store/user'
 
 @Component({
   components: {
@@ -18,6 +19,10 @@ import { PresentationModule } from '~/store/presentation'
   }
 })
 export default class app extends Vue {
+  mounted () {
+    UserModule.getCookieUser(this.$cookies.getAll())
+  }
+
   // mounted () {
   //   document.addEventListener('fullscreenchange', () => {
   //     console.log('fullscreen ' + Boolean(document.fullscreenElement))

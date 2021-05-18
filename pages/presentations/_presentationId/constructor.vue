@@ -52,10 +52,16 @@ export default class Constructor extends Vue {
             await asyncForEach(slides, async (slide) => {
               const { presentationId, slideId } = slide
               console.table({ presentationId, slideId })
-              await PresentationModule.getSlideElements({
+              const elements = await PresentationModule.getSlideElements({
                 presentationId,
                 slideId
               })
+              if (Array.isArray(elements)) {
+                PresentationModule.SET_SLIDE_ELEMENTS({
+                  slideId,
+                  elements
+                })
+              }
             })
           }
         }

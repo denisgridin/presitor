@@ -42,7 +42,7 @@ function login (cookies: NuxtCookies, redirect: () => void, user: IUser) {
       const data = await UserModule.loginUser(user) as ITokenData
       removeCookies(cookies)
       setCookies(cookies, data, data.user as IUser)
-      const cookieUser = await UserModule.getCookieUser(cookies)
+      const cookieUser = await UserModule.getCookieUser(cookies.getAll())
       console.log('cookie user: ' + JSON.stringify(cookieUser))
       console.log(UserModule.getAuthenticationState)
       await redirect()
@@ -73,7 +73,7 @@ function updateToken (cookies: NuxtCookies, redirect: () => void) {
   return new Promise(async (resolve, reject) => {
     try {
       console.log('refresh token')
-      await UserModule.getCookieUser(cookies)
+      await UserModule.getCookieUser(cookies.getAll())
       const refreshToken = UserModule.getTokens.refreshToken || cookies.get(FIELD.REFRESH_TOKEN)
       const data = await UserModule.updateToken(refreshToken) as ITokenData
       console.log(data)

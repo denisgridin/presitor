@@ -100,9 +100,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   public get getActiveElement (): IElement | null {
     const activeElementId = this.currentPresentation.activeElementId
-    const activeSlide = this.currentPresentation.slides.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide
+    const activeSlide = this.currentPresentation?.slides?.find((slide: ISlide) => slide.slideId === this.getActiveSlideId) as ISlide || null
     if (activeSlide) {
-      return activeSlide.elements.find((el: IElement) => el.elementId === activeElementId) as IElement
+      return activeSlide.elements?.find((el: IElement) => el.elementId === activeElementId) as IElement || null
     }
     return null
   }
@@ -296,12 +296,6 @@ export class PresentationStore extends VuexModule implements IPresentationState 
       try {
         const api = new ElementApi(UserModule.getTokens.accessToken)
         const elements = await api.getSlideElements(presentationId, slideId)
-        if (Array.isArray(elements)) {
-          this.SET_SLIDE_ELEMENTS({
-            slideId,
-            elements
-          })
-        }
         resolve(elements)
       } catch (error) {
         console.log(error)
@@ -546,6 +540,19 @@ export class PresentationStore extends VuexModule implements IPresentationState 
         resolve(presentationId)
       } catch (error) {
         console.error(error)
+        reject(error)
+      }
+    })
+  }
+
+  @Action({ rawError: true })
+  removePresentation (id: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const api = new PresentationApi(UserModule.getTokens.accessToken)
+        await api.removePresentation({ userId: UserModule.getUser.userId, id })
+        resolve(true)
+      } catch (error) {
         reject(error)
       }
     })

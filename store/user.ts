@@ -123,13 +123,14 @@ export class User extends VuexModule implements IUserState {
   }
 
   @Action({ rawError: true })
-  public getCookieUser (cookies: NuxtCookies) {
+  public getCookieUser (cookies: any) {
+    console.log(cookies)
     return new Promise((resolve, reject) => {
       try {
-        const isAuth = !!cookies.get(FIELD.IS_AUTHENTICATED)
+        const isAuth = !!cookies[FIELD.IS_AUTHENTICATED]
         if (isAuth) {
-          const accessToken = cookies.get(FIELD.ACCESS_TOKEN)
-          const refreshToken = cookies.get(FIELD.REFRESH_TOKEN)
+          const accessToken = cookies[FIELD.ACCESS_TOKEN]
+          const refreshToken = cookies[FIELD.REFRESH_TOKEN]
           this.setTokens({ accessToken, refreshToken })
           const user = getCookieUser(cookies)
           if (user) {

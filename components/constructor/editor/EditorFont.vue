@@ -7,7 +7,7 @@
           <h4>Шрифт</h4>
         </div>
       </template>
-      <div class="inputs">
+      <div class="inputs" v-if="getActiveElement.font">
         <div class="inputs-item">
           <label for="fontSize">Размер шрифта</label>
           <input
@@ -86,7 +86,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import FontSelector from '@/components/FontSelector.vue'
-import { CONFINES, TEXT_ALIGNS } from '~/utils/constants'
+import { CONFINES, DEFAULT_ELEMENT, TEXT_ALIGNS } from '~/utils/constants'
 import Selector from '@/components/constructor/Selector.vue'
 import { IFont } from '~/interfaces/presentation'
 
@@ -103,11 +103,11 @@ export default class EditorFont extends Vue {
   updateDebounce: any = null
 
   get getActiveElement () {
-    return PresentationModule.getActiveElement
+    return PresentationModule.getActiveElement || DEFAULT_ELEMENT
   }
 
   get getCurrentFontOptions () {
-    return this.getActiveElement?.font
+    return this.getActiveElement?.font || DEFAULT_ELEMENT.font
   }
 
   setElementValue (key: string, value: any) {
