@@ -21,8 +21,6 @@ import ContentSelector from '@/components/constructor/content/ContentSelector.vu
 import ImageSelector from '@/components/constructor/ImageSelector'
 import { ImagesApi } from '~/api/images'
 import { PresentationModule } from '~/store/presentation'
-import uuid from 'uuid-random'
-import { DEFAULT_ELEMENT, ELEMENT_STYLES } from '~/utils/constants'
 
 @Component({
   data: () => {
@@ -61,22 +59,6 @@ export default class ActionsElements extends Vue {
 
   async loadFile ({ file, data }: { file: FormData, data: Blob }) {
     try {
-      const api = new ImagesApi()
-      // const { data } = await api.post(this.image)
-      // PresentationModule.ADD_SLIDE_ELEMENT({
-      //   slideId: (this as any).$current('slide').slideId,
-      //   element: {
-      //     elementId: uuid(),
-      //     slideId: this.$current('slide').slideId,
-      //     name: 'name',
-      //     text: '',
-      //     style: {
-      //       ...ELEMENT_STYLES,
-      //       background: `url(${data})`
-      //     },
-      //     layout: DEFAULT_ELEMENT.layout
-      //   }
-      // })
       const url = await this.uploadImage(file)
       await PresentationModule.addSlideElement(
         {
