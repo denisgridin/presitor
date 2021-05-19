@@ -21,10 +21,10 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { ACTION_TAB } from '@/utils/enums'
-import Tabs from '@/components/Tabs'
-import ActionsElements from '@/components/constructor/actions/ActionsElements'
-import ActionsPresentation from '@/components/constructor/actions/ActionsPresentation'
-import ActionsEditor from '@/components/constructor/actions/ActionsEditor'
+import Tabs from '@/components/Tabs.vue'
+import ActionsElements from '@/components/constructor/actions/ActionsElements.vue'
+import ActionsPresentation from '@/components/constructor/actions/ActionsPresentation.vue'
+import ActionsEditor from '@/components/constructor/actions/ActionsEditor.vue'
 import { CONSTRUCTOR_TAB_ACTIONS } from '~/utils/constants'
 
 import { PresentationModule } from '~/store/presentation'
@@ -48,9 +48,8 @@ export default class PresentationActions extends Vue {
     return PresentationModule.getCurrentPresentation
   }
 
-  setActiveTab (id) {
-    console.log(id)
-    this.currentTab = id
+  setActiveTab (id: string) {
+    (this as any).currentTab = id
   }
 }
 </script>

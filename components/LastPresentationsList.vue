@@ -16,7 +16,7 @@
 
 <script lang="ts">
 
-import { Component, Emit, Vue } from 'nuxt-property-decorator'
+import { Component, Vue } from 'nuxt-property-decorator'
 import { IPresentation } from '~/interfaces/presentation'
 import { FIELD } from '~/utils/constants'
 import { PresentationApi } from '~/api/presentation'
@@ -52,7 +52,7 @@ export default class LastPresentationsList extends Vue {
   onSubmit (flag: boolean) {
     this.modalActive = false
     if (flag) {
-      this.removePresentation(this.removingPresentation)
+      this.removePresentation(this.removingPresentation as string)
     }
     this.removingPresentation = null
   }

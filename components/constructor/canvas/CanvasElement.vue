@@ -29,8 +29,11 @@ import { CommonModule } from '~/store/common'
 
 @Component
 export default class CanvasElement extends Vue {
-  @Prop() readonly element: IElement
-  @Prop({ default: false }) readonly disabled: boolean
+  @Prop()
+  readonly element!: IElement
+
+  @Prop({ default: false })
+  readonly disabled!: boolean
 
   component = {} as Interactable
   isActive = false as boolean
@@ -188,8 +191,8 @@ export default class CanvasElement extends Vue {
     target.style.webkitTransform = target.style.transform =
       'translate(' + x + 'px,' + y + 'px)'
 
-    target.setAttribute('data-x', x)
-    target.setAttribute('data-y', y)
+    target.setAttribute('data-x', x.toString())
+    target.setAttribute('data-y', y.toString())
 
     PresentationModule.UPDATE_ELEMENT_VALUE({
       key: 'layout',

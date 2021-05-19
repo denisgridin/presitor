@@ -32,8 +32,8 @@ export default class ContentSelector extends Vue {
           style: {
             background: '#00000000',
             zIndex: PresentationModule.getLastZIndex
-          }
-        }
+          } as any
+        } as any
       })
   }
 }

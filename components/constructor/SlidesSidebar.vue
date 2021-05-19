@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
-import { PresentationModule } from '@/store/presentation'
+import { IConstructorPresentation, PresentationModule } from '@/store/presentation'
 import SlidesSidebarItem from '@/components/constructor/SlidesSidebarItem.vue'
 import { ISlide } from '~/interfaces/presentation'
 import { UserModule } from '~/store/user'
@@ -33,27 +33,27 @@ import { UserModule } from '~/store/user'
   }
 })
 export default class SlidesSidebar extends Vue {
-  get currentPresentation () {
-    return PresentationModule.getCurrentPresentation
+  get currentPresentation (): IConstructorPresentation {
+    return PresentationModule.getCurrentPresentation as IConstructorPresentation
   }
 
-  get isAdmin () {
+  get isAdmin (): boolean {
     return PresentationModule.currentPresentation.editorIds?.includes(UserModule.getUser.userId)
   }
 
-  get getActiveSlideId () {
+  get getActiveSlideId (): string {
     return PresentationModule.getActiveSlideId
   }
 
-  get slides () {
+  get slides (): ISlide[] {
     return PresentationModule.getCurrentSlides
   }
 
   @Watch('getActiveSlideId')
-  onActiveSlideChanged (id) {
+  onActiveSlideChanged (id: string) {
     const refs = this.$refs[`slide_${id}`]
     if (Array.isArray(refs)) {
-      const element = refs[0].$el
+      const element = (refs[0] as any).$el
       if (element) {
         element.scrollIntoView({ block: 'nearest' })
       }
@@ -71,6 +71,7 @@ export default class SlidesSidebar extends Vue {
 
   addSlide () {
     const slide: ISlide = {
+      slideId: '',
       presentationId: this.currentPresentation.presentationId,
       name: `Slide ${this.currentPresentation.slides.length + 1}`,
       index: this.currentPresentation.slides.length + 1,

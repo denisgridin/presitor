@@ -42,10 +42,10 @@
 </template>
 
 <script lang="ts">
+import { Component, Vue } from 'nuxt-property-decorator'
 import { IUser, UserModule } from '@/store/user'
 import { FIELD } from '~/utils/constants'
 import { PresentationModule } from '~/store/presentation'
-import { Component, Vue } from 'nuxt-property-decorator'
 
 @Component
 export default class HeaderButtons extends Vue {
@@ -71,7 +71,7 @@ export default class HeaderButtons extends Vue {
   async logout (): Promise<void> {
     this.isLoading = true
     try {
-      await this.$auth('logout', this.$cookies, () => {})
+      await (this as any).$auth('logout', this.$cookies, () => {})
       await this.$router.push('/login')
     } catch (error) {
       console.log(error)

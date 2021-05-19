@@ -7,7 +7,6 @@
         </CanvasElement>
       </keep-alive>
     </div>
-<!--    <slot name="controller" class="controller"></slot>-->
   </div>
 </template>
 
@@ -15,7 +14,7 @@
 import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import CanvasElement from './CanvasElement.vue'
-import CanvasElementContent from './CanvasElementContent'
+import CanvasElementContent from './CanvasElementContent.vue'
 import { IElement, IPresentation } from '~/interfaces/presentation'
 
 @Component({
@@ -25,9 +24,13 @@ import { IElement, IPresentation } from '~/interfaces/presentation'
   }
 })
 export default class Canvas extends Vue {
-  @Prop() slideElements: IElement
-  @Prop({ default: false }) disabled: boolean
-  @Prop() presentation: IPresentation
+  @Prop() slideElements: IElement | undefined
+
+  @Prop({ default: false })
+  disabled!: boolean
+
+  @Prop()
+  presentation!: IPresentation
 
   updated () {
     console.log('updated')
@@ -52,7 +55,7 @@ export default class Canvas extends Vue {
   }
 
   deactivateElement () {
-    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null })
+    PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null, type: null })
   }
 
   setContentEditable (index: number) {

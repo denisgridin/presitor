@@ -27,8 +27,11 @@ import { ITabItem } from '~/interfaces'
 
 @Component
 export default class Tabs extends Vue {
-  @Prop() active: string
-  @Prop() items: ITabItem[]
+  @Prop()
+  active!: string
+
+  @Prop()
+  items!: ITabItem[]
 
   @Emit('select')
   emitClick (id: string | number) {

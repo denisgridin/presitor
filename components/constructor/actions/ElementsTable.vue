@@ -9,6 +9,7 @@
 import ElementsTableItem from '@/components/constructor/actions/ElementsTableItem.vue'
 import { Component, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
+import { IElement } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -16,12 +17,12 @@ import { PresentationModule } from '@/store/presentation'
   }
 })
 export default class ElementsList extends Vue {
-  get getCurrentElements () {
-    return PresentationModule.getActiveSlide.elements
+  get getCurrentElements (): IElement[] {
+    return PresentationModule.getActiveSlide.elements as IElement[]
   }
 
-  get getActiveElement () {
-    return PresentationModule.getActiveElement
+  get getActiveElement (): IElement {
+    return PresentationModule.getActiveElement as IElement
   }
 }
 </script>

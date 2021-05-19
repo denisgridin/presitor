@@ -14,7 +14,7 @@ import FileInput from '@/components/FileInput.vue'
   }
 })
 export default class ImageSelector extends Vue {
-  image: FormData = null
+  image: FormData | null = null
 
   setFile (file: Blob) {
     this.$set(this, 'image', file)

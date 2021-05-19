@@ -50,7 +50,8 @@ const dayjs = require('dayjs')
 export default class PresentationItem extends Vue {
   elements: IElement[] = []
 
-  @Prop() presentation: IPresentation
+  @Prop()
+  presentation!: IPresentation
 
   @Emit('open')
   openPresentation () {

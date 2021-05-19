@@ -25,7 +25,8 @@ import { IElement } from '~/interfaces/presentation'
   }
 })
 export default class PresentationCanvas extends Vue {
-  @Prop() disabled: boolean
+  @Prop()
+  disabled!: boolean
 
   elements: IElement[] = []
 

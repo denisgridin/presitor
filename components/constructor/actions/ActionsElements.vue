@@ -18,9 +18,9 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import ContentSelector from '@/components/constructor/content/ContentSelector.vue'
-import ImageSelector from '@/components/constructor/ImageSelector'
-import { ImagesApi } from '~/api/images'
+import ImageSelector from '@/components/constructor/ImageSelector.vue'
 import { PresentationModule } from '~/store/presentation'
+import { DEFAULT_ELEMENT, ELEMENT_STYLES } from '~/utils/constants'
 
 @Component({
   data: () => {
@@ -57,20 +57,21 @@ export default class ActionsElements extends Vue {
     })
   }
 
-  async loadFile ({ file, data }: { file: FormData, data: Blob }) {
+  async loadFile ({ file, data }: { file: Blob, data: Blob }) {
     try {
       const url = await this.uploadImage(file)
       await PresentationModule.addSlideElement(
         {
           slideId: (this as any).$current('slide').slideId,
           data: {
-            name: data.fileName || 'Изображение',
+            name: 'Изображение',
             background: 'transparent',
             style: {
+              ...ELEMENT_STYLES,
               zIndex: PresentationModule.getLastZIndex,
               background: `url(${url})`
             }
-          }
+          } as any
         })
     } catch (error) {
       console.error(error)

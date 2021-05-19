@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import HeaderApp from '@/components/Headers/HeaderApp'
+import HeaderApp from '@/components/Headers/HeaderApp.vue'
 import { PresentationModule } from '~/store/presentation'
 import { UserModule } from '~/store/user'
 

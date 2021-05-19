@@ -19,8 +19,8 @@ import EditorCommon from '@/components/constructor/editor/EditorCommon.vue'
 import EditorFont from '@/components/constructor/editor/EditorFont.vue'
 import EditorStyle from '@/components/constructor/editor/EditorStyle.vue'
 import ElementsTable from '@/components/constructor/actions/ElementsTable.vue'
-import History from '@/components/History'
 import { PresentationModule } from '@/store/presentation'
+import { IElement, ISlide } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -28,8 +28,7 @@ import { PresentationModule } from '@/store/presentation'
     EditorFont,
     EditorCommon,
     EditorStyle,
-    ElementsTable,
-    History
+    ElementsTable
   }
 })
 export default class ActionsEditor extends Vue {
@@ -41,8 +40,8 @@ export default class ActionsEditor extends Vue {
     return this.getActiveElement?.style?.background?.includes('url')
   }
 
-  get getCurrentElements () {
-    return PresentationModule.getActiveSlide?.elements || []
+  get getCurrentElements (): IElement[] {
+    return (PresentationModule.getActiveSlide?.elements || []) as IElement[]
   }
 
   get actionsStyle () {

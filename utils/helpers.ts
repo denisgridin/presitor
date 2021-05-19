@@ -26,7 +26,7 @@ export function getCenterCoords (width: number, height: number) {
   }
 }
 
-export function buildIntsertion (data) {
+export function buildIntsertion (data: { contentType: CONTENT_TYPE }) {
   const insertion = {
     contentType: data.contentType
   } as { contentType?: CONTENT_TYPE, tag: string, listStyle: LIST_STYLE }
@@ -54,7 +54,7 @@ export function buildElement (presentation: IPresentation, slideId: string, data
       fontFamily: presentation.fontFamily,
       color: '#333333'
     },
-    insertion: buildIntsertion(data) || {},
+    insertion: buildIntsertion(data as any) || {},
     layout: {
       ...DEFAULT_ELEMENT.layout,
       ...data.layout
@@ -77,24 +77,12 @@ export async function asyncForEach (array: any[], callback: (item: any, i: numbe
 export function exitFullScreen () {
   if (document.exitFullscreen) {
     document.exitFullscreen()
-  } else if (document.msExitFullscreen) {
-    document.msExitFullscreen()
-  } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen()
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen()
   }
 }
 
 export function startFullScreen (element: HTMLElement) {
   if (element.requestFullscreen) {
     element.requestFullscreen()
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen()
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen()
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen()
   }
 }
 

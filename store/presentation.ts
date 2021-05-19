@@ -10,7 +10,6 @@ import { PresentationApi } from '~/api/presentation'
 import { UserModule } from '~/store/user'
 import { SlideApi } from '~/api/slide'
 import { ElementApi } from '~/api/element'
-import axios from 'axios'
 const pick = require('lodash.pick')
 
 const uuid = require('uuid-random')
@@ -24,7 +23,8 @@ export interface IConstructorPresentation extends IPresentation{
   activeElementType: ELEMENT_TYPE | null,
   hoverElementId: string | null,
   isPlay: boolean,
-  broadcastSlideIndex: number
+  broadcastSlideIndex: number,
+  slideIndex: number
 }
 
 export interface IPresentationState {
@@ -80,9 +80,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     return this.currentPresentation.activeSlideId
   }
 
-  public get getActiveSlide () {
+  public get getActiveSlide (): ISlide {
     const activeSlideId = this.getActiveSlideId
-    return this.currentPresentation.slides?.find((slide : ISlide) => slide.slideId === activeSlideId) || []
+    return this.currentPresentation.slides?.find((slide : ISlide) => slide.slideId === activeSlideId) as ISlide || {} as ISlide
   }
 
   public get getHoveredElementId () {
@@ -218,7 +218,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     const slide = this.currentPresentation.slides.find(slide => slide.slideId === slideId)
     const element = slide?.elements.find(element => element.elementId === elementId)
     if (element) {
-      const valueText = typeof value === 'object' ? JSON.stringify(value) : value
+      // const valueText = typeof value === 'object' ? JSON.stringify(value) : value
       // console.log(`set ${key} = ${valueText}`)
       Vue.set(element, key, value)
       // element[`${key}`] = value
@@ -435,9 +435,9 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     isAdmin: boolean,
     isSync: boolean
   } | number) {
-    const isAdmin = data.isAdmin || false
-    const step = data.step || data
-    const isSync = data.isSync || false
+    const isAdmin = (data as any).isAdmin || false
+    const step = (data as any).step || data
+    const isSync = (data as any).isSync || false
     this.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: null, type: null })
     const index = this.currentPresentation.slides.findIndex(slide => slide.slideId === this.currentPresentation.activeSlideId)
     console.log('change slide index', index, isAdmin)
@@ -463,7 +463,6 @@ export class PresentationStore extends VuexModule implements IPresentationState 
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
-        const api = new PresentationApi(UserModule.getTokens.accessToken)
         this.currentPresentation.broadcastSlideIndex = index
         const result = await this.updatePresentation()
         resolve(result)
@@ -516,6 +515,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   @Action({ rawError: true })
   uploadImage (file: Blob) {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
         const api = new ElementApi(UserModule.getTokens.accessToken)
@@ -533,6 +533,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   @Action({ rawError: true })
   createPresentation () {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
         const api = new PresentationApi(UserModule.getTokens.accessToken)
@@ -547,6 +548,7 @@ export class PresentationStore extends VuexModule implements IPresentationState 
 
   @Action({ rawError: true })
   removePresentation (id: string) {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
         const api = new PresentationApi(UserModule.getTokens.accessToken)

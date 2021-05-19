@@ -54,10 +54,12 @@ export default class ActionsPresentation extends Vue {
     await PresentationModule.editPresentation({ key: 'background', value: value })
   }
 
-  async setPresentationName (e: Event) {
-    const name = e.target.value
-    console.log(name)
-    await PresentationModule.editPresentation({ key: 'name', value: name })
+  async setPresentationName (e: any) {
+    const name = e.target?.value
+    if (name) {
+      console.log(name)
+      await PresentationModule.editPresentation({ key: 'name', value: name })
+    }
   }
 }
 </script>

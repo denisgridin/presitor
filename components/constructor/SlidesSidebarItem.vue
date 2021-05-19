@@ -40,16 +40,16 @@ import { CommonModule } from '~/store/common'
 export default class SlidesSidebarItem extends Vue {
 
   @Prop()
-  slide: ISlide
+  slide!: ISlide
 
   @Prop()
-  index: number
+  index!: number
 
   @Prop()
-  active: boolean
+  active!: boolean
 
   @Prop()
-  removable: boolean
+  removable!: boolean
 
   currentPlayedSlideIndex = this.index
 
@@ -103,24 +103,24 @@ export default class SlidesSidebarItem extends Vue {
     exitFullScreen()
   }
 
-  openContext () {
+  openContext (event: Event) {
     if (this.removable) {
       console.log('open context')
       CommonModule.SET_CONTEXT_MENU_OPTIONS({
         active: true,
         items: this.getContextMenuItems,
-        event: { pageX: event.pageX, pageY: event.pageY }
+        event: { pageX: (event as any).pageX, pageY: (event as any).pageY }
       })
     }
   }
 
-  setSlidePosition (step) {
+  setSlidePosition (step: number) {
     PresentationModule.setCurrentSlidePosition(step)
   }
 
-  setCurrentIndex (event) {
+  setCurrentIndex (event: any) {
     const value = event.target.innerText
-    const resetValue = (event) => {
+    const resetValue = (event: any) => {
       event.target.innerText = this.index
     }
 
@@ -137,9 +137,9 @@ export default class SlidesSidebarItem extends Vue {
   }
 
   changeSlide () {
-    this.$refs['slide-input'].blur()
-    const slideId = PresentationModule.getCurrentSlides[this.currentPlayedSlideIndex + 1].slideId
-    PresentationModule.setCurrentSlidePosition(slideId)
+    (this.$refs['slide-input'] as any).blur()
+    const slideId = PresentationModule.getCurrentSlides[this.currentPlayedSlideIndex + 1].slideId as string
+    PresentationModule.setCurrentSlidePosition(slideId as any)
   }
 
   playSlide (state: boolean) {

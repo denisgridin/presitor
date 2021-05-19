@@ -27,7 +27,8 @@ import { PresentationModule } from '@/store/presentation'
 @Component
 export default class SlidesController extends Vue {
   isSync: boolean = true
-  @Prop() isAdmin: boolean
+  @Prop()
+  isAdmin!: boolean
 
   get slideIndex () {
     return PresentationModule.currentPresentation.slides.findIndex(slide => slide.slideId === PresentationModule.getActiveSlideId) + 1
@@ -35,12 +36,12 @@ export default class SlidesController extends Vue {
 
   @Watch('isSync')
   @Emit('sync')
-  setSync (val) {
+  setSync (val: any) {
     console.log(val)
     return val
   }
 
-  setSlidePosition (step) {
+  setSlidePosition (step: number) {
     PresentationModule.setCurrentSlidePosition({
       step,
       isAdmin: this.isAdmin,

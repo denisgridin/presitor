@@ -13,13 +13,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import SlidesSidebar from '@/components/constructor/SlidesSidebar'
-import PresentationCanvas from '@/components/constructor/PresentationCanvas'
-import PresentationActions from '@/components/constructor/PresentationActions'
-import ContextMenu from '@/components/ContextMenu'
+import SlidesSidebar from '@/components/constructor/SlidesSidebar.vue'
+import PresentationCanvas from '@/components/constructor/PresentationCanvas.vue'
+import PresentationActions from '@/components/constructor/PresentationActions.vue'
+import ContextMenu from '@/components/ContextMenu.vue'
 import { LAYOUTS } from '@/utils/enums'
 import { CommonModule } from '@/store/common'
-import { PresentationModule } from '@/store/presentation'
+import { IConstructorPresentation, PresentationModule } from '@/store/presentation'
 import { asyncForEach } from '@/utils/helpers'
 import { UserModule } from '~/store/user'
 
@@ -37,10 +37,10 @@ export default class Constructor extends Vue {
     return PresentationModule.currentPresentation.editorIds?.includes(UserModule.getUser.userId)
   }
 
-  async asyncData ({ route }) {
+  async asyncData ({ route }: { route: any }) {
     if (route.params.presentationId !== PresentationModule.currentPresentation.presentationId) {
       try {
-        const presentation = await PresentationModule.getPresentation(route.params.presentationId)
+        const presentation = await PresentationModule.getPresentation(route.params.presentationId) as IConstructorPresentation
         console.log(presentation)
         if (presentation) {
           PresentationModule.SET_CURRENT_PRESENTATION(presentation)

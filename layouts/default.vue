@@ -6,14 +6,14 @@
 </template>
 
 <script lang="ts">
-import HeaderMain from '@/components/Headers/HeaderMain'
+import HeaderMain from '@/components/Headers/HeaderMain.vue'
 import { UserModule } from '~/store/user'
 export default {
   components: {
     HeaderMain
   },
   mounted () {
-    UserModule.getCookieUser(this.$cookies.getAll())
+    UserModule.getCookieUser((this as any).$cookies.getAll())
   }
   // created () {
   //   const user = getCookieUser(this.$cookies)

@@ -33,8 +33,11 @@ import { IElement } from '~/interfaces/presentation'
 
 @Component
 export default class CanvasElementContent extends Vue {
-  @Prop() element: IElement
-  @Prop({ default: false }) readonly disabled: boolean
+  @Prop()
+  element!: IElement
+
+  @Prop({ default: false })
+  readonly disabled!: boolean
 
   text: string = ''
   isContentEditable: boolean = false

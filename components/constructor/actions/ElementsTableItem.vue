@@ -20,7 +20,8 @@ import { IElement } from '~/interfaces/presentation'
 
 @Component
 export default class ElementsTableItem extends Vue {
-  @Prop() element: IElement
+  @Prop()
+  readonly element!: IElement
 
   get isSelected () {
     return this.getActiveElement?.elementId === this.element.elementId
@@ -51,16 +52,16 @@ export default class ElementsTableItem extends Vue {
     ]
   }
 
-  setHoverElement (id) {
+  setHoverElement (id: string) {
     PresentationModule.SET_HOVER_ELEMENT({ id })
   }
 
-  setActiveElement () {
+  setActiveElement (): void {
     console.log('click', { key: this.element.elementId, type: this.element.elementType })
     PresentationModule.SET_ACTIVE_ELEMENT_ID_AND_TYPE({ id: this.element.elementId, type: this.element.elementType })
   }
 
-  openContext (event) {
+  openContext (event: { pageX: number, pageY: number }) {
     console.log('open context')
     CommonModule.SET_CONTEXT_MENU_OPTIONS({
       active: true,

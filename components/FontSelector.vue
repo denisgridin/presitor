@@ -20,9 +20,10 @@ import { GOOGLE_FONTS } from '@/utils/constants'
 
 @Component
 export default class FontSelector extends Vue {
-  @Prop() value: string | number
+  @Prop()
+  value!: string | number
 
-  get fontsList (): { name: string, definition: string } {
+  get fontsList (): { name: string, definition: string }[] {
     return GOOGLE_FONTS
   }
 

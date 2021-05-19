@@ -26,7 +26,8 @@ import { CommonModule } from '~/store/common'
 
 @Component
 export default class ContextMenu extends Vue {
-  @Prop({ default: 160 }) width
+  @Prop({ default: 160 })
+  width!: string
 
   isVisible: boolean = false
 
@@ -43,6 +44,11 @@ export default class ContextMenu extends Vue {
     console.log('close')
     if (CommonModule.getContextMenu.active) {
       CommonModule.SET_CONTEXT_MENU_OPTIONS({
+        event: {
+          pageX: 0,
+          pageY: 0
+        },
+        items: [],
         active: false
       })
     }

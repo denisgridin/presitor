@@ -31,7 +31,7 @@ import { MIME_TYPES_IMAGE } from '~/utils/constants'
 
 @Component
 export default class FileInput extends Vue {
-  private image = null
+  private image: any = null
   mimeTypes = MIME_TYPES_IMAGE
 
   @Emit('add')
@@ -40,7 +40,7 @@ export default class FileInput extends Vue {
   }
 
   @Emit('change')
-  onChange ({ target }: Event) {
+  onChange ({ target }: any) {
     const reader = new FileReader()
     if (target.files[0]) {
       reader.readAsDataURL(target.files[0])
@@ -63,7 +63,7 @@ export default class FileInput extends Vue {
   }
 
   emitClick () {
-    this.$refs['file-input'].click()
+    (this.$refs['file-input'] as any).click()
   }
 }
 </script>

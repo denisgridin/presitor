@@ -86,9 +86,9 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { PresentationModule } from '@/store/presentation'
 import FontSelector from '@/components/FontSelector.vue'
-import { CONFINES, DEFAULT_ELEMENT, TEXT_ALIGNS } from '~/utils/constants'
 import Selector from '@/components/constructor/Selector.vue'
-import { IFont } from '~/interfaces/presentation'
+import { CONFINES, DEFAULT_ELEMENT, TEXT_ALIGNS } from '~/utils/constants'
+import { IElement, IFont } from '~/interfaces/presentation'
 
 @Component({
   components: {
@@ -98,12 +98,12 @@ import { IFont } from '~/interfaces/presentation'
 })
 export default class EditorFont extends Vue {
   hidden: boolean = false
-  confines: CONFINES = CONFINES
+  confines = CONFINES
   aligns = TEXT_ALIGNS
   updateDebounce: any = null
 
-  get getActiveElement () {
-    return PresentationModule.getActiveElement || DEFAULT_ELEMENT
+  get getActiveElement (): IElement {
+    return PresentationModule.getActiveElement as IElement || DEFAULT_ELEMENT
   }
 
   get getCurrentFontOptions () {
@@ -112,8 +112,8 @@ export default class EditorFont extends Vue {
 
   setElementValue (key: string, value: any) {
     console.log(value)
-    if (CONFINES.font[key]) {
-      if (CONFINES.font[key].min < value && CONFINES.font[key].max > value) {
+    if ((CONFINES as any).font[key]) {
+      if ((CONFINES as any).font[key].min < value && (CONFINES as any).font[key].max > value) {
         PresentationModule.UPDATE_ELEMENT_FONT({ key, value, slideId: this.getActiveElement?.slideId, elementId: this.getActiveElement?.elementId })
       }
     } else {
@@ -125,7 +125,13 @@ export default class EditorFont extends Vue {
     this.updateDebounce = setTimeout(() => {
       const font = currentElement?.font as IFont
       font[key] = value
-      PresentationModule.updateElementValue({ key: 'font', value: font, slideId: currentElement?.slideId as string, elementId: currentElement?.elementId as string })
+      PresentationModule.updateElementValue({
+        element: currentElement,
+        key: 'font',
+        value: font,
+        slideId: currentElement?.slideId as string,
+        elementId: currentElement?.elementId as string
+      })
     }, 1000)
   }
 }

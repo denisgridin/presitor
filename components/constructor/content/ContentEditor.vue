@@ -23,7 +23,8 @@ import { LIST_STYLE } from '~/utils/enums'
 
 @Component
 export default class ContentEditor extends Vue {
-  @Prop() content: IElement
+  @Prop()
+  content!: IElement
 
   listTypes = Object.values(LIST_STYLE_TYPES)
 

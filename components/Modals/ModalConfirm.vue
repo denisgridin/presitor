@@ -28,7 +28,8 @@ import { Component, Emit, Prop, Vue } from 'nuxt-property-decorator'
 
 @Component
 export default class ModalConfirm extends Vue {
-  @Prop() active: boolean
+  @Prop()
+  active!: boolean
 
   @Emit('submit')
   onSubmit (flag: boolean) {

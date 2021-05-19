@@ -9,13 +9,14 @@
 import { Component, Vue, Prop } from 'nuxt-property-decorator'
 import { IConstructorElementShape } from '~/interfaces'
 import { PresentationModule } from '~/store/presentation'
-import { ELEMENT_TYPE, FIGURE } from '~/utils/enums'
+import { FIGURE } from '~/utils/enums'
 import { ILayout, IStyle } from '~/interfaces/presentation'
 import { DEFAULT_ELEMENT, ELEMENT_STYLES } from '~/utils/constants'
 
 @Component
 export default class ConstructorElementItem extends Vue {
-  @Prop() item: IConstructorElementShape
+  @Prop()
+  item!: IConstructorElementShape
 
   addShape () {
     let style = { ...ELEMENT_STYLES, zIndex: PresentationModule.getLastZIndex }
@@ -58,7 +59,7 @@ export default class ConstructorElementItem extends Vue {
           text: '',
           style,
           layout
-        }
+        } as any
       })
   }
 }

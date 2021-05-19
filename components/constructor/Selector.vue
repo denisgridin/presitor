@@ -21,15 +21,18 @@ import { ISelectorItem } from '~/interfaces'
 
 @Component
 export default class Selector extends Vue {
-  @Prop({ required: true, type: Array }) items: ISelectorItem[]
+  @Prop({
+    required: true,
+    type: Array
+  })
+  items!: ISelectorItem[]
+
   @Prop({ required: true }) value: any
 
-  isSelected (value) {
-    return value === this.value
-  }
+  isSelected = (value: any) => value === this.value
 
   @Emit('input')
-  selectItem (value) {
+  selectItem (value: any) {
     return value
   }
 }

@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import Canvas from '@/components/constructor/canvas/Canvas.vue'
-import { PresentationModule } from '@/store/presentation'
+import { IConstructorPresentation, PresentationModule } from '@/store/presentation'
 import { asyncForEach } from '@/utils/helpers'
 import { LAYOUTS } from '~/utils/enums'
 import { CANVAS_OPTIONS } from '~/utils/constants'
@@ -28,7 +28,7 @@ import { UserModule } from '~/store/user'
 })
 export default class Broadcast extends Vue {
   canvasScale: { width: number, height: number } = { width: 1, height: 1 }
-  interval = null
+  interval: any = null
   isSync: boolean = true
 
   get isAdmin () {
@@ -39,7 +39,7 @@ export default class Broadcast extends Vue {
     return PresentationModule.currentPresentation
   }
 
-  setSync (val) {
+  setSync (val: boolean) {
     this.isSync = val
     if (val && !this.interval) {
       this.startInterval()
@@ -51,14 +51,13 @@ export default class Broadcast extends Vue {
   mounted () {
     this.changeScale()
     window?.addEventListener('resize', this.changeScale)
-    this.startInterval(true)
+    this.startInterval()
   }
 
   beforeDestroy () {
     window?.removeEventListener('resize', this.changeScale)
     clearInterval(this.interval)
   }
-
 
   startInterval () {
     this.interval = setInterval(() => {
@@ -74,7 +73,7 @@ export default class Broadcast extends Vue {
   async getCurrentSlide () {
     if (this.isSync) {
       try {
-        const presentation = await PresentationModule.getPresentation(this.$route.params.presentationId)
+        const presentation = await PresentationModule.getPresentation(this.$route.params.presentationId) as IConstructorPresentation
         if (presentation.slideIndex !== null && Array.isArray(PresentationModule.getCurrentSlides)) {
           const id = PresentationModule.getCurrentSlides[presentation.slideIndex]?.slideId
           if (id !== PresentationModule.getActiveSlide.slideId) {
@@ -87,10 +86,10 @@ export default class Broadcast extends Vue {
     }
   }
 
-  async asyncData ({ route }) {
+  async asyncData ({ route }: { route: any }) {
     if (!PresentationModule.currentPresentation.presentationId) {
       try {
-        const presentation = await PresentationModule.getPresentation(route.params.presentationId)
+        const presentation = await PresentationModule.getPresentation(route.params.presentationId) as IConstructorPresentation
         console.log(presentation)
         if (presentation) {
           PresentationModule.SET_CURRENT_PRESENTATION(presentation)

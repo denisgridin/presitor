@@ -87,7 +87,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { IElement, IStyle } from '~/interfaces/presentation'
 import { PresentationModule } from '~/store/presentation'
-import ShadowPicker from '~/components/constructor/actions/ShadowPicker'
+import ShadowPicker from '~/components/constructor/actions/ShadowPicker.vue'
 import { BORDER_STYLE } from '~/utils/enums'
 import { BORDER_STYLES } from '~/utils/constants'
 
@@ -146,7 +146,7 @@ export default class EditorStyle extends Vue {
     return `${x || 0}px ${y || 0}px ${blur || 0}px ${spread || 0}px ${color}`
   }
 
-  async editZIndex (pos) {
+  async editZIndex (pos: string) {
     const zIndex = await PresentationModule.updateZIndex({ pos, zIndex: this.getActiveElement.style.zIndex || 1 })
     this.setElementValue('zIndex', zIndex || 1)
   }
