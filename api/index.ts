@@ -6,8 +6,7 @@ const axios = require('axios')
 export class Api {
   private router: any
   private instance: AxiosInstance
-  // private host: string = process.env.BACKEND_HOST || 'https://presitor-backend.herokuapp.com/'
-  private host: string = 'http://localhost:5000/'
+  private host: string = process.env.NODE_ENV === 'production' ? process.env.BACKEND_HOST || 'https://presitor-backend.herokuapp.com/' : process.env.BACKEND_HOST || 'localhost:5000/'
 
   private errorHandler (error: AxiosError): void {
     console.log(error)
