@@ -53,7 +53,7 @@ export default class SlidesSidebar extends Vue {
   onActiveSlideChanged (id: string) {
     const refs = this.$refs[`slide_${id}`]
     if (Array.isArray(refs)) {
-      const element = (refs[0] as any).$el
+      const element = (refs[0] as any)?.$el
       if (element) {
         element.scrollIntoView({ block: 'nearest' })
       }

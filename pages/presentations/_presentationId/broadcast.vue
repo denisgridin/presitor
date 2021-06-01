@@ -87,8 +87,9 @@ export default class Broadcast extends Vue {
   }
 
   async asyncData ({ route }: { route: any }) {
-    if (!PresentationModule.currentPresentation.presentationId) {
+    if (PresentationModule.currentPresentation?.presentationId !== route.params.presentationId) {
       try {
+        console.log('load presentation', route.params.presentationId)
         const presentation = await PresentationModule.getPresentation(route.params.presentationId) as IConstructorPresentation
         console.log(presentation)
         if (presentation) {
