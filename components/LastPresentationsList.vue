@@ -41,8 +41,9 @@ export default class LastPresentationsList extends Vue {
     let presentations = [] as IPresentation[]
     try {
       const api = new PresentationApi(this.$cookies.get(FIELD.ACCESS_TOKEN))
-      console.log(UserModule.getUser)
-      presentations = await api.getLastPresentations(UserModule.getUser.userId) as IPresentation[]
+      const user = UserModule.getUser || this.$cookies.get(FIELD.USER)
+      console.log('user', user)
+      presentations = await api.getLastPresentations(user.userId) as IPresentation[]
     } catch (error) {
       console.log(error)
     }
